@@ -60,49 +60,42 @@ const Home = () => {
     ]
   };
 
-  const handleViewAllRestaurants = () => {
-    navigate.push('/all-restaurants');
-  };
+  // const handleViewAllRestaurants = () => {
+  //   navigate.push('/all-restaurants');
+  // };
 
   const handleRestaurantClick = (restaurant) => {
     if (restaurant.isOpen) {
-        navigate.push(`/restaurant/${restaurant.name}`);
+      navigate(`/restaurant/${restaurant.name}`);
     }
   };
+  
 
   return (
     <div className="w-full min-h-screen bg-green-50 overflow-x-hidden">
       
       {/* Banner Section */}
       <section
-        className="relative bg-[url(https://media.istockphoto.com/id/914940152/photo/empty-wooden-table-top-with-blur-coffee-shop-or-restaurant-interior-background-panoramic-banner.jpg?s=612x612&w=0&k=20&c=mpoF5abC7ys4sTIYUuCemxp3MYFgvuRFVPGzNF8IKTI=)] bg-cover bg-center bg-no-repeat"
+        className="relative bg-[url(https://media.istockphoto.com/id/914940152/photo/empty-wooden-table-top-with-blur-coffee-shop-or-restaurant-interior-background-panoramic-banner.jpg?s=612x612&w=0&k=20&c=mpoF5abC7ys4sTIYUuCemxp3MYFgvuRFVPGzNF8IKTI=)] bg-cover bg-center bg-no-repeat h-96 flex items-center justify-center"
       >
-        <div
-          className="absolute inset-0 bg-white/75 sm:bg-transparent sm:from-white/95 sm:to-white/25 ltr:sm:bg-gradient-to-r rtl:sm:bg-gradient-to-l"
-        ></div>
-
-        <div
-          className="relative max-w-screen-xl px-4 py-48 sm:px-6 lg:flex lg:h-screen lg:px-16"
-        >
-          <div className="max-w-xl text-left lg:ml-0">
-            <h1 className="text-3xl font-extrabold text-[#7F00FF] sm:text-5xl">
+        <div className="absolute inset-0 bg-black opacity-50"></div> {/* Dark overlay */}
+        <div className="relative max-w-screen-xl px-4 py-24 sm:px-6 lg:flex lg:h-auto lg:px-16 text-white">
+          <div className="max-w-xl text-left lg:ml-0 animate-fade-in"> {/* Fade-in animation */}
+            <h1 className="text-4xl font-extrabold text-[#FFD700] sm:text-5xl lg:text-6xl">
               Order Your
-              <strong className="block font-extrabold text-white"> Favorite Homemade Food </strong>
+              <strong className="block font-extrabold text-[#FF6347] drop-shadow-md"> Favorite Homemade Food </strong>
             </h1>
-
-            <p className="mt-4 max-w-lg sm:text-xl/relaxed text-yellow-50">
-              At Restoura, we bring you the best homemade food from local chefs right to your doorstep.
-              Taste the love and tradition in every bite.
+            <p className="mt-4 max-w-lg sm:text-xl text-yellow-50 drop-shadow-md">
+              At Restoura, we bring you the best homemade food from local chefs right to your doorstep. Taste the love and tradition in every bite.
             </p>
-
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap gap-4 items-center">
               <input
                 type="text"
                 placeholder="Find your location"
                 className="block w-full rounded bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow focus:outline-none focus:ring sm:w-auto"
               />
               <button
-                className="block w-full rounded bg-rose-600 px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-500 sm:w-auto"
+                className="block w-full rounded bg-rose-600 px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-500 sm:w-auto transition-transform transform hover:scale-105"
               >
                 Search
               </button>
@@ -111,20 +104,16 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Top Cuisines Carousel Section */}
-      <section className="py-12 px-4">
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">Top Cuisines</h2>
+      {/* Top Cuisines Section */}
+      <section className="px-10 py-10 bg-gray-100">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Top Cuisines</h2>
         <Slider {...settings}>
           {cuisines.map((cuisine, index) => (
             <div key={index} className="px-2">
-              <div className="rounded-lg overflow-hidden shadow-lg">
-                <img
-                  src={cuisine.image}
-                  alt={cuisine.title}
-                  className="w-full h-64 object-cover object-center rounded-lg"
-                />
-                <div className="p-4 bg-white">
-                  <h3 className="text-lg font-semibold text-gray-900">{cuisine.title}</h3>
+              <div className="relative">
+                <img src={cuisine.image} alt={cuisine.title} className="rounded-lg shadow-lg h-64 w-full object-cover" />
+                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center rounded-lg">
+                  <h3 className="text-white text-xl font-bold">{cuisine.title}</h3>
                 </div>
               </div>
             </div>
@@ -137,15 +126,13 @@ const Home = () => {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-bold text-gray-800">Top Rated Handpicked Restaurants</h2>
           <button
-            onClick={handleViewAllRestaurants}
+            onClick={() => navigate('/restaurants')}
             className="group inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
-            >
-            <span
-                className="block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent"
-            >
-                Explore Restaurants
+          >
+            <span className="block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent">
+              Explore Restaurants
             </span>
-          </button>
+        </button>
 
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

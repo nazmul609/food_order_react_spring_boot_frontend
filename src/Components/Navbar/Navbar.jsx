@@ -8,19 +8,14 @@ function Navbar() {
   const [openDrawer, setOpenDrawer] = useState(false);
 
   const toggleDrawer = (open) => (event) => {
-    if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
-    ) {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
-
     setOpenDrawer(open);
   };
 
   return (
     <div className='px-5 z-50 py-[0.8rem] bg-white shadow-md lg:px-20 flex justify-between items-center'>
-      
       <div className='flex items-center space-x-4'>
         <Link to='/' className='cursor-pointer'>
           <img src='/logo.png' alt='Restoura Logo' className='h-12' />
@@ -34,14 +29,14 @@ function Navbar() {
       </div>
 
       <div className='hidden md:flex items-center space-x-4 lg:space-x-10'>
-        <a href='#restaurants' className='text-gray-700 hover:text-[#7F00FF]'>Restaurants</a>
-        <a href='#about' className='text-gray-700 hover:text-[#7F00FF]'>About</a>
+        <Link to='/restaurants' className='text-gray-700 hover:text-[#7F00FF]'>Restaurants</Link>
+        <Link to='/about' className='text-gray-700 hover:text-[#7F00FF]'>About</Link>
       </div>
 
       <div className='hidden md:flex items-center space-x-2 lg:space-x-4'>
         <Button variant='outlined' color='primary'>Login</Button>
         <Button variant='contained' color='primary'>Signup</Button>
-        <IconButton>  {/* dynamic badgeContent later */}
+        <IconButton>
           <ShoppingCartIcon style={{ color: '#7F00FF' }} />
         </IconButton>
       </div>
@@ -57,10 +52,10 @@ function Navbar() {
           onClose={toggleDrawer(false)}
         >
           <List>
-            <ListItem button component='a' href='#restaurants' onClick={toggleDrawer(false)}>
+            <ListItem button component={Link} to='/restaurants' onClick={toggleDrawer(false)}>
               <ListItemText primary='Restaurants' />
             </ListItem>
-            <ListItem button component='a' href='#about' onClick={toggleDrawer(false)}>
+            <ListItem button component={Link} to='/about' onClick={toggleDrawer(false)}>
               <ListItemText primary='About' />
             </ListItem>
             <ListItem>
@@ -72,7 +67,6 @@ function Navbar() {
           </List>
         </Drawer>
       </div>
-      
     </div>
   );
 }
