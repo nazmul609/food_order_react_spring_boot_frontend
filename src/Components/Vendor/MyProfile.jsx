@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const MyProfile = () => {
-  const [profilePicture, setProfilePicture] = useState('https://cdn.pixabay.com/photo/2023/10/16/09/43/korea-8318827_640.jpg'); // Default profile picture
+  const [profilePicture, setProfilePicture] = useState('https://cdn.pixabay.com/photo/2015/07/02/21/10/dinner-829602_640.jpg'); // Default profile picture
   const [profileDetails, setProfileDetails] = useState({
     Name: 'Vendor Name',
     CuisineType: 'Cuisine Type',
@@ -27,98 +27,108 @@ const MyProfile = () => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfilePicture(reader.result); // Update the profile picture state
+        setProfilePicture(reader.result); 
       };
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <div className="flex flex-col items-start space-y-4 ">
-      <div className="flex items-center w-full">
-        <div className="flex-1 bg-white border rounded-lg shadow-md p-4 mr-4">
-          <table className="min-w-full border-collapse border border-gray-300">
+    <div className="flex flex-col space-y-6 p-6 bg-gray-100 rounded-lg shadow-lg max-w-4xl mx-auto mt-10">
+      {/* Profile header section */}
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col space-y-2">
+          <h2 className="text-2xl font-semibold text-gray-800">Vendor Profile</h2>
+          <p className="text-gray-600">Manage your profile information</p>
+        </div>
+        <div className="flex flex-col items-center">
+          <img src={profilePicture} alt="Profile" className="w-40 h-40 object-cover rounded-lg shadow-md mb-2" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+            id="profile-picture-upload"
+          />
+          <label
+            htmlFor="profile-picture-upload"
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-lg text-sm hover:bg-blue-600 transition"
+          >
+            Upload New Image
+          </label>
+        </div>
+      </div>
+
+      {/* Profile details section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white border rounded-lg shadow-md p-4">
+          <table className="w-full text-left">
             <tbody>
               <tr>
-                <td className="border border-gray-300 p-2 font-semibold">Name:</td>
-                <td className="border border-gray-300 p-2">{profileDetails.Name}</td>
+                <td className="font-semibold text-gray-700 py-2">Name:</td>
+                <td className="text-gray-800">{profileDetails.Name}</td>
               </tr>
               <tr>
-                <td className="border border-gray-300 p-2 font-semibold">Cuisine Type:</td>
-                <td className="border border-gray-300 p-2">{profileDetails.CuisineType}</td>
+                <td className="font-semibold text-gray-700 py-2">Cuisine Type:</td>
+                <td className="text-gray-800">{profileDetails.CuisineType}</td>
               </tr>
               <tr>
-                <td className="border border-gray-300 p-2 font-semibold">Opening Hours:</td>
-                <td className="border border-gray-300 p-2">
-                  {profileDetails.OpeningHours} - {profileDetails.ClosingHours}
-                </td>
+                <td className="font-semibold text-gray-700 py-2">Opening Hours:</td>
+                <td className="text-gray-800">{profileDetails.OpeningHours} - {profileDetails.ClosingHours}</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        {/* Profile image and upload option */}
-        <div className="flex flex-col items-center">
-          <img src={profilePicture} alt="Profile" className="w-32 h-32 rounded-lg mb-2 mt-8" />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="border rounded p-2 cursor-pointer"
-          />
+        <div className="bg-white border rounded-lg shadow-md p-4">
+          <table className="w-full text-left">
+            <tbody>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Country:</td>
+                <td className="text-gray-800">{profileDetails.Country}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">City:</td>
+                <td className="text-gray-800">{profileDetails.City}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">State:</td>
+                <td className="text-gray-800">{profileDetails.State}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Road No:</td>
+                <td className="text-gray-800">{profileDetails.RoadNo}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">House No:</td>
+                <td className="text-gray-800">{profileDetails.HouseNo}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* Second table for address */}
-      
-      <div className="bg-white border rounded-lg shadow-md p-4 w-full">
-        <table className="min-w-full border-collapse border border-gray-300">
+      {/* Contact information section */}
+      <div className="bg-white border rounded-lg shadow-md p-4">
+        <table className="w-full text-left">
           <tbody>
             <tr>
-              <td className="border border-gray-300 p-2 font-semibold">Country:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.Country}</td>
+              <td className="font-semibold text-gray-700 py-2">Email:</td>
+              <td className="text-gray-800">{profileDetails.Email}</td>
             </tr>
             <tr>
-              <td className="border border-gray-300 p-2 font-semibold">City:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.City}</td>
+              <td className="font-semibold text-gray-700 py-2">Contact No:</td>
+              <td className="text-gray-800">{profileDetails.ContactNo}</td>
             </tr>
             <tr>
-              <td className="border border-gray-300 p-2 font-semibold">State:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.State}</td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2 font-semibold">Road No:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.RoadNo}</td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2 font-semibold">House No:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.HouseNo}</td>
+              <td className="font-semibold text-gray-700 py-2">Social Media:</td>
+              <td className="text-gray-800">{profileDetails.SocialMedia}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      {/* Third table for contact information */}
-      <div className="bg-white border rounded-lg shadow-md p-4 w-full">
-        <table className="min-w-full border-collapse border border-gray-300">
-          <tbody>
-            <tr>
-              <td className="border border-gray-300 p-2 font-semibold">Email:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.Email}</td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2 font-semibold">Contact No:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.ContactNo}</td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 p-2 font-semibold">Social Media:</td>
-              <td className="border border-gray-300 p-2">{profileDetails.SocialMedia}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <button onClick={handleEdit} className="mt-4 py-2 px-4 bg-green-600 text-white rounded">
+      <button onClick={handleEdit} className="self-center py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
         Edit Profile
       </button>
     </div>

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const CustomerDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [profilePicture, setProfilePicture] = useState("https://cdn.pixabay.com/photo/2024/04/25/12/32/ai-generated-8719680_640.jpg"); 
+  const [profilePicture, setProfilePicture] = useState("https://cdn.pixabay.com/photo/2024/04/25/12/32/ai-generated-8719680_640.jpg");
 
   const customer = {
     name: "John Doe",
@@ -30,62 +30,82 @@ const CustomerDetails = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex justify-between">
-      <div className="flex-1">
-        <h2 className="text-2xl font-bold mb-4">Customer Details</h2>
-        <table className="min-w-full text-left">
-          <tbody>
-            <tr>
-              <td className="font-semibold">Name:</td>
-              <td>{customer.name}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold">Email:</td>
-              <td>{customer.email}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold">Phone:</td>
-              <td>{customer.phone}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold">City:</td>
-              <td>{customer.city}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold">Road No:</td>
-              <td>{customer.roadNo}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold">House No:</td>
-              <td>{customer.houseNo}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold">Additional Details:</td>
-              <td>{customer.additionalDetails}</td>
-            </tr>
-          </tbody>
-        </table>
-        <button
-          onClick={handleEdit}
-          className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
-          {isEditing ? "Save" : "Edit"}
-        </button>
+    <div className="flex flex-col space-y-6 p-6 bg-gray-100 rounded-lg shadow-lg max-w-4xl mx-auto mt-10">
+      {/* Profile header section */}
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col space-y-2">
+          <h2 className="text-2xl font-semibold text-gray-800">Customer Profile</h2>
+          <p className="text-gray-600">Manage your profile information</p>
+        </div>
+        <div className="flex flex-col items-center">
+          <img src={profilePicture} alt="Profile" className="w-40 h-40 object-cover rounded-lg shadow-md mb-2" />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleFileChange}
+            className="hidden"
+            id="profile-picture-upload"
+          />
+          <label
+            htmlFor="profile-picture-upload"
+            className="cursor-pointer bg-blue-500 text-white py-2 px-4 rounded-lg text-sm hover:bg-blue-600 transition"
+          >
+            Upload New Image
+          </label>
+        </div>
       </div>
-      <div className="flex flex-col items-center">
-        <img
-          src={profilePicture}
-          alt="Profile"
-          className="w-60 h-60 rounded-lg mb-2" 
-        />
-        {/* File input for uploading a new profile picture */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleFileChange}
-          className="cursor-pointer border p-2 rounded"
-        />
+
+      {/* Profile details section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white border rounded-lg shadow-md p-4">
+          <table className="w-full text-left">
+            <tbody>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Name:</td>
+                <td className="text-gray-800">{customer.name}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Email:</td>
+                <td className="text-gray-800">{customer.email}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Phone:</td>
+                <td className="text-gray-800">{customer.phone}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">City:</td>
+                <td className="text-gray-800">{customer.city}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="bg-white border rounded-lg shadow-md p-4">
+          <table className="w-full text-left">
+            <tbody>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Road No:</td>
+                <td className="text-gray-800">{customer.roadNo}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">House No:</td>
+                <td className="text-gray-800">{customer.houseNo}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Additional Details:</td>
+                <td className="text-gray-800">{customer.additionalDetails}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <button
+        onClick={handleEdit}
+        className="self-center py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+      >
+        {isEditing ? "Save" : "Edit Profile"}
+      </button>
     </div>
   );
 };

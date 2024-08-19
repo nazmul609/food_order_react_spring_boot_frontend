@@ -9,6 +9,7 @@ import CustomerOnboarding from './Components/Customer/CustomerOnbaording';
 import Profile from './Components/Customer/Profile';
 import VendorOnboarding from './Components/Vendor/VendorOnboarding';
 import VendorProfile from './Components/Vendor/VendorProfile';
+import AdminProfile from './Components/Admin/AdminProfile';
 
 
 
@@ -29,6 +30,9 @@ function App() {
 
           <Route path="/vendor-onboard" element={<VendorOnboarding/>} />
           <Route path="/vendor-profile/*" element={<VendorProfile />} />
+
+          <Route path="/admin-profile/*" element={<AdminProfile />} />
+
           
         </Routes>
     </BrowserRouter>

@@ -11,7 +11,7 @@ import OffersAndPromo from './OffersAndPromo';
 
 const VendorProfile = () => {
   return (
-    <div className="flex bg-green-50">
+    <div className="flex">
       <ProfileNavigation />
       <div className="flex-1 p-8">
         <Routes>

@@ -1,18 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faShoppingBag, faHeart, faBell, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUsers, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@mui/material';
 
 const menu = [
-  { title: "Customer Details", icon: faUser, path: "/customer-profile/customer-details" },
-  { title: "Orders and History", icon: faShoppingBag, path: "/customer-profile/orders-history" },
-  { title: "Favorite Restaurants", icon: faHeart, path: "/customer-profile/favorites" },
-  { title: "Notifications", icon: faBell, path: "/customer-profile/notifications" },
-  { title: "Logout", icon: faSignOutAlt, path: "/logout" },
+  { title: "Vendor Management", icon: faUsers, path: "/admin-profile/vendor-management" },
+  { title: "Reports & Analytics", icon: faChartLine, path: "/admin-profile/report-analytics" },
 ];
 
-const CustomerProfileNavigation = () => {
+const AdminProfileNavigation = () => {
   const navigate = useNavigate();
 
   return (
@@ -35,4 +32,4 @@ const CustomerProfileNavigation = () => {
   );
 };
 
-export default CustomerProfileNavigation;
+export default AdminProfileNavigation;
