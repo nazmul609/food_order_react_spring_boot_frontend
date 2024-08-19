@@ -10,7 +10,8 @@ import Profile from './Components/Customer/Profile';
 import VendorOnboarding from './Components/Vendor/VendorOnboarding';
 import VendorProfile from './Components/Vendor/VendorProfile';
 import AdminProfile from './Components/Admin/AdminProfile';
-
+import Login from './Components/Auth/Login';
+import Register from './Components/Auth/Register';
 
 
 
@@ -33,6 +34,8 @@ function App() {
 
           <Route path="/admin-profile/*" element={<AdminProfile />} />
 
+          <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
           
         </Routes>
     </BrowserRouter>

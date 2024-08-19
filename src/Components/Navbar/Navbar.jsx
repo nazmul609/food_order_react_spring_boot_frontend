@@ -1,17 +1,36 @@
 import React, { useState } from 'react';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Button, IconButton, Drawer, List, ListItem, ListItemText } from '@mui/material';
-import { Link } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import { Button, IconButton, Drawer, List, ListItem, ListItemText, Menu, MenuItem } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Navbar() {
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false); //login status
+  const navigate = useNavigate();
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return;
     }
     setOpenDrawer(open);
+  };
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    // Add your logout logic here
+    setIsLoggedIn(false);
+    handleProfileMenuClose();
+    navigate('/login');
   };
 
   return (
@@ -34,11 +53,29 @@ function Navbar() {
       </div>
 
       <div className='hidden md:flex items-center space-x-2 lg:space-x-4'>
-        <Button variant='outlined' color='primary'>Login</Button>
-        <Button variant='contained' color='primary'>Signup</Button>
-        <IconButton>
-          <ShoppingCartIcon style={{ color: '#7F00FF' }} />
-        </IconButton>
+        {isLoggedIn ? (
+          <>
+            <IconButton>
+              <ShoppingCartIcon style={{ color: '#7F00FF' }} />
+            </IconButton>
+            <IconButton onClick={handleProfileMenuOpen}>
+              <AccountCircleIcon style={{ color: '#7F00FF' }} />
+            </IconButton>
+            <Menu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleProfileMenuClose}
+            >
+              <MenuItem onClick={() => { handleProfileMenuClose(); navigate('/profile'); }}>View Profile</MenuItem>
+              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            </Menu>
+          </>
+        ) : (
+          <>
+            <Button variant='outlined' color='primary' onClick={() => navigate('/login')}>Login</Button>
+            <Button variant='contained' color='primary' onClick={() => navigate('/register')}>Signup</Button>
+          </>
+        )}
       </div>
 
       {/* Mobile menu button */}
@@ -58,12 +95,30 @@ function Navbar() {
             <ListItem button component={Link} to='/about' onClick={toggleDrawer(false)}>
               <ListItemText primary='About' />
             </ListItem>
-            <ListItem>
-              <Button variant='outlined' color='primary' fullWidth>Login</Button>
-            </ListItem>
-            <ListItem>
-              <Button variant='contained' color='primary' fullWidth>Signup</Button>
-            </ListItem>
+            {isLoggedIn ? (
+              <>
+                <ListItem>
+                  <IconButton>
+                    <ShoppingCartIcon style={{ color: '#7F00FF' }} />
+                  </IconButton>
+                </ListItem>
+                <ListItem button onClick={() => { toggleDrawer(false); navigate('/profile'); }}>
+                  <ListItemText primary='View Profile' />
+                </ListItem>
+                <ListItem button onClick={handleLogout}>
+                  <ListItemText primary='Logout' />
+                </ListItem>
+              </>
+            ) : (
+              <>
+                <ListItem>
+                  <Button variant='outlined' color='primary' fullWidth onClick={() => { toggleDrawer(false); navigate('/login'); }}>Login</Button>
+                </ListItem>
+                <ListItem>
+                  <Button variant='contained' color='primary' fullWidth onClick={() => { toggleDrawer(false); navigate('/register'); }}>Signup</Button>
+                </ListItem>
+              </>
+            )}
           </List>
         </Drawer>
       </div>
