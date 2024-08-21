@@ -1,21 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FormControlLabel, Grid, Typography, RadioGroup, Divider, FormControl, Radio } from '@mui/material'; // Import Grid from Material-UI
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import MenuCard from './MenuCard';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {getRestaurantById, getRestaurantsCategory} from '../State/Restaurant/Action';
+import {getMenuItemsByRestaurantId} from '../State/Menu/Action';
 
 
-
-const categories = [
-    "All",
-    "Thai",
-    "Starters",
-    "Indian Main Course",
-    "Rice and Biryani",
-    "Breads",
-    "Accompaniments",
-    "Dessert",
-  ];
   
   const foodTypes = [
     {label:"All",value:"all"},
@@ -28,12 +21,23 @@ const categories = [
 const menu = [1, 1, 1]
 
 const RestaurantDetails = () => {
-  const [foodType] = useState("all")
-  // there was [foodType,setFoodType]
+  const [foodType,setFoodType] = useState("all")
+  const navigate=useNavigate()
+  const dispatch=useDispatch();
+  const jwt=localStorage.getItem("jwt")
+  const {auth, restaurant}=useSelector(store=>store)
+
+  const {id, city}=useParams();
 
   const handleFilter =(e)=> {
     console.log(e.target.value, e.target.name);
   }
+
+  useEffect(()=>{
+    dispatch(getRestaurantById({jwt, restaurantId:id}))
+    dispatch(getRestaurantsCategory({jwt, restaurantId:id}))
+    dispatch(getMenuItemsByRestaurantId({jwt, restaurantId:id, vegetarian:false, nonveg:false, seasonal:false,  foodCategory:""}))
+  }, [])
 
   return (
     <div className='px-5 lg:px-20 bg-green-50'>
@@ -43,11 +47,11 @@ const RestaurantDetails = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <img className='w-full h-[40vh] object-cover' 
-              src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/restaurant-menu-facebook-cover-design-template-b235d806622d010d1b41f3202434f6ea_screen.jpg?ts=1599813867" alt="food palace pic" />
+              src={restaurant.restaurant?.images[0]} alt="food palace pic" />
             </Grid>
             <Grid item xs={12} lg={6}>
               <img className='w-full h-[40vh] object-cover' 
-              src="https://plus.unsplash.com/premium_photo-1661349627928-2378a242285a?q=80&w=1573&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food palace pic" />
+              src={restaurant.restaurant?.images[1]} alt="food palace pic" />
             </Grid>
             <Grid item xs={12} lg={6}>
               <iframe className='w-full h-[40vh] object-cover'  src="https://www.youtube.com/embed/95BCU1n268w?si=3zFF6olfasihaFVw" title="Welcome to Restoura" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
@@ -55,8 +59,8 @@ const RestaurantDetails = () => {
           </Grid>
         </div>
         <div className='pt-3 pb-5'>
-          <h1 className='text-gray-800 py-2 mt-2 block font-extrabold drop-shadow-md'>Homemade Delight</h1>
-          <p className='text-gray-500 mt-1'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque, alias accusantium nostrum tenetur, optio maiores delectus ab in sequi mollitia error a nam animi recusandae. Quam in ea incidunt assumenda!</p>
+          <h1 className='text-gray-800 py-2 mt-2 block font-extrabold drop-shadow-md'>{restaurant.restaurant?.name}</h1>
+          <p className='text-gray-500 mt-1'>{restaurant.restaurant?.description}</p>
           <div className='space-y-3 mt-3'>
             <p className='text-gray-500 flex items-center gap-3'>
             <LocationOnIcon/> <span>ON, Canada</span>
@@ -96,12 +100,12 @@ const RestaurantDetails = () => {
               </Typography>
               <FormControl className="py-10 space-y-5" component={"fieldset"}>
                 <RadioGroup onChange={handleFilter} name="food_type" value={foodType}> 
-                  {categories.map((item)=>(
+                  {restaurant.categories.map((item)=>(
                     <FormControlLabel
                     key={item}
                       value={item}
                       control={<Radio />}
-                      label={item}
+                      label={item.name}
                     />
                   )
                   )}
@@ -111,7 +115,7 @@ const RestaurantDetails = () => {
           </div>
         </div>
         <div className='space-y-4 lg:w-[80%] menu'>
-          {menu.map((item)=><MenuCard/>)}
+          {menu.menuItems.map((item)=><MenuCard item={item}/>)}
         </div>
       </section>
     </div>
