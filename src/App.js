@@ -26,10 +26,10 @@ function App() {
           <Route path="/single-restaurant" element={<RestaurantDetails />} />
           <Route path="/cart" element={<CartPage/>} />
           
-          <Route path="/customer-onboard" element={<CustomerOnboarding/>} />
+          <Route path="/customer-onboarding/:id" element={<CustomerOnboarding/>} />
           <Route path="/customer-profile/*" element={<Profile />} />
 
-          <Route path="/vendor-onboard" element={<VendorOnboarding/>} />
+          <Route path="/vendor-onboarding/:id" element={<VendorOnboarding/>} />
           <Route path="/vendor-profile/*" element={<VendorProfile />} />
 
           <Route path="/admin-profile/*" element={<AdminProfile />} />

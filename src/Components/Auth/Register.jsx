@@ -6,21 +6,42 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('customer');
     const [error, setError] = useState('');
+    const [registrationSuccess, setRegistrationSuccess] = useState(false);
     const navigate = useNavigate();
 
-    const handleRegister = (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
-        // need to add registration logic here
+
         if (email === '' || password === '') {
             setError('Please fill in all fields.');
             return;
         }
 
-        // After successful registration, redirect based on role
-        if (role === 'customer') {
-            navigate('/customer-onboarding');
-        } else if (role === 'vendor') {
-            navigate('/vendor-onboarding');
+        const requestBody = {
+            email: email,
+            password: password,
+            role: role,
+        };
+
+        try {
+            const response = await fetch('http://localhost:8080/auth/signup', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestBody),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Registration failed');
+            }
+
+            setRegistrationSuccess(true);
+            navigate('/login');
+        } catch (error) {
+            console.error('Registration error:', error.message);
+            setError('Registration failed. Please try again later.');
         }
     };
 
