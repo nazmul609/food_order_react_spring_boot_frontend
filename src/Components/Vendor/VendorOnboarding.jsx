@@ -4,13 +4,11 @@ const VendorOnboarding = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [vendorDetails, setVendorDetails] = useState({
     name: "",
-    description: "",
-    cuisineType: "",
-    openingHours: "",
-    closingHours: "",
     country: "",
     city: "",
     state: "",
+    streetNo:"",
+    houseNo:"",
     email: "vendor@example.com",
     contactNo: "",
   });
@@ -79,31 +77,9 @@ const VendorOnboarding = () => {
           />
         </div>
 
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Description</label>
-          <textarea
-            name="description"
-            value={vendorDetails.description}
-            onChange={handleChange}
-            className="mt-2 p-3 block w-full border rounded"
-            rows="4"
-            required
-          />
-        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label className="block text-lg font-medium text-gray-700">Cuisine Type</label>
-            <input
-              type="text"
-              name="cuisineType"
-              value={vendorDetails.cuisineType}
-              onChange={handleChange}
-              className="mt-2 p-3 block w-full border rounded"
-              required
-            />
-          </div>
-          <div>
+        <div className="mb-6">
+          
             <label className="block text-lg font-medium text-gray-700">Contact No</label>
             <input
               type="tel"
@@ -113,35 +89,11 @@ const VendorOnboarding = () => {
               className="mt-2 p-3 block w-full border rounded"
               required
             />
-          </div>
+          
         </div>
+
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-          <div>
-            <label className="block text-lg font-medium text-gray-700">Opening Hours</label>
-            <input
-              type="time"
-              name="openingHours"
-              value={vendorDetails.openingHours}
-              onChange={handleChange}
-              className="mt-2 p-3 block w-full border rounded"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-lg font-medium text-gray-700">Closing Hours</label>
-            <input
-              type="time"
-              name="closingHours"
-              value={vendorDetails.closingHours}
-              onChange={handleChange}
-              className="mt-2 p-3 block w-full border rounded"
-              required
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
           <div>
             <label className="block text-lg font-medium text-gray-700">Country</label>
             <input
@@ -164,7 +116,10 @@ const VendorOnboarding = () => {
               required
             />
           </div>
-          <div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6">
+        <div>
             <label className="block text-lg font-medium text-gray-700">State</label>
             <input
               type="text"
@@ -175,6 +130,29 @@ const VendorOnboarding = () => {
               required
             />
           </div>
+          <div>
+            <label className="block text-lg font-medium text-gray-700">Street No</label>
+            <input
+              type="text"
+              name="country"
+              value={vendorDetails.streetNo}
+              onChange={handleChange}
+              className="mt-2 p-3 block w-full border rounded"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-lg font-medium text-gray-700">House No</label>
+            <input
+              type="text"
+              name="city"
+              value={vendorDetails.houseNo}
+              onChange={handleChange}
+              className="mt-2 p-3 block w-full border rounded"
+              required
+            />
+          </div>
+
         </div>
 
         <div className="mb-6">

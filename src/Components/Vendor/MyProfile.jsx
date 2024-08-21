@@ -4,13 +4,10 @@ const MyProfile = () => {
   const [profilePicture, setProfilePicture] = useState('https://cdn.pixabay.com/photo/2015/07/02/21/10/dinner-829602_640.jpg'); // Default profile picture
   const [profileDetails, setProfileDetails] = useState({
     Name: 'Vendor Name',
-    CuisineType: 'Cuisine Type',
-    OpeningHours: '09:00',
-    ClosingHours: '22:00',
     Country: 'Country',
     City: 'City',
     State: 'State',
-    RoadNo: '12',
+    StreetNo: '12',
     HouseNo: '34',
     Email: 'vendor@example.com',
     ContactNo: '1234567890',
@@ -69,13 +66,18 @@ const MyProfile = () => {
                 <td className="text-gray-800">{profileDetails.Name}</td>
               </tr>
               <tr>
-                <td className="font-semibold text-gray-700 py-2">Cuisine Type:</td>
-                <td className="text-gray-800">{profileDetails.CuisineType}</td>
-              </tr>
-              <tr>
-                <td className="font-semibold text-gray-700 py-2">Opening Hours:</td>
-                <td className="text-gray-800">{profileDetails.OpeningHours} - {profileDetails.ClosingHours}</td>
-              </tr>
+              <td className="font-semibold text-gray-700 py-2">Email:</td>
+              <td className="text-gray-800">{profileDetails.Email}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold text-gray-700 py-2">Contact No:</td>
+              <td className="text-gray-800">{profileDetails.ContactNo}</td>
+            </tr>
+            <tr>
+              <td className="font-semibold text-gray-700 py-2">Social Media:</td>
+              <td className="text-gray-800">{profileDetails.SocialMedia}</td>
+            </tr>
+
             </tbody>
           </table>
         </div>
@@ -108,25 +110,7 @@ const MyProfile = () => {
         </div>
       </div>
 
-      {/* Contact information section */}
-      <div className="bg-white border rounded-lg shadow-md p-4">
-        <table className="w-full text-left">
-          <tbody>
-            <tr>
-              <td className="font-semibold text-gray-700 py-2">Email:</td>
-              <td className="text-gray-800">{profileDetails.Email}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold text-gray-700 py-2">Contact No:</td>
-              <td className="text-gray-800">{profileDetails.ContactNo}</td>
-            </tr>
-            <tr>
-              <td className="font-semibold text-gray-700 py-2">Social Media:</td>
-              <td className="text-gray-800">{profileDetails.SocialMedia}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      
 
       <button onClick={handleEdit} className="self-center py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
         Edit Profile
