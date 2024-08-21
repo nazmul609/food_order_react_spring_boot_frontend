@@ -7,7 +7,8 @@ import MenuCard from './MenuCard';
 
 
 const categories = [
-    "Thali",
+    "All",
+    "Thai",
     "Starters",
     "Indian Main Course",
     "Rice and Biryani",
@@ -42,11 +43,11 @@ const RestaurantDetails = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <img className='w-full h-[40vh] object-cover' 
-              src="https://cdn.pixabay.com/photo/2020/09/17/12/41/cafe-5579069_640.jpg" alt="food palace pic" />
+              src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/restaurant-menu-facebook-cover-design-template-b235d806622d010d1b41f3202434f6ea_screen.jpg?ts=1599813867" alt="food palace pic" />
             </Grid>
             <Grid item xs={12} lg={6}>
               <img className='w-full h-[40vh] object-cover' 
-              src="https://cdn.pixabay.com/photo/2016/11/18/14/39/beans-1834984_640.jpg" alt="food palace pic" />
+              src="https://plus.unsplash.com/premium_photo-1661349627928-2378a242285a?q=80&w=1573&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="food palace pic" />
             </Grid>
             <Grid item xs={12} lg={6}>
               <iframe className='w-full h-[40vh] object-cover'  src="https://www.youtube.com/embed/95BCU1n268w?si=3zFF6olfasihaFVw" title="Welcome to Restoura" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
