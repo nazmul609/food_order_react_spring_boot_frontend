@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { FaStar, FaFileDownload, FaHeadset } from 'react-icons/fa';
+import { FaStar, FaFileDownload} from 'react-icons/fa';
 
 const OrdersHistory = () => {
   const [orders, setOrders] = useState([
-    { itemName: 'Biryani', restaurantName: 'Restaurant A', status: 'Pending', date: '1 July, 2024', rating: 0, feedback: '', estimatedDelivery: '30 min', actualDelivery: '' },
-    { itemName: 'Pizza', restaurantName: 'Restaurant B', status: 'Delivered', date: '10 July, 2024', rating: 4, feedback: 'Great pizza!', estimatedDelivery: '40 min', actualDelivery: '35 min' },
+    { itemName: 'Biryani', restaurantName: 'Restaurant A', status: 'Pending', date: '1 July, 2024', rating: 0, feedback: '', estimatedDelivery: '30 min' },
+    { itemName: 'Pizza', restaurantName: 'Restaurant B', status: 'Delivered', date: '10 July, 2024', rating: 4, feedback: 'Great pizza!', estimatedDelivery: '40 min'},
   ]);
 
   const handleCancelOrder = (index) => {
@@ -23,10 +23,6 @@ const OrdersHistory = () => {
     console.log(`Invoice for Order ${index + 1} downloaded`);
   };
 
-  const handleSupport = (index) => {
-    // Add functionality to contact support
-    console.log(`Contacting support for Order ${index + 1}`);
-  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -60,12 +56,11 @@ const OrdersHistory = () => {
       <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
         <thead className="bg-gray-100">
           <tr className="text-left">
-            <th className="py-3 px-4 border-b">Item Name</th>
-            <th className="py-3 px-4 border-b">Restaurant Name</th>
-            <th className="py-3 px-4 border-b">Order Status</th>
-            <th className="py-3 px-4 border-b">Order Date</th>
-            <th className="py-3 px-4 border-b">Estimated Delivery Time</th>
-            <th className="py-3 px-4 border-b">Actual Delivery Time</th>
+            <th className="py-3 px-4 border-b">Item </th>
+            <th className="py-3 px-4 border-b">Restaurant</th>
+            <th className="py-3 px-4 border-b">Status</th>
+            <th className="py-3 px-4 border-b">Date</th>
+            <th className="py-3 px-4 border-b">Estimated Time</th>
             <th className="py-3 px-4 border-b">Actions</th>
             <th className="py-3 px-4 border-b">Rating</th>
             <th className="py-3 px-4 border-b">Feedback</th>
@@ -79,7 +74,6 @@ const OrdersHistory = () => {
               <td className={`py-4 px-4 border-b ${getStatusTextColor(order.status)}`}>{order.status}</td>
               <td className="py-4 px-4 border-b">{order.date}</td>
               <td className="py-4 px-4 border-b">{order.estimatedDelivery}</td>
-              <td className="py-4 px-4 border-b">{order.actualDelivery || 'N/A'}</td>
               <td className="py-4 px-4 border-b">
                 {order.status === 'Pending' && (
                   <button
@@ -97,13 +91,6 @@ const OrdersHistory = () => {
                     >
                       <FaFileDownload size={16} className="inline mr-1" />
                       Invoice
-                    </button>
-                    <button
-                      onClick={() => handleSupport(index)}
-                      className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-                    >
-                      <FaHeadset size={16} className="inline mr-1" />
-                      Support
                     </button>
                   </>
                 )}
