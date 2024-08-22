@@ -15,7 +15,7 @@ const VendorProfile = () => {
       <ProfileNavigation />
       <div className="flex-1 p-8">
         <Routes>
-          <Route path="my-profile" element={<MyProfile />} />
+          <Route path="my-profile/:id" element={<MyProfile />} />
           <Route path="restaurant-management" element={<RestaurantManagement />} />
           <Route path="order-management" element={<OrderManagement/>} />
           <Route path="menu-management" element={<MenuManagement/>} />
