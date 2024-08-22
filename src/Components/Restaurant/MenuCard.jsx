@@ -1,6 +1,7 @@
 import React from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { categorizeIngredients } from '../util/categorizeIngredients';
 
 const demo = [
   {
@@ -40,15 +41,15 @@ const MenuCard = ({item}) => {
       <AccordionDetails>
         <form>
           <div className='flex gap-5 flex-wrap'>
-            {demo.map((item, index) => (
-              <div key={index}>
-                <p className='font-semibold'>{item.category}</p>
+            {Object.keys(categorizeIngredients(item.ingredients)).map((category) => (
+              <div>
+                <p className='font-semibold'>{category}</p>
                 <FormGroup>
-                  {item.ingredients.map((ingredient, idx) => (
+                  {categorizeIngredients(item.ingredients)[category].map((item) => (
                     <FormControlLabel 
-                      key={idx}
-                      control={<Checkbox onChange={() => handleCheckBoxChange(ingredient)} />} 
-                      label={ingredient} 
+                      key={item.name}
+                      control={<Checkbox onChange={() => handleCheckBoxChange(item)} />} 
+                      label={item.name} 
                     />
                   ))}
                 </FormGroup>
