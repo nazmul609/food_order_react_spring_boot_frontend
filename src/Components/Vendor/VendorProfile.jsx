@@ -16,12 +16,12 @@ const VendorProfile = () => {
       <div className="flex-1 p-8">
         <Routes>
           <Route path="my-profile/:id" element={<MyProfile />} />
-          <Route path="restaurant-management" element={<RestaurantManagement />} />
-          <Route path="order-management" element={<OrderManagement/>} />
-          <Route path="menu-management" element={<MenuManagement/>} />
-          <Route path="report-analytics" element={<ReportsAndAnalytics/>} />
-          <Route path="offers-promo" element={<OffersAndPromo/>} />
-          {/* Add routes for other management  */}
+          <Route path="restaurant-management/:id" element={<RestaurantManagement />} />
+          <Route path="order-management/:id" element={<OrderManagement/>} />
+          <Route path="menu-management/:id" element={<MenuManagement/>} />
+          <Route path="report-analytics/:id" element={<ReportsAndAnalytics/>} />
+          <Route path="offers-promo/:id" element={<OffersAndPromo/>} />
+          
         </Routes>
       </div>
     </div>

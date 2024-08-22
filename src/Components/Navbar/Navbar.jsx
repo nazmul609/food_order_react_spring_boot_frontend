@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
@@ -8,8 +8,22 @@ import { Link, useNavigate } from 'react-router-dom';
 function Navbar() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); //login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [userRole, setUserRole] = useState(null); 
+  const [userId, setUserId] = useState(null); 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if the user is logged in by verifying if a token exists
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+      const storedUserRole = localStorage.getItem('role');
+      const storedUserId = localStorage.getItem('userId');
+      setUserRole(storedUserRole);
+      setUserId(storedUserId);
+    }
+  }, []);
 
   const toggleDrawer = (open) => (event) => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -27,10 +41,24 @@ function Navbar() {
   };
 
   const handleLogout = () => {
-    // Add your logout logic here
+    // Clear token and other user details from local storage
+    localStorage.removeItem('token');
+    localStorage.removeItem('role');
+    localStorage.removeItem('userId');
     setIsLoggedIn(false);
+    setUserRole(null);
+    setUserId(null);
     handleProfileMenuClose();
     navigate('/login');
+  };
+
+  const handleProfileNavigation = () => {
+    if (userRole === 'customer') {
+      navigate(`/customer-profile/${userId}`);
+    } else if (userRole === 'vendor') {
+      navigate(`/vendor-profile/my-profile/${userId}`);
+    }
+    handleProfileMenuClose();
   };
 
   return (
@@ -66,7 +94,7 @@ function Navbar() {
               open={Boolean(anchorEl)}
               onClose={handleProfileMenuClose}
             >
-              <MenuItem onClick={() => { handleProfileMenuClose(); navigate('/profile'); }}>View Profile</MenuItem>
+              <MenuItem onClick={handleProfileNavigation}>View Profile</MenuItem>
               <MenuItem onClick={handleLogout}>Logout</MenuItem>
             </Menu>
           </>
@@ -102,10 +130,10 @@ function Navbar() {
                     <ShoppingCartIcon style={{ color: '#7F00FF' }} />
                   </IconButton>
                 </ListItem>
-                <ListItem button onClick={() => { toggleDrawer(false); navigate('/profile'); }}>
+                <ListItem button onClick={() => { toggleDrawer(false); handleProfileNavigation(); }}>
                   <ListItemText primary='View Profile' />
                 </ListItem>
-                <ListItem button onClick={handleLogout}>
+                <ListItem button onClick={() => { toggleDrawer(false); handleLogout(); }}>
                   <ListItemText primary='Logout' />
                 </ListItem>
               </>

@@ -34,7 +34,7 @@ const MyProfile = () => {
           setProfileDetails({
             name: data.name,
             email: data.email,
-            contactNo: data.contact_no,
+            contactNo: data.contactNo,
             sex: data.sex,
             age: data.age,
             ssn: data.ssn,
