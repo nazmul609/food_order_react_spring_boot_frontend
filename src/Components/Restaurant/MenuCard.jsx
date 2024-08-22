@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Button, Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { categorizeIngredients } from '../util/categorizeIngredients';
+import { useDispatch } from 'react-redux';
 
 const demo = [
   {
@@ -19,9 +20,31 @@ const demo = [
 ];
 
 const MenuCard = ({item}) => {
-  const handleCheckBoxChange = (value) => {
-    console.log(value);
+  const [selectedIngredients, setSelectedIngredients]=useState([])
+  const dispatch=useDispatch();
+
+  const handleCheckBoxChange=(itemName)=>{
+    if(selectedIngredients.includes(itemName)){
+      setSelectedIngredients(selectedIngredients.filter((item)=>item!==itemName))
+    }else{
+      setSelectedIngredients(...selectedIngredients, itemName)
+    }
+  }
+
+  const handleAddItemToCart = (e) => {
+    e.preventDefault()
+    const reqData = {
+      token:localStorage.getItem("jwt"),
+      cartItem:{
+        foodId:item.id,
+        quantity:1,
+        ingredients:selectedIngredients,
+      },
+    };
+
+    dispatch(addItemToCart(reqData))
   };
+
 
   return (
     <Accordion className="shadow-lg">
@@ -39,7 +62,7 @@ const MenuCard = ({item}) => {
         </div>
       </AccordionSummary>
       <AccordionDetails>
-        <form>
+        <form onSubmit={handleAddItemToCart}>
           <div className='flex gap-5 flex-wrap'>
             {Object.keys(categorizeIngredients(item.ingredients)).map((category) => (
               <div>
@@ -47,8 +70,8 @@ const MenuCard = ({item}) => {
                 <FormGroup>
                   {categorizeIngredients(item.ingredients)[category].map((item) => (
                     <FormControlLabel 
-                      key={item.name}
-                      control={<Checkbox onChange={() => handleCheckBoxChange(item)} />} 
+                      key={item.id}
+                      control={<Checkbox onChange={() => handleCheckBoxChange(item.name)} />} 
                       label={item.name} 
                     />
                   ))}
