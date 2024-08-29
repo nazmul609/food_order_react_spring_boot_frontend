@@ -42,9 +42,7 @@ function Navbar() {
 
   const handleLogout = () => {
     // Clear token and other user details from local storage
-    localStorage.removeItem('token');
-    localStorage.removeItem('role');
-    localStorage.removeItem('userId');
+    localStorage.clear(); 
     setIsLoggedIn(false);
     setUserRole(null);
     setUserId(null);

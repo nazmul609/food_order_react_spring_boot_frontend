@@ -4,11 +4,14 @@ const MyProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileDetails, setProfileDetails] = useState({
     name: '',
+    country: '',
+    city: '',
+    province: '',
+    postalCode: '',
+    streetNo: '',
+    streetNo2: '',
     email: '',
     contactNo: '',
-    sex: '',
-    age: '',
-    ssn: '',
   });
 
   useEffect(() => {
@@ -32,12 +35,16 @@ const MyProfile = () => {
         })
         .then((data) => {
           setProfileDetails({
-            name: data.name,
+            name: data.lastName,
             email: data.email,
             contactNo: data.contactNo,
-            sex: data.sex,
-            age: data.age,
-            ssn: data.ssn,
+            country: data.country,
+            city: data.city,
+            province: data.province,
+            streetNo: data.streetNo,
+            streetNo2: data.streetNo2,
+            postalCode: data.postalCode
+
           });
         })
         .catch((error) => {
@@ -55,7 +62,7 @@ const MyProfile = () => {
           if (!response.ok) {
             throw new Error('Failed to fetch profile image');
           }
-          return response.blob(); // Get the image data as a Blob
+          return response.blob(); 
         })
         .then((blob) => {
           const imageUrl = URL.createObjectURL(blob); // Create a URL for the image
@@ -131,17 +138,30 @@ const MyProfile = () => {
                 <td className="font-semibold text-gray-700 py-2">Contact No:</td>
                 <td className="text-gray-800">{profileDetails.contactNo}</td>
               </tr>
+
               <tr>
-                <td className="font-semibold text-gray-700 py-2">Sex:</td>
-                <td className="text-gray-800">{profileDetails.sex}</td>
+                <td className="font-semibold text-gray-700 py-2">Country:</td>
+                <td className="text-gray-800">{profileDetails.country}</td>
               </tr>
               <tr>
-                <td className="font-semibold text-gray-700 py-2">Age:</td>
-                <td className="text-gray-800">{profileDetails.age}</td>
+                <td className="font-semibold text-gray-700 py-2">City:</td>
+                <td className="text-gray-800">{profileDetails.city}</td>
               </tr>
               <tr>
-                <td className="font-semibold text-gray-700 py-2">SSN:</td>
-                <td className="text-gray-800">{profileDetails.ssn}</td>
+                <td className="font-semibold text-gray-700 py-2">Province:</td>
+                <td className="text-gray-800">{profileDetails.province}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Street No 1:</td>
+                <td className="text-gray-800">{profileDetails.streetNo}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Street No 2:</td>
+                <td className="text-gray-800">{profileDetails.streetNo2}</td>
+              </tr>
+              <tr>
+                <td className="font-semibold text-gray-700 py-2">Postal Code:</td>
+                <td className="text-gray-800">{profileDetails.postalCode}</td>
               </tr>
             </tbody>
           </table>

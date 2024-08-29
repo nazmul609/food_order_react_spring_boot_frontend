@@ -4,11 +4,16 @@ import { useNavigate } from 'react-router-dom';
 const VendorOnboarding = () => {
   const navigate = useNavigate();
   const [vendorDetails, setVendorDetails] = useState({
-    name: '',
+    firstName: '',
+    lastName: '',
+    email: localStorage.getItem('email') || '', 
     contactNo: '',
-    ssn: '',
-    age: '',
-    sex: '',
+    streetNo: '',
+    streetNo2: '',
+    city: '',
+    postalCode: '',
+    province: '',
+    country: '',
   });
   const [image, setImage] = useState(null);
 
@@ -27,21 +32,14 @@ const VendorOnboarding = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Fetch email, userId, and token from local storage
-    const email = localStorage.getItem('email');
+    // Fetch userId and token from local storage
     const userId = localStorage.getItem('userId');
     const token = localStorage.getItem('token');
 
-    if (!email || !userId || !token) {
+    if (!vendorDetails.email || !userId || !token) {
       alert('Error: Email, User ID, or Token is missing from local storage.');
       return;
     }
-
-    const vendorData = {
-      email,
-      user_id: userId,
-      ...vendorDetails,
-    };
 
     try {
       // Submit vendor details
@@ -51,13 +49,13 @@ const VendorOnboarding = () => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(vendorData),
+        body: JSON.stringify(vendorDetails),
       });
 
       if (response.ok) {
-        console.log('Vendor Details submitted successfully:', vendorData);
+        console.log('Vendor Details submitted successfully:', vendorDetails);
 
-        // Upload the image 
+        // Upload the image
         if (image) {
           const formData = new FormData();
           formData.append('image', image);
@@ -96,14 +94,38 @@ const VendorOnboarding = () => {
       <h2 className="text-3xl font-bold mb-6">Vendor Onboarding</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Profile Name</label>
+          <label className="block text-lg font-medium text-gray-700">First Name</label>
           <input
             type="text"
-            name="name"
-            value={vendorDetails.name}
+            name="firstName"
+            value={vendorDetails.firstName}
             onChange={handleChange}
             className="mt-2 p-3 block w-full border rounded"
             required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">Last Name</label>
+          <input
+            type="text"
+            name="lastName"
+            value={vendorDetails.lastName}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+            required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">Email</label>
+          <input
+            type="email"
+            name="email"
+            value={vendorDetails.email}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded bg-gray-100"
+            readOnly
           />
         </div>
 
@@ -115,15 +137,16 @@ const VendorOnboarding = () => {
             value={vendorDetails.contactNo}
             onChange={handleChange}
             className="mt-2 p-3 block w-full border rounded"
+            required
           />
         </div>
 
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">SSN</label>
+          <label className="block text-lg font-medium text-gray-700">Street No</label>
           <input
             type="text"
-            name="ssn"
-            value={vendorDetails.ssn}
+            name="streetNo"
+            value={vendorDetails.streetNo}
             onChange={handleChange}
             className="mt-2 p-3 block w-full border rounded"
             required
@@ -131,11 +154,22 @@ const VendorOnboarding = () => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Age</label>
+          <label className="block text-lg font-medium text-gray-700">Street No 2</label>
           <input
-            type="number"
-            name="age"
-            value={vendorDetails.age}
+            type="text"
+            name="streetNo2"
+            value={vendorDetails.streetNo2}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">City</label>
+          <input
+            type="text"
+            name="city"
+            value={vendorDetails.city}
             onChange={handleChange}
             className="mt-2 p-3 block w-full border rounded"
             required
@@ -143,19 +177,39 @@ const VendorOnboarding = () => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Sex</label>
-          <select
-            name="sex"
-            value={vendorDetails.sex}
+          <label className="block text-lg font-medium text-gray-700">Postal Code</label>
+          <input
+            type="text"
+            name="postalCode"
+            value={vendorDetails.postalCode}
             onChange={handleChange}
             className="mt-2 p-3 block w-full border rounded"
             required
-          >
-            <option value="">Select</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">Province</label>
+          <input
+            type="text"
+            name="province"
+            value={vendorDetails.province}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+            required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">Country</label>
+          <input
+            type="text"
+            name="country"
+            value={vendorDetails.country}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+            required
+          />
         </div>
 
         <div className="mb-6">
@@ -166,17 +220,6 @@ const VendorOnboarding = () => {
             accept="image/*"
             onChange={handleImageChange}
             className="mt-2 p-3 block w-full border rounded"
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={localStorage.getItem('email') || ''}
-            className="mt-2 p-3 block w-full border rounded bg-gray-100"
-            readOnly
           />
         </div>
 

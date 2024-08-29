@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RestaurantCard from '../Home/RestaurantCard';
 
@@ -10,17 +10,36 @@ const AllRestaurantsPage = () => {
     price: '',
     cuisine: '',
   });
-
-  const dummyRestaurants = [
-    { id: 1, name: 'The Food Place', image: 'https://cdn.pixabay.com/photo/2017/07/15/13/45/french-restaurant-2506490_640.jpg', ratings: 4.9, location: '123 Main St', isOpen: true },
-    { id: 2, name: 'Cuisine Corner', image: 'https://cdn.pixabay.com/photo/2022/11/14/10/37/chinese-lanterns-7591296_640.jpg', ratings: 4.8, location: '456 Elm St', isOpen: false },
-    { id: 3, name: 'Taste Haven', image: 'https://cdn.pixabay.com/photo/2020/01/31/07/26/chef-4807317_640.jpg', ratings: 4.7, location: '789 Maple St', isOpen: true },
-    { id: 4, name: 'Gourmet Delight', image: 'https://cdn.pixabay.com/photo/2015/09/14/11/43/restaurant-939435_640.jpg', ratings: 4.5, location: '101 Pine St', isOpen: true },
-    { id: 5, name: 'Dine Divine', image: 'https://cdn.pixabay.com/photo/2017/03/27/14/21/chairs-2179044_640.jpg', ratings: 4.2, location: '202 Oak St', isOpen: true },
-    { id: 6, name: 'Food Fiesta', image: 'https://cdn.pixabay.com/photo/2020/08/27/07/31/restaurant-5521372_640.jpg', ratings: 4.6, location: '303 Birch St', isOpen: true },
-  ];
-
+  const [restaurants, setRestaurants] = useState([]); 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      const token = localStorage.getItem('token'); 
+  
+      try {
+        const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`, 
+            'Content-Type': 'application/json',
+          },
+        });
+  
+        if (response.ok) {
+          const data = await response.json();
+          setRestaurants(data);
+        } else {
+          console.error('Failed to fetch restaurants');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+  
+    fetchRestaurants();
+  }, []);
+  
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -32,15 +51,15 @@ const AllRestaurantsPage = () => {
   };
 
   const handleRestaurantClick = (restaurant) => {
-    if (restaurant.isOpen) {
+    if (restaurant.openOrClosed === true) {
       navigate(`/restaurant/${restaurant.id}`);
     }
   };
 
-  const filteredRestaurants = dummyRestaurants.filter((restaurant) => {
+  const filteredRestaurants = restaurants.filter((restaurant) => {
     return (
       restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      restaurant.location.toLowerCase().includes(searchTerm.toLowerCase())
+      restaurant.location?.toLowerCase().includes(searchTerm.toLowerCase()) 
     );
   });
 
@@ -109,10 +128,18 @@ const AllRestaurantsPage = () => {
               {filteredRestaurants.map((restaurant, index) => (
                 <div
                   key={index}
-                  className={`rounded-lg overflow-hidden shadow-lg cursor-pointer ${!restaurant.isOpen ? 'pointer-events-none opacity-50' : ''}`}
+                  className={`rounded-lg overflow-hidden shadow-lg cursor-pointer ${restaurant.openOrClosed !== true ? 'pointer-events-none opacity-50' : ''}`}
                   onClick={() => handleRestaurantClick(restaurant)}
                 >
-                  <RestaurantCard restaurant={restaurant} />
+                  <RestaurantCard 
+                    restaurant={{
+                      id: restaurant.id,
+                      name: restaurant.name,
+                      openOrClosed: restaurant.openOrClosed,
+                      operatingHours: restaurant.operatingHours,
+                      cuisineType: restaurant.cuisineType
+                    }} 
+                  />
                 </div>
               ))}
             </div>
