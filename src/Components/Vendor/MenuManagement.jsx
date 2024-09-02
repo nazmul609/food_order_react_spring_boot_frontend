@@ -1,99 +1,183 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const MenuManagement = () => {
-  const [restaurants, setRestaurants] = useState([
-    { id: 1, name: 'Pizza Place' },
-    { id: 2, name: 'Burger Joint' },
-    { id: 3, name: 'Biryani House' },
-  ]);
-
+  const [restaurants, setRestaurants] = useState([]);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
-
-  const [menuItems, setMenuItems] = useState([
-    {
-      id: 1,
-      restaurantId: 1,
-      image: 'https://via.placeholder.com/150',
-      title: 'Margherita Pizza',
-      description: 'Classic cheese and tomato pizza',
-      category: 'Pizza',
-      price: '$10.00',
-      availability: 'In Stock',
-    },
-    {
-      id: 2,
-      restaurantId: 1,
-      image: 'https://via.placeholder.com/150',
-      title: 'Pepperoni Pizza',
-      description: 'Spicy pepperoni with cheese',
-      category: 'Pizza',
-      price: '$12.00',
-      availability: 'Out of Stock',
-    },
-  ]);
-
+  const [menuItems, setMenuItems] = useState([]);
   const [showDeletePopup, setShowDeletePopup] = useState(false);
   const [menuItemToDelete, setMenuItemToDelete] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [newMenuItem, setNewMenuItem] = useState({
+    cuisineName: '',
+    category: '',
+    description: '',
+    price: '',
+    availability: 'In Stock',
+  });
 
-  const handleRestaurantSelect = (event) => {
-    setSelectedRestaurantId(Number(event.target.value));
-  };
+  const userId = parseInt(localStorage.getItem('userId'), 10);
+  const bearerToken = localStorage.getItem('token');
 
-  const handleImageUpload = (event, menuId) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setMenuItems((prevItems) =>
-          prevItems.map((item) =>
-            item.id === menuId ? { ...item, image: reader.result } : item
-          )
+  useEffect(() => {
+    const fetchRestaurants = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${bearerToken}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch restaurants');
+        }
+
+        const textData = await response.text();
+        const restaurantsData = JSON.parse(textData);
+        const vendorRestaurants = restaurantsData.filter(
+          (restaurant) => parseInt(restaurant.ownerId, 10) === userId
         );
-      };
-      reader.readAsDataURL(file);
+
+        setRestaurants(vendorRestaurants);
+      } catch (error) {
+        console.error('Error fetching restaurants:', error);
+      }
+    };
+
+    fetchRestaurants();
+  }, [userId, bearerToken]);
+
+  const fetchMenuItems = async (restaurantId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/cuisine/allCuisines/${restaurantId}`, {
+        headers: {
+          Authorization: `Bearer ${bearerToken}`,
+        },
+      });
+
+      const cuisines = await response.json();
+
+      // Fetch images for all cuisines
+      const cuisinesWithImages = await Promise.all(
+        cuisines.map(async (cuisine) => {
+          const imageResponse = await fetch(
+            `http://localhost:8080/cuisine/downloadImage/${cuisine.id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${bearerToken}`,
+              },
+            }
+          );
+          const imageBlob = await imageResponse.blob();
+          const imageUrl = URL.createObjectURL(imageBlob);
+
+          return { ...cuisine, imageUrl };
+        })
+      );
+
+      setMenuItems(cuisinesWithImages);
+    } catch (error) {
+      console.error('Error fetching menu items:', error);
     }
   };
 
-  const handleAvailabilityChange = (menuId) => {
-    setMenuItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === menuId
-          ? { ...item, availability: item.availability === 'In Stock' ? 'Out of Stock' : 'In Stock' }
-          : item
-      )
-    );
+  const handleRestaurantSelect = (event) => {
+    const restaurantId = Number(event.target.value);
+    setSelectedRestaurantId(restaurantId);
+    fetchMenuItems(restaurantId);
   };
 
-  const handleInputChange = (menuId, field, value) => {
-    setMenuItems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === menuId ? { ...item, [field]: value } : item
-      )
-    );
+  const handleNewMenuInputChange = (field, value) => {
+    setNewMenuItem((prevItem) => ({
+      ...prevItem,
+      [field]: value,
+    }));
   };
 
-  const handleAddNewMenu = () => {
-    const newMenuItem = {
-      id: menuItems.length + 1,
-      restaurantId: selectedRestaurantId,
-      image: 'https://via.placeholder.com/150',
-      title: 'New Menu Item',
-      description: 'Description of new item',
-      category: 'Category',
-      price: '$0.00',
-      availability: 'In Stock',
-    };
-    setMenuItems((prevItems) => [...prevItems, newMenuItem]);
+  const handleImageUploadChange = (event) => {
+    setImageFile(event.target.files[0]);
   };
 
-  const handleDeleteMenu = () => {
-    setMenuItems((prevItems) => prevItems.filter((item) => item.id !== menuItemToDelete));
-    setShowDeletePopup(false);
+  const handleAddNewMenu = async () => {
+    if (!newMenuItem.cuisineName || !newMenuItem.category || !newMenuItem.price) {
+      alert('Please fill in all required fields marked with *');
+      return;
+    }
+
+    try {
+      // Add new cuisine
+      const response = await fetch(`http://localhost:8080/cuisine/addCuisine/${selectedRestaurantId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${bearerToken}`,
+        },
+        body: JSON.stringify(newMenuItem),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Error adding new menu item:', errorText);
+        alert(`Error: ${errorText}`);
+        return;
+      }
+
+      // Get the created cuisine ID
+      const cuisineId = await response.text();
+
+      // Upload the image
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append('image', imageFile);
+
+        const imageUploadResponse = await fetch(
+          `http://localhost:8080/cuisine/uploadImage/${cuisineId}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${bearerToken}`,
+            },
+            body: formData,
+          }
+        );
+
+        if (!imageUploadResponse.ok) {
+          throw new Error(`Failed to upload image: ${imageUploadResponse.statusText}`);
+        }
+      }
+
+      // Refresh menu items after adding new menu and uploading image
+      fetchMenuItems(selectedRestaurantId);
+
+      // Reset input fields
+      setNewMenuItem({
+        cuisineName: '',
+        category: '',
+        description: '',
+        price: '',
+        availability: 'In Stock',
+      });
+      setImageFile(null);
+    } catch (error) {
+      console.error('Error adding new menu item:', error);
+    }
   };
 
-  const handleSaveMenu = () => {
-    // Logic to save the menu, e.g., API call to save the menu items
-    alert('Menu saved successfully!');
+  // to be updated need api
+  const handleDeleteMenu = async () => {
+    try {
+      await fetch(`http://localhost:8080/cuisine/delete/${menuItemToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${bearerToken}`,
+        },
+      });
+
+      setMenuItems((prevItems) => prevItems.filter((item) => item.id !== menuItemToDelete));
+      setShowDeletePopup(false);
+    } catch (error) {
+      console.error('Error deleting menu item:', error);
+    }
   };
 
   const openDeletePopup = (menuId) => {
@@ -106,20 +190,13 @@ const MenuManagement = () => {
     setMenuItemToDelete(null);
   };
 
-  const filteredMenuItems = menuItems.filter(
-    (item) => item.restaurantId === selectedRestaurantId
-  );
-
   return (
     <div className="overflow-x-auto">
       <h2 className="text-2xl font-bold mb-4">Menu Management</h2>
 
       <label className="block mb-2">
         Select Restaurant:
-        <select
-          onChange={handleRestaurantSelect}
-          className="border rounded p-2 ml-2"
-        >
+        <select onChange={handleRestaurantSelect} className="border rounded p-2 ml-2">
           <option value="">-- Select a Restaurant --</option>
           {restaurants.map((restaurant) => (
             <option key={restaurant.id} value={restaurant.id}>
@@ -129,92 +206,97 @@ const MenuManagement = () => {
         </select>
       </label>
 
-      <button
-        onClick={handleAddNewMenu}
-        className="mb-4 py-2 px-4 bg-blue-600 text-white rounded"
-      >
-        Add New Menu Item
-      </button>
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="Cuisine Name*"
+          value={newMenuItem.cuisineName}
+          onChange={(e) => handleNewMenuInputChange('cuisineName', e.target.value)}
+          className="w-full p-1 border rounded mb-2"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Category*"
+          value={newMenuItem.category}
+          onChange={(e) => handleNewMenuInputChange('category', e.target.value)}
+          className="w-full p-1 border rounded mb-2"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Price*"
+          value={newMenuItem.price}
+          onChange={(e) => handleNewMenuInputChange('price', e.target.value)}
+          className="w-full p-1 border rounded mb-2"
+          required
+        />
+        <input
+          type="text"
+          placeholder="Description"
+          value={newMenuItem.description}
+          onChange={(e) => handleNewMenuInputChange('description', e.target.value)}
+          className="w-full p-1 border rounded mb-2"
+        />
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUploadChange}
+          className="w-full p-1 border rounded mb-2"
+        />
 
-      <button
-        onClick={handleSaveMenu}
-        className="mb-4 py-2 px-4 bg-green-600 text-white rounded ml-4"
-      >
-        Save Menu
-      </button>
+        <button
+          onClick={handleAddNewMenu}
+          className="mb-4 py-2 px-4 bg-blue-600 text-white rounded"
+          disabled={!newMenuItem.cuisineName || !newMenuItem.category || !newMenuItem.price}
+        >
+          Add New Menu
+        </button>
+      </div>
 
-      <table className="min-w-full border-collapse border border-gray-300">
+      {showDeletePopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md">
+            <p>Are you sure you want to delete this menu item?</p>
+            <button onClick={handleDeleteMenu} className="mr-2 py-2 px-4 bg-red-500 text-white rounded">
+              Yes
+            </button>
+            <button onClick={closeDeletePopup} className="py-2 px-4 bg-gray-300 text-black rounded">
+              No
+            </button>
+          </div>
+        </div>
+      )}
+
+      <table className="min-w-full bg-white border border-gray-300">
         <thead>
           <tr>
-            <th className="border border-gray-300 p-2">ID</th>
-            <th className="border border-gray-300 p-2">Restaurant Name</th>
-            <th className="border border-gray-300 p-2">Image</th>
-            <th className="border border-gray-300 p-2">Title</th>
-            <th className="border border-gray-300 p-2">Description</th>
-            <th className="border border-gray-300 p-2">Category</th>
-            <th className="border border-gray-300 p-2">Price</th>
-            <th className="border border-gray-300 p-2">Availability</th>
-            <th className="border border-gray-300 p-2">Action</th>
+            <th className="py-2 px-4 border-b">ID</th>
+            <th className="py-2 px-4 border-b">Name</th>
+            <th className="py-2 px-4 border-b">Category</th>
+            <th className="py-2 px-4 border-b">Description</th>
+            <th className="py-2 px-4 border-b">Price</th>
+            <th className="py-2 px-4 border-b">Availability</th>
+            <th className="py-2 px-4 border-b">Image</th>
+            <th className="py-2 px-4 border-b">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredMenuItems.map((item) => (
+          {menuItems.map((item) => (
             <tr key={item.id}>
-              <td className="border border-gray-300 p-2">{item.id}</td>
-              <td className="border border-gray-300 p-2">{restaurants.find(r => r.id === item.restaurantId)?.name}</td>
-              <td className="border border-gray-300 p-2">
-                <img src={item.image} alt={item.title} className="w-20 h-20" />
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImageUpload(e, item.id)}
-                  className="mt-2 border rounded p-1 cursor-pointer"
-                />
+              <td className="py-2 px-4 border-b">{item.id}</td>
+              <td className="py-2 px-4 border-b">{item.cuisineName}</td>
+              <td className="py-2 px-4 border-b">{item.category}</td>
+              <td className="py-2 px-4 border-b">{item.description}</td>
+              <td className="py-2 px-4 border-b">${item.price}</td>
+              <td className="py-2 px-4 border-b">{item.availability}</td>
+              <td className="py-2 px-4 border-b">
+                {item.imageUrl && <img src={item.imageUrl} alt={item.cuisineName} className="w-16 h-16" />}
               </td>
-              <td className="border border-gray-300 p-2">
-                <input
-                  type="text"
-                  value={item.title}
-                  onChange={(e) => handleInputChange(item.id, 'title', e.target.value)}
-                  className="w-full p-1 border rounded"
-                />
-              </td>
-              <td className="border border-gray-300 p-2">
-                <input
-                  type="text"
-                  value={item.description}
-                  onChange={(e) => handleInputChange(item.id, 'description', e.target.value)}
-                  className="w-full p-1 border rounded"
-                />
-              </td>
-              <td className="border border-gray-300 p-2">
-                <input
-                  type="text"
-                  value={item.category}
-                  onChange={(e) => handleInputChange(item.id, 'category', e.target.value)}
-                  className="w-full p-1 border rounded"
-                />
-              </td>
-              <td className="border border-gray-300 p-2">
-                <input
-                  type="text"
-                  value={item.price}
-                  onChange={(e) => handleInputChange(item.id, 'price', e.target.value)}
-                  className="w-full p-1 border rounded"
-                />
-              </td>
-              <td className="border border-gray-300 p-2">
-                <span
-                  onClick={() => handleAvailabilityChange(item.id)}
-                  className={`cursor-pointer ${item.availability === 'In Stock' ? 'text-green-600' : 'text-red-600'}`}
-                >
-                  {item.availability}
-                </span>
-              </td>
-              <td className="border border-gray-300 p-2">
+              <td className="py-2 px-4 border-b">
                 <button
                   onClick={() => openDeletePopup(item.id)}
-                  className="text-red-600"
+                  className="py-1 px-3 bg-red-500 text-white rounded"
                 >
                   Delete
                 </button>
@@ -223,28 +305,6 @@ const MenuManagement = () => {
           ))}
         </tbody>
       </table>
-
-      {showDeletePopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <h3 className="text-lg font-semibold mb-4">Are you sure you want to delete this menu item?</h3>
-            <div className="flex justify-end">
-              <button
-                onClick={closeDeletePopup}
-                className="py-2 px-4 bg-gray-300 rounded mr-2"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleDeleteMenu}
-                className="py-2 px-4 bg-red-600 text-white rounded"
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
