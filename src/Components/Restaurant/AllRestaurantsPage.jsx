@@ -50,9 +50,10 @@ const AllRestaurantsPage = () => {
     setFilter({ ...filter, [name]: value });
   };
 
+  //click a particular restaurant
   const handleRestaurantClick = (restaurant) => {
     if (restaurant.openOrClosed === true) {
-      navigate(`/restaurant/${restaurant.id}`);
+      navigate(`/restaurant/${restaurant.name}/${restaurant.id}`);
     }
   };
 
