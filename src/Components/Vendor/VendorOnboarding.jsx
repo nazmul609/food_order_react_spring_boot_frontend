@@ -78,7 +78,8 @@ const VendorOnboarding = () => {
         }
 
         alert('Your profile has been submitted successfully.');
-        navigate(`/vendor-profile/my-profile/${userId}`);
+        // navigate(`/vendor-profile/my-profile/${userId}`);
+        navigate('/login');
       } else {
         console.error('Failed to submit vendor details:', response.statusText);
         alert('Failed to submit your profile. Please try again.');

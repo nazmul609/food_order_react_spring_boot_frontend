@@ -24,7 +24,7 @@ const RestaurantManagement = () => {
     setIsFormValid(name && cuisineType && operatingHours && imageFile);
   }, [restaurantData, imageFile]);
 
-  // Fetch and display the restaurants
+  // Fetch and display the restaurants along with their images
   const fetchRestaurants = async () => {
     try {
       const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
@@ -40,13 +40,31 @@ const RestaurantManagement = () => {
 
       const textData = await response.text();
       const restaurants = JSON.parse(textData);
-      //console.log('Parsed restaurants:', restaurants);
 
-      const vendorRestaurants = restaurants.filter(
-        (restaurant) => parseInt(restaurant.ownerId, 10) === parseInt(userId, 10)
+      const vendorRestaurants = await Promise.all(
+        restaurants
+          .filter((restaurant) => parseInt(restaurant.ownerId, 10) === parseInt(userId, 10))
+          .map(async (restaurant) => {
+            const imageResponse = await fetch(
+              `http://localhost:8080/restaurant/downloadImage/${restaurant.id}`,
+              {
+                method: 'GET',
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+
+            if (imageResponse.ok) {
+              const imageBlob = await imageResponse.blob();
+              const imageUrl = URL.createObjectURL(imageBlob);
+              return { ...restaurant, imageUrl };
+            } else {
+              return { ...restaurant, imageUrl: null };
+            }
+          })
       );
 
-      //console.log('Filtered restaurants for vendor:', vendorRestaurants);
       setRestaurantList(vendorRestaurants);
     } catch (error) {
       console.error('Error fetching restaurants:', error);
@@ -65,11 +83,11 @@ const RestaurantManagement = () => {
     });
   };
 
-  // Add restaurants 
+  // Add restaurants
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isFormValid) return;
-  
+
     try {
       // Create the restaurant
       const response = await fetch(
@@ -87,27 +105,24 @@ const RestaurantManagement = () => {
           }),
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`Failed to create restaurant: ${response.statusText}`);
       }
-  
+
       // Get the created restaurant ID
       const restaurantId = await response.text();
       console.log('Restaurant created successfully with ID:', restaurantId);
-  
-      
+
       if (!restaurantId) {
         throw new Error('Restaurant ID is undefined or null after creation.');
       }
-  
-      
+
       await handleImageUpload(restaurantId);
-  
-      
+
       await fetchRestaurants();
-  
-      
+
+      // Reset form
       setRestaurantData({
         name: '',
         cuisineType: '',
@@ -117,24 +132,20 @@ const RestaurantManagement = () => {
         openOrClosed: false,
       });
       setImageFile(null);
-  
-      // Optionally, refresh the page
-      window.location.reload();
-  
     } catch (error) {
       console.error('Failed to create restaurant:', error);
     }
   };
-  
+
   const handleImageUpload = async (restaurantId) => {
     if (!imageFile || !restaurantId) {
       console.error('Image file or restaurant ID is missing.');
       return;
     }
-  
+
     const formData = new FormData();
     formData.append('image', imageFile);
-  
+
     try {
       console.log(`Uploading image for restaurant ID: ${restaurantId}`);
       const response = await fetch(
@@ -147,16 +158,16 @@ const RestaurantManagement = () => {
           body: formData,
         }
       );
-  
+
       if (!response.ok) {
         throw new Error(`Failed to upload image: ${response.statusText}`);
       }
-  
+
       console.log('Image uploaded successfully');
     } catch (error) {
       console.error('Failed to upload image:', error);
     }
-  };
+  }
   
   
 

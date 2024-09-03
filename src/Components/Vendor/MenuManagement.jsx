@@ -158,6 +158,7 @@ const MenuManagement = () => {
         availability: 'In Stock',
       });
       setImageFile(null);
+      alert('Cuisine created successfully!');
     } catch (error) {
       console.error('Error adding new menu item:', error);
     }
