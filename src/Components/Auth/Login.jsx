@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import {jwtDecode} from 'jwt-decode'; 
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
+    const [role, setRole] = useState('customer'); 
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -37,14 +38,18 @@ const Login = () => {
                 throw new Error(responseData.message || 'Login failed');
             }
 
+            const decodedToken = jwtDecode(responseData.refreshToken);
+            const id = decodedToken.userId;
+            const userEmail = decodedToken.sub;
+            const userRole = role; 
 
             localStorage.setItem('isLoggedIn', true);
+            localStorage.setItem('token', responseData.refreshToken);
+            localStorage.setItem('email', userEmail);
+            localStorage.setItem('userId', id);
+            localStorage.setItem('role', userRole);
 
-            // Retrieve the role from localStorage
-            const userRole = localStorage.getItem('role');
-            const id = localStorage.getItem('userId');
-
-            // Redirect based on role to the respective profile page
+            // Redirect based on selected role
             if (userRole === 'customer') {
                 navigate(`/customer-profile/customer-details/${id}`);
             } else if (userRole === 'vendor') {
@@ -52,9 +57,9 @@ const Login = () => {
             } else if (userRole === 'admin') {
                 navigate(`/admin-profile`);
             }
-            
-        // Refresh the page after navigation
-        window.location.reload();
+
+            // Refresh the page after navigation
+            window.location.reload();
 
         } catch (error) {
             setError(error.message);
@@ -95,6 +100,18 @@ const Login = () => {
                                 {showPassword ? 'Hide' : 'Show'}
                             </button>
                         </div>
+                    </div>
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700">Role</label>
+                        <select
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                        >
+                            <option value="customer">Customer</option>
+                            <option value="vendor">Vendor</option>
+                            <option value="admin">Admin</option>
+                        </select>
                     </div>
                     <button
                         type="submit"
