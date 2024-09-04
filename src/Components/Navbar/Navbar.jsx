@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import Badge from '@mui/material/Badge';
 import { Button, IconButton, Drawer, List, ListItem, ListItemText, Menu, MenuItem } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -11,6 +13,7 @@ function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [userRole, setUserRole] = useState(null); 
   const [userId, setUserId] = useState(null); 
+  const [cartItemCount, setCartItemCount] = useState(0); // State for cart item count
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,6 +26,10 @@ function Navbar() {
       setUserRole(storedUserRole);
       setUserId(storedUserId);
     }
+
+    // Fetch the cart item count from local storage or API
+    const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    setCartItemCount(cartItems.length);
   }, []);
 
   const toggleDrawer = (open) => (event) => {
@@ -59,6 +66,10 @@ function Navbar() {
     handleProfileMenuClose();
   };
 
+  const handleCartNavigation = () => {
+    navigate('/cart');
+  };
+
   return (
     <div className='px-5 z-50 py-[0.8rem] bg-white shadow-md lg:px-20 flex justify-between items-center'>
       <div className='flex items-center space-x-4'>
@@ -81,8 +92,15 @@ function Navbar() {
       <div className='hidden md:flex items-center space-x-2 lg:space-x-4'>
         {isLoggedIn ? (
           <>
+            {userRole === 'customer' && (
+              <IconButton onClick={handleCartNavigation}>
+                <Badge badgeContent={cartItemCount} color='secondary'>
+                  <ShoppingCartIcon style={{ color: '#7F00FF' }} />
+                </Badge>
+              </IconButton>
+            )}
             <IconButton>
-              <ShoppingCartIcon style={{ color: '#7F00FF' }} />
+              <NotificationsIcon style={{ color: '#7F00FF' }} />
             </IconButton>
             <IconButton onClick={handleProfileMenuOpen}>
               <AccountCircleIcon style={{ color: '#7F00FF' }} />
@@ -123,9 +141,18 @@ function Navbar() {
             </ListItem>
             {isLoggedIn ? (
               <>
+                {userRole === 'customer' && (
+                  <ListItem button onClick={() => { toggleDrawer(false); handleCartNavigation(); }}>
+                    <IconButton>
+                      <Badge badgeContent={cartItemCount} color='secondary'>
+                        <ShoppingCartIcon style={{ color: '#7F00FF' }} />
+                      </Badge>
+                    </IconButton>
+                  </ListItem>
+                )}
                 <ListItem>
                   <IconButton>
-                    <ShoppingCartIcon style={{ color: '#7F00FF' }} />
+                    <NotificationsIcon style={{ color: '#7F00FF' }} />
                   </IconButton>
                 </ListItem>
                 <ListItem button onClick={() => { toggleDrawer(false); handleProfileNavigation(); }}>
