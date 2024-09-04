@@ -5,11 +5,13 @@ const RestaurantManagement = () => {
   const [restaurantData, setRestaurantData] = useState({
     name: '',
     cuisineType: '',
-    operatingHours: '',
+    operatingHours: { open: '', close: '' }, 
     partyOrderAvailable: false,
     offHourDeliveryAvailable: false,
     openOrClosed: false,
+    description: '', 
   });
+  
   const [isFormValid, setIsFormValid] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [restaurantList, setRestaurantList] = useState([]);
@@ -89,6 +91,7 @@ const RestaurantManagement = () => {
     if (!isFormValid) return;
 
     try {
+      const formattedOperatingHours = `${restaurantData.operatingHours.open} to ${restaurantData.operatingHours.close}`;
       // Create the restaurant
       const response = await fetch(
         `http://localhost:8080/restaurant/addRestaurant/${userId}`,
@@ -100,6 +103,7 @@ const RestaurantManagement = () => {
           },
           body: JSON.stringify({
             ...restaurantData,
+            operatingHours: formattedOperatingHours,
             ownerId: userId,
             email: email,
           }),
@@ -126,7 +130,7 @@ const RestaurantManagement = () => {
       setRestaurantData({
         name: '',
         cuisineType: '',
-        operatingHours: '',
+        operatingHours: { open: '', close: '' },
         partyOrderAvailable: false,
         offHourDeliveryAvailable: false,
         openOrClosed: false,
@@ -222,19 +226,62 @@ return (
               />
             </div>
   
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-medium mb-2">
-                Operating Hours <span className="text-red-500">*</span>
-              </label>
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Description
+            </label>
+            <textarea
+              name="description"
+              value={restaurantData.description}
+              onChange={handleChange}
+              className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows="3"
+            />
+          </div>
+
+          
+          <div className="mb-4">
+            <label className="block text-gray-700 text-sm font-medium mb-2">
+              Operating Hours <span className="text-red-500">*</span>
+            </label>
+            <div className="flex space-x-4">
               <input
-                type="text"
-                name="operatingHours"
-                value={restaurantData.operatingHours}
-                onChange={handleChange}
+                type="time"
+                name="open"
+                value={restaurantData.operatingHours.open}
+                onChange={(e) =>
+                  setRestaurantData({
+                    ...restaurantData,
+                    operatingHours: {
+                      ...restaurantData.operatingHours,
+                      open: e.target.value,
+                    },
+                  })
+                }
+                className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              />
+              <span className="text-gray-700 self-center">-</span>
+              <input
+                type="time"
+                name="close"
+                value={restaurantData.operatingHours.close}
+                onChange={(e) =>
+                  setRestaurantData({
+                    ...restaurantData,
+                    operatingHours: {
+                      ...restaurantData.operatingHours,
+                      close: e.target.value,
+                    },
+                  })
+                }
                 className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
+          </div>
+
   
             <div className="mb-4 flex items-center">
               <input
