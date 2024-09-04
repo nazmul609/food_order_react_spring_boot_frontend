@@ -121,7 +121,7 @@ const MyProfile = () => {
           </label>
         </div>
       </div>
-
+  
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="bg-white border rounded-lg shadow-md p-4">
           <table className="w-full text-left">
@@ -138,7 +138,13 @@ const MyProfile = () => {
                 <td className="font-semibold text-gray-700 py-2">Contact No:</td>
                 <td className="text-gray-800">{profileDetails.contactNo}</td>
               </tr>
-
+            </tbody>
+          </table>
+        </div>
+  
+        <div className="bg-white border rounded-lg shadow-md p-4">
+          <table className="w-full text-left">
+            <tbody>
               <tr>
                 <td className="font-semibold text-gray-700 py-2">Country:</td>
                 <td className="text-gray-800">{profileDetails.country}</td>
@@ -167,12 +173,13 @@ const MyProfile = () => {
           </table>
         </div>
       </div>
-
+  
       <button onClick={handleEdit} className="self-center py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
         Edit Profile
       </button>
     </div>
   );
+  
 };
 
 export default MyProfile;
