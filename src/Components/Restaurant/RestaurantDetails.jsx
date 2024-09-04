@@ -95,45 +95,43 @@ const RestaurantDetails = () => {
   );
 
   return (
-    <div className='px-4 lg:px-20 bg-green-50 min-h-screen pb-10'>
-      <section className='mt-2'>
-        <div>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <img
-              className='w-full h-[40vh] object-cover rounded-lg'
-              src={imageUrl}
-              alt="Restaurant"
-            />
-          </Grid>
-        </Grid>
+    <div className='px-4 lg:px-20 bg-green-50 min-h-screen pb-20'>
+      <section className='mt-4'>
+      <div className='flex justify-center'>
+            <div className="w-full max-w-full max-h-[400px]">
+              <img
+                className='w-full max-h-[400px] object-cover rounded-xl shadow-lg'
+                src={imageUrl}
+                alt="Restaurant"
+              />
+            </div>
+      </div>
 
-        </div>
-        <div className='pt-3 pb-5'>
-          <h1 className='text-gray-800 py-2 mt-2 block font-extrabold text-3xl drop-shadow-md'>
+        <div className='pt-6 pb-8'>
+          <h1 className='text-gray-800 font-extrabold text-4xl drop-shadow-md'>
             {restaurant.name || "Restaurant Name"}
           </h1>
-          <div className='space-y-3 mt-3'>
-            <p className='text-gray-500 flex items-center gap-3'>
+          <div className='space-y-4 mt-4'>
+            <p className='text-gray-600 flex items-center gap-3'>
               <MailOutlineIcon /> <span>{restaurant.email || "email@example.com"}</span>
             </p>
-            <p className='text-gray-500 flex items-center gap-3'>
+            <p className='text-gray-600 flex items-center gap-3'>
               <RestaurantMenuIcon /> <span>{restaurant.cuisineType || "Cuisine Type"}</span>
             </p>
-            <p className='text-gray-500 flex items-center gap-3'>
+            <p className='text-gray-600 flex items-center gap-3'>
               <CalendarTodayIcon /> <span>{restaurant.operatingHours || "Operating Hours"}</span>
             </p>
-            <p className='text-gray-500 flex items-center gap-3'>
+            <p className='text-gray-600 flex items-center gap-3'>
               <InfoIcon /> <span>{restaurant.description || "Restaurant description goes here."}</span>
             </p>
           </div>
         </div>
       </section>
-      <Divider />
+      <Divider className="my-8" />
       <section className='pt-8 lg:flex'>
-        <div className='space-y-10 lg:w-1/4 lg:sticky lg:top-28'>
-          <div className='bg-white shadow-lg rounded-lg p-5 mb-5'>
-            <Typography variant="h5" className="pb-4">
+        <div className='space-y-8 lg:w-1/4 lg:sticky lg:top-28'>
+          <div className='bg-white shadow-xl rounded-lg p-6'>
+            <Typography variant="h5" className="pb-4 font-semibold text-gray-800">
               Price Range
             </Typography>
             <Slider
@@ -147,8 +145,8 @@ const RestaurantDetails = () => {
             />
           </div>
           <Divider />
-          <div className='bg-white shadow-lg rounded-lg p-5'>
-            <Typography variant="h5" className="pb-4">
+          <div className='bg-white shadow-xl rounded-lg p-6'>
+            <Typography variant="h5" className="pb-4 font-semibold text-gray-800">
               Category
             </Typography>
             <FormControl component="fieldset">
@@ -166,7 +164,7 @@ const RestaurantDetails = () => {
             </FormControl>
           </div>
         </div>
-        <div className='space-y-4 lg:w-3/4 lg:pl-8'>
+        <div className='space-y-6 lg:w-3/4 lg:pl-10'>
           {filteredCuisines.map((cuisine) => (
             <MenuCard
               key={cuisine.id}
@@ -181,6 +179,7 @@ const RestaurantDetails = () => {
         </div>
       </section>
     </div>
+
   );
   
   
