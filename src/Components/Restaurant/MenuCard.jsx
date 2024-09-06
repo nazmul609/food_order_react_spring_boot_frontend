@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-const MenuCard = ({ id, cuisineName, category, description, price, availability }) => {
+const MenuCard = ({ id, cuisineName, category, description, price, availability, restaurantId, restaurantName }) => {
   const [imageUrl, setImageUrl] = useState("");
 
   useEffect(() => {
@@ -34,7 +34,40 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability 
 
   const handleAddToCart = () => {
     if (availability) {
-      console.log('Adding to cart');
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      const newItem = {
+        id,
+        name: cuisineName,
+        price,
+        quantity: 1,
+        
+      };
+
+      // Check if the item already exists in the cart
+      const existingItemIndex = cartItems.findIndex(item => item.id === id);
+      if (existingItemIndex !== -1) {
+        cartItems[existingItemIndex].quantity += 1; // Increase quantity if it already exists
+      } else {
+        cartItems.push(newItem); // Add new item to the cart
+      }
+
+      // Store updated cart
+      localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+      // Check if restaurant ID and name are already stored
+      const storedRestaurant = JSON.parse(localStorage.getItem('restaurantInfo')) || {};
+      if (!storedRestaurant.id || storedRestaurant.id !== restaurantId) {
+        // Save restaurant ID and name to local storage if not already saved
+        localStorage.setItem('restaurantInfo', JSON.stringify({
+          id: restaurantId,
+          name: restaurantName,
+        }));
+        console.log('Restaurant info saved to local storage');
+      }
+
+      console.log('Item added to cart');
+      // Optionally reload the page to reflect changes
+      window.location.reload();
     } else {
       console.log('Out of stock');
     }
@@ -89,9 +122,7 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability 
       </AccordionDetails>
     </Accordion>
   );
-  
-  
-  
 };
 
 export default MenuCard;
+

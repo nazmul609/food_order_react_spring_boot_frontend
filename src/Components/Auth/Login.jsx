@@ -51,7 +51,7 @@ const Login = () => {
 
             // Redirect based on selected role
             if (userRole === 'customer') {
-                navigate(`/customer-profile/customer-details/${id}`);
+                navigate(`/customer-profile/my-profile/${id}`);
             } else if (userRole === 'vendor') {
                 navigate(`/vendor-profile/my-profile/${id}`);
             } else if (userRole === 'admin') {

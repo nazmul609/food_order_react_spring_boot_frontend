@@ -1,21 +1,62 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const CartItem = ({ item, onAdd, onRemove }) => {
+  const [imageUrl, setImageUrl] = useState('');
+
+  useEffect(() => {
+    const fetchCuisineImage = async () => {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`http://localhost:8080/cuisine/downloadImage/${item.id}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const imageBlob = await response.blob();
+          const imageObjectUrl = URL.createObjectURL(imageBlob);
+          setImageUrl(imageObjectUrl); // Set the image URL in state
+        } else {
+          console.error('Failed to fetch image');
+        }
+      } catch (error) {
+        console.error('Error fetching cuisine image:', error);
+      }
+    };
+
+    fetchCuisineImage();
+  }, [item.id]);
+
   return (
-    <div className="flex items-center py-4 border-b">
-      <img src={item.image} alt={item.name} className="w-20 h-20 object-cover mr-4" />
-      <div className="flex-1">
-        <h3 className="text-lg font-semibold">{item.name}</h3>
-        <p className="text-gray-600">${item.price}</p>
-        <div className="flex items-center mt-2">
-          <button onClick={() => onRemove(item.id)} className="px-2 py-1 border rounded">
-            -
-          </button>
-          <span className="mx-4">{item.quantity}</span>
-          <button onClick={() => onAdd(item.id)} className="px-2 py-1 border rounded">
-            +
-          </button>
+    <div className="flex items-center justify-between p-4 bg-gray-100 rounded-lg shadow-md">
+      <div className="flex items-center space-x-4">
+        {imageUrl ? (
+          <img src={imageUrl} alt={item.name} className="w-16 h-16 object-cover rounded-lg" />
+        ) : (
+          <div className="w-16 h-16 bg-gray-300 rounded-lg"></div>
+        )}
+        <div>
+          <h2 className="text-lg font-semibold">{item.name}</h2>
+          <p className="text-gray-600">Price: ${item.price}</p>
+          <p className="text-gray-600">Quantity: {item.quantity}</p>
         </div>
+      </div>
+      <div className="flex space-x-2">
+        <button
+          onClick={() => onAdd(item.id)}
+          className="px-2 py-1 bg-green-500 text-white rounded"
+        >
+          +
+        </button>
+        <button
+          onClick={() => onRemove(item.id)}
+          className="px-2 py-1 bg-red-500 text-white rounded"
+        >
+          -
+        </button>
       </div>
     </div>
   );

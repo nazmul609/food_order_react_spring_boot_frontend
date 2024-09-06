@@ -1,130 +1,282 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const CustomerOnboarding = () => {
-  const [formData, setFormData] = useState({
-    profilePicture: null,
+  const navigate = useNavigate();
+  const [customerDetails, setCustomerDetails] = useState({
     name: '',
-    city: '',
-    roadNo: '',
-    houseNo: '',
-    additionalDetails: ''
+    email: localStorage.getItem('email') || '', 
+    age: '',
+    occupation: '',
+    sex: '',
+    contactNo: '',
+    addresses: [{
+      addressLine1: '',
+      addressLine2: '',
+      city: '',
+      state: '',
+      postalCode: '',
+      country: ''
+    }],
   });
 
-  const handleInputChange = (e) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setCustomerDetails({
+      ...customerDetails,
       [name]: value,
     });
   };
 
-  const handleFileChange = (e) => {
-    setFormData({
-      ...formData,
-      profilePicture: e.target.files[0],
+  const handleAddressChange = (index, e) => {
+    const { name, value } = e.target;
+    const updatedAddresses = [...customerDetails.addresses];
+    updatedAddresses[index] = {
+      ...updatedAddresses[index],
+      [name]: value,
+    };
+    setCustomerDetails({
+      ...customerDetails,
+      addresses: updatedAddresses,
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission logic, such as sending data to the backend
-    console.log(formData);
+
+    const token = localStorage.getItem('token');
+
+    if (!customerDetails.email || !token) {
+      alert('Error: Email or Token is missing from local storage.');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:8080/customers', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(customerDetails),
+      });
+
+      if (response.ok) {
+        const createdCustomer = await response.json();
+        console.log('Customer Details submitted successfully:', createdCustomer);
+
+        localStorage.setItem('customerId', createdCustomer.id);
+        alert('Customer created successfully!');
+
+        navigate('/login');
+      } else {
+        console.error('Failed to submit customer details:', response.statusText);
+        alert('Failed to create the customer. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while creating the customer. Please try again.');
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg"
-      >
-        <h2 className="text-2xl font-bold mb-6 text-center">Customer Onboarding</h2>
-        
-        {/* Profile Picture Upload */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Profile Picture</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="w-full border border-gray-300 rounded-md p-2"
-          />
-        </div>
+    <div className="customer-onboarding-container p-8">
+      <h1 className="text-2xl font-bold mb-6 text-center">Customer Onboarding</h1>
+      
+      <div className="flex justify-between space-x-10">
+        {/* Basic Information Form */}
+        <form onSubmit={handleSubmit} className="w-1/2 bg-white p-6 shadow-md rounded-md">
+          <h2 className="text-xl font-semibold mb-4">Basic Information</h2>
+          
+          <div className="mb-4">
+            <label className="block mb-1">
+              Name: <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="name"
+              value={customerDetails.name}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1">
+              Email: <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              value={customerDetails.email}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1">
+              Age: <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              name="age"
+              value={customerDetails.age}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1">
+              Occupation:
+            </label>
+            <input
+              type="text"
+              name="occupation"
+              value={customerDetails.occupation}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1">
+              Gender: <span className="text-red-500">*</span>
+            </label>
+            <select
+              name="sex"
+              value={customerDetails.sex}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            >
+              <option value="">Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          
+          <div className="mb-4">
+            <label className="block mb-1">
+              Contact Number: <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              name="contactNo"
+              value={customerDetails.contactNo}
+              onChange={handleChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+        </form>
+  
+        {/* Address Information Form */}
+        <form className="w-1/2 bg-white p-6 shadow-md rounded-md">
+          <h2 className="text-xl font-semibold mb-4">Address Information</h2>
 
-        {/* Name */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Name</label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Enter your name"
-            className="w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
+          {customerDetails.addresses.map((address, index) => (
+            <div key={index}>
+              <div className="mb-4">
+                <label className="block mb-1">
+                  Address Line 1: <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="addressLine1"
+                  value={address.addressLine1}
+                  onChange={(e) => handleAddressChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
 
-        {/* City */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">City</label>
-          <input
-            type="text"
-            name="city"
-            value={formData.city}
-            onChange={handleInputChange}
-            placeholder="Enter your city"
-            className="w-full border border-gray-300 rounded-md p-2"
-            required
-          />
-        </div>
+              <div className="mb-4">
+                <label className="block mb-1">
+                  Address Line 2 <span className="text-gray-500">(Optional)</span>:
+                </label>
+                <input
+                  type="text"
+                  name="addressLine2"
+                  value={address.addressLine2}
+                  onChange={(e) => handleAddressChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
 
-        {/* Road No */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Road No</label>
-          <input
-            type="text"
-            name="roadNo"
-            value={formData.roadNo}
-            onChange={handleInputChange}
-            placeholder="Enter your road number"
-            className="w-full border border-gray-300 rounded-md p-2"
-          />
-        </div>
+              <div className="mb-4">
+                <label className="block mb-1">
+                  City: <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="city"
+                  value={address.city}
+                  onChange={(e) => handleAddressChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
 
-        {/* House No */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">House No</label>
-          <input
-            type="text"
-            name="houseNo"
-            value={formData.houseNo}
-            onChange={handleInputChange}
-            placeholder="Enter your house number"
-            className="w-full border border-gray-300 rounded-md p-2"
-          />
-        </div>
+              <div className="mb-4">
+                <label className="block mb-1">
+                  State: <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="state"
+                  value={address.state}
+                  onChange={(e) => handleAddressChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
 
-        {/* Additional Details */}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">Additional Details</label>
-          <textarea
-            name="additionalDetails"
-            value={formData.additionalDetails}
-            onChange={handleInputChange}
-            placeholder="Enter any additional details"
-            className="w-full border border-gray-300 rounded-md p-2"
-            rows="3"
-          />
-        </div>
+              <div className="mb-4">
+                <label className="block mb-1">
+                  Postal Code: <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="postalCode"
+                  value={address.postalCode}
+                  onChange={(e) => handleAddressChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
 
-        {/* Submit Button */}
+              <div className="mb-4">
+                <label className="block mb-1">
+                  Country: <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="country"
+                  value={address.country}
+                  onChange={(e) => handleAddressChange(index, e)}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                  required
+                />
+              </div>
+            </div>
+          ))}
+        </form>
+      </div>
+
+      <div className="text-center mt-8">
         <button
-          type="submit"
-          className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600"
+          onClick={handleSubmit}
+          className="p-3 bg-green-500 text-white rounded-md hover:bg-green-600"
         >
           Save and Continue
         </button>
-      </form>
+      </div>
     </div>
   );
 };

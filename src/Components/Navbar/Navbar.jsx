@@ -67,7 +67,7 @@ function Navbar() {
   };
 
   const handleCartNavigation = () => {
-    navigate('/cart');
+    navigate(`/cart/${userId}`);
   };
 
   return (

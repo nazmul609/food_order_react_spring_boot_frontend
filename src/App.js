@@ -15,6 +15,7 @@ import Register from './Components/Auth/Register';
 
 
 
+
 function App() {
   return (
     <BrowserRouter>
@@ -24,7 +25,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/restaurants" element={<AllRestaurantsPage />} />
           <Route path="/restaurant/:name/:id" element={<RestaurantDetails />} />
-          <Route path="/cart" element={<CartPage/>} />
+          <Route path="/cart/:id" element={<CartPage/>} />
           
           <Route path="/customer-onboarding/:id" element={<CustomerOnboarding/>} />
           <Route path="/customer-profile/*" element={<Profile />} />

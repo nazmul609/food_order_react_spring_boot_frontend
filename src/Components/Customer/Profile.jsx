@@ -14,10 +14,10 @@ function Profile() {
       
       <div className="flex-1 p-8">
         <Routes>
-          <Route path="customer-details" element={<CustomerDetails />} />
-          <Route path="orders-history" element={<OrdersHistory />} />
-          <Route path="favorites" element={<FavoriteRestaurants />} />
-          <Route path="notifications" element={<Notifications />} />
+          <Route path="my-profile/:id" element={<CustomerDetails />} />
+          <Route path="orders-history/:id" element={<OrdersHistory />} />
+          <Route path="favorites/:id" element={<FavoriteRestaurants />} />
+          <Route path="notifications/:id" element={<Notifications />} />
         </Routes>
       </div>
     </div>

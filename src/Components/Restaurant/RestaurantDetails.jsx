@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FormControlLabel, Grid, Typography, RadioGroup, Divider, FormControl, Radio, Slider } from '@mui/material'; 
+import { FormControlLabel, Typography, RadioGroup, Divider, FormControl, Radio, Slider } from '@mui/material'; 
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
@@ -174,6 +174,8 @@ const RestaurantDetails = () => {
               description={cuisine.description}
               price={cuisine.price}
               availability={cuisine.availability}
+              restaurantId={id}          // Pass restaurant ID
+              restaurantName={restaurant.name}  // Pass restaurant name
             />
           ))}
         </div>

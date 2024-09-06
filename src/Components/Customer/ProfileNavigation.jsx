@@ -1,15 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faShoppingBag, faHeart, faBell, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faShoppingBag, faHeart, faBell } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@mui/material';
 
+const userId = localStorage.getItem('userId'); 
 const menu = [
-  { title: "Customer Details", icon: faUser, path: "/customer-profile/customer-details" },
-  { title: "Orders and History", icon: faShoppingBag, path: "/customer-profile/orders-history" },
-  { title: "Favorite Restaurants", icon: faHeart, path: "/customer-profile/favorites" },
-  { title: "Notifications", icon: faBell, path: "/customer-profile/notifications" },
-  { title: "Logout", icon: faSignOutAlt, path: "/logout" },
+  { title: "Customer Details", icon: faUser, path: `/customer-profile/my-profile/${userId}`},
+  { title: "Orders and History", icon: faShoppingBag, path: `/customer-profile/orders-history/${userId}`},
+  { title: "Favorite Restaurants", icon: faHeart, path: `/customer-profile/favorites/${userId}` },
+  { title: "Notifications", icon: faBell, path: `/customer-profile/notifications/${userId}` }
 ];
 
 const CustomerProfileNavigation = () => {
