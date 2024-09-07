@@ -1,31 +1,121 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const OrderManagement = () => {
-  const [orders, setOrders] = useState([
-    { id: 1, customer: 'John Doe', restaurant: 'Pizza Place', price: '$20.00', item: 'Pizza', status: 'Pending' },
-    { id: 2, customer: 'Jane Smith', restaurant: 'Burger Point', price: '$15.00', item: 'Burger', status: 'Order Placed' },
-    { id: 3, customer: 'Alice Johnson', restaurant: 'Biryani House', price: '$25.00', item: 'Biriyani', status: 'Delivered' },
-  ]);
+  const [orders, setOrders] = useState([]);
+  const [restaurantIds, setRestaurantIds] = useState([]);
+  const userId = localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    fetchRestaurants();
+  }, []);
+
+  // Fetch all restaurants and filter by ownerId
+  const fetchRestaurants = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const filteredRestaurantIds = data
+          .filter((restaurant) => restaurant.ownerId === parseInt(userId))
+          .map((restaurant) => restaurant.id);
+        setRestaurantIds(filteredRestaurantIds);
+        fetchOrders(filteredRestaurantIds); // Fetch orders once we have the restaurant IDs
+      } else {
+        console.error('Failed to fetch restaurants');
+      }
+    } catch (error) {
+      console.error('Error fetching restaurants:', error);
+    }
+  };
+
+  // Fetch all orders and filter by restaurantIds
+  const fetchOrders = async (restaurantIds) => {
+    try {
+      const response = await fetch('http://localhost:8080/order/getAllOrders', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const filteredOrders = data.filter((order) =>
+          restaurantIds.includes(order.restaurantId)
+        );
+        setOrders(filteredOrders); // Set the orders based on the filtered restaurants
+      } else {
+        console.error('Failed to fetch orders');
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
+  };
+
+  // Generate a random pickup time (40 to 60 minutes)
+  const generateRandomPickupTime = () => {
+    const randomMinutes = Math.floor(Math.random() * (60 - 40 + 1)) + 40;
+    const currentTime = new Date();
+    currentTime.setMinutes(currentTime.getMinutes() + randomMinutes);
+    return currentTime.toISOString(); 
+  };
+
+  // Update order status with confirmation and additional details
+  const handleStatusUpdate = async (orderId, newStatus, customerId, restaurantId) => {
+    const isConfirmed = window.confirm(`Are you sure you want to change the status to ${newStatus}?`);
+    if (!isConfirmed) return;
+
+    const pickupTime = generateRandomPickupTime(); 
+
+    try {
+      const response = await fetch(`http://localhost:8080/order/changeStatus/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          status: newStatus,
+          customerId: customerId,
+          restaurantId: restaurantId,
+          pickupTime: pickupTime,
+        }),
+      });
+
+      if (response.ok) {
+        setOrders((prevOrders) =>
+          prevOrders.map((order) =>
+            order.id === orderId ? { ...order, status: newStatus } : order
+          )
+        );
+      } else {
+        console.error('Failed to update status');
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'Pending':
-        return 'text-yellow-600'; 
+        return 'bg-yellow-200';
       case 'Order Placed':
-        return 'text-blue-600'; 
+        return 'bg-blue-200';
       case 'Delivered':
-        return 'text-green-600'; 
+        return 'bg-green-200';
       default:
-        return 'text-gray-600'; 
+        return 'bg-gray-200';
     }
-  };
-
-  const handleStatusUpdate = (id, newStatus) => {
-    setOrders((prevOrders) =>
-      prevOrders.map((order) => 
-        order.id === id ? { ...order, status: newStatus } : order
-      )
-    );
   };
 
   return (
@@ -35,8 +125,8 @@ const OrderManagement = () => {
         <thead>
           <tr>
             <th className="border border-gray-300 p-2">ID</th>
-            <th className="border border-gray-300 p-2">Customer</th>
-            <th className="border border-gray-300 p-2">Restaurant</th>
+            <th className="border border-gray-300 p-2">Customer Id</th>
+            <th className="border border-gray-300 p-2">Restaurant Id</th>
             <th className="border border-gray-300 p-2">Price</th>
             <th className="border border-gray-300 p-2">Item</th>
             <th className="border border-gray-300 p-2">Status</th>
@@ -47,23 +137,27 @@ const OrderManagement = () => {
           {orders.map((order) => (
             <tr key={order.id}>
               <td className="border border-gray-300 p-2">{order.id}</td>
-              <td className="border border-gray-300 p-2">{order.customer}</td>
-              <td className="border border-gray-300 p-2">{order.restaurant}</td>
+              <td className="border border-gray-300 p-2">{order.customerId}</td>
+              <td className="border border-gray-300 p-2">{order.restaurantId}</td>
               <td className="border border-gray-300 p-2">{order.price}</td>
               <td className="border border-gray-300 p-2">{order.item}</td>
               <td className={`border border-gray-300 p-2 ${getStatusColor(order.status)}`}>
                 {order.status}
               </td>
               <td className="border border-gray-300 p-2">
-                <select
-                  value={order.status}
-                  onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                  className="border rounded p-1"
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="Order Placed">Order Placed</option>
-                  <option value="Delivered">Delivered</option>
-                </select>
+                {order.status === 'Pending' && (
+                  <select
+                    value={order.status}
+                    onChange={(e) =>
+                      handleStatusUpdate(order.id, e.target.value, order.customerId, order.restaurantId)
+                    }
+                    className="border rounded p-1"
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Order Placed">Order Placed</option>
+                    <option value="Delivered">Delivered</option>
+                  </select>
+                )}
               </td>
             </tr>
           ))}

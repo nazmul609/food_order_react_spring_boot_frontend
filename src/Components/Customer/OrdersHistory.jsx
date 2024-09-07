@@ -3,7 +3,6 @@ import { FaStar } from 'react-icons/fa';
 
 const OrdersHistory = () => {
   const [orders, setOrders] = useState([]);
-  const [sortOrder, setSortOrder] = useState('Pending');
   const customerId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 
@@ -54,47 +53,22 @@ const OrdersHistory = () => {
     }
   };
 
-  const handleSort = (status) => {
-    setSortOrder(status);
-  };
-
-  const sortedOrders = orders.sort((a, b) => {
-    if (sortOrder === 'Pending') {
-      return a.status === 'Pending' ? -1 : 1;
-    } else {
-      return a.status.localeCompare(b.status);
-    }
-  });
-
   const getStatusColor = (status) => {
     switch (status) {
       case 'Pending':
-        return 'bg-yellow-100 text-yellow-600';
-      case 'Delivered':
-        return 'bg-green-100 text-green-600';
+        return 'bg-yellow-100';
+      case 'Order Placed':
+        return 'bg-green-100 ';
       case 'Canceled':
-        return 'bg-red-100 text-red-600';
+        return 'bg-red-100';
       default:
-        return 'bg-white text-gray-800';
+        return 'bg-white';
     }
   };
 
   return (
     <div className="flex flex-col flex-1 p-8 bg-white shadow-lg rounded-lg">
       <h2 className="text-2xl font-semibold mb-6">Orders and History</h2>
-      <div className="mb-4">
-        <label htmlFor="sort" className="mr-2">Sort by:</label>
-        <select
-          id="sort"
-          value={sortOrder}
-          onChange={(e) => handleSort(e.target.value)}
-          className="p-2 border rounded-lg"
-        >
-          <option value="Pending">Pending</option>
-          <option value="Delivered">Delivered</option>
-          <option value="Canceled">Canceled</option>
-        </select>
-      </div>
       <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
         <thead className="bg-gray-100">
           <tr className="text-left">
@@ -108,14 +82,14 @@ const OrdersHistory = () => {
           </tr>
         </thead>
         <tbody>
-          {sortedOrders.map((order, index) => (
+          {orders.map((order, index) => (
             <tr key={index} className={getStatusColor(order.status)}>
               <td className="py-4 px-4 border-b">{order.id}</td>
               <td className="py-4 px-4 border-b">{order.restaurantId}</td>
               <td className={`py-4 px-4 border-b ${getStatusColor(order.status)}`}>{order.status}</td>
               <td className="py-4 px-4 border-b">{order.pickupTime}</td>
               <td className="py-4 px-4 border-b">
-                {order.status === 'pending' ? (
+                {order.status === 'Pending' ? (
                   <button
                     onClick={() => handleCancelOrder(order.id)}
                     className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
