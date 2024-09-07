@@ -59,7 +59,7 @@ function Navbar() {
 
   const handleProfileNavigation = () => {
     if (userRole === 'customer') {
-      navigate(`/customer-profile/${userId}`);
+      navigate(`/customer-profile/my-profile/${userId}`);
     } else if (userRole === 'vendor') {
       navigate(`/vendor-profile/my-profile/${userId}`);
     }
