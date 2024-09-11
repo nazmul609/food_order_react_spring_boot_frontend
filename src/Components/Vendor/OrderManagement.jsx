@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [restaurantIds, setRestaurantIds] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null); 
+  const [showPopup, setShowPopup] = useState(false); 
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 
@@ -16,7 +18,7 @@ const OrderManagement = () => {
       const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
@@ -27,7 +29,7 @@ const OrderManagement = () => {
           .filter((restaurant) => restaurant.ownerId === parseInt(userId))
           .map((restaurant) => restaurant.id);
         setRestaurantIds(filteredRestaurantIds);
-        fetchOrders(filteredRestaurantIds); // Fetch orders once we have the restaurant IDs
+        fetchOrders(filteredRestaurantIds); 
       } else {
         console.error('Failed to fetch restaurants');
       }
@@ -42,7 +44,7 @@ const OrderManagement = () => {
       const response = await fetch('http://localhost:8080/order/getAllOrders', {
         method: 'GET',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
       });
@@ -52,7 +54,7 @@ const OrderManagement = () => {
         const filteredOrders = data.filter((order) =>
           restaurantIds.includes(order.restaurantId)
         );
-        setOrders(filteredOrders); // Set the orders based on the filtered restaurants
+        setOrders(filteredOrders); 
       } else {
         console.error('Failed to fetch orders');
       }
@@ -61,42 +63,53 @@ const OrderManagement = () => {
     }
   };
 
-  // Generate a random pickup time (40 to 60 minutes)
+  // Generate a random pickup time (45 to 60 minutes) with the desired format
   const generateRandomPickupTime = () => {
-    const randomMinutes = Math.floor(Math.random() * (60 - 40 + 1)) + 40;
+    const randomMinutes = Math.floor(Math.random() * (60 - 45 + 1)) + 45;
     const currentTime = new Date();
     currentTime.setMinutes(currentTime.getMinutes() + randomMinutes);
-    return currentTime.toISOString(); 
+    const formattedDate = currentTime.toLocaleDateString(); // Get the current date
+    const formattedTime = currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); // Get time in HH:mm format
+    return `${formattedDate} ${formattedTime}`; // Combine date and time
   };
 
-  // Update order status with confirmation and additional details
-  const handleStatusUpdate = async (orderId, newStatus, customerId, restaurantId) => {
+  // Handle status update with confirmation
+  const handleStatusUpdate = async (newStatus) => {
+    if (!selectedOrder) return;
     const isConfirmed = window.confirm(`Are you sure you want to change the status to ${newStatus}?`);
     if (!isConfirmed) return;
 
-    const pickupTime = generateRandomPickupTime(); 
+    const pickupTime = generateRandomPickupTime();
 
     try {
-      const response = await fetch(`http://localhost:8080/order/changeStatus/${orderId}`, {
+      const response = await fetch(`http://localhost:8080/order/changeStatus/${selectedOrder.id}`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          id: selectedOrder.id,
+          cuisineId: selectedOrder.cuisineId,
+          customerId: selectedOrder.customerId,
+          restaurantId: selectedOrder.restaurantId,
+          cuisineName: selectedOrder.cuisineName,
+          restaurantName: selectedOrder.restaurantName,
+          cuisinePrice: selectedOrder.cuisinePrice, 
+          quantity: selectedOrder.quantity,
+          pickupTime: pickupTime, 
           status: newStatus,
-          customerId: customerId,
-          restaurantId: restaurantId,
-          pickupTime: pickupTime,
         }),
       });
 
       if (response.ok) {
         setOrders((prevOrders) =>
           prevOrders.map((order) =>
-            order.id === orderId ? { ...order, status: newStatus } : order
+            order.id === selectedOrder.id ? { ...order, status: newStatus } : order
           )
         );
+        setShowPopup(false); 
+        setSelectedOrder(null); 
       } else {
         console.error('Failed to update status');
       }
@@ -108,61 +121,112 @@ const OrderManagement = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Pending':
-        return 'bg-yellow-200';
+        return 'bg-yellow-500 text-white';
       case 'Order Placed':
-        return 'bg-blue-200';
+        return 'bg-green-500 text-white';
+      case 'Canceled':
+        return 'bg-red-500 text-white';
       case 'Delivered':
-        return 'bg-green-200';
+        return 'bg-blue-500 text-white';
       default:
-        return 'bg-gray-200';
+        return 'bg-gray-500 text-white';
     }
   };
 
+  const handleStatusChange = (order) => {
+    setSelectedOrder(order);
+    setShowPopup(true);
+  };
+
   return (
-    <div className="overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-4">Order Management</h2>
-      <table className="min-w-full border-collapse border border-gray-300">
-        <thead>
-          <tr>
-            <th className="border border-gray-300 p-2">ID</th>
-            <th className="border border-gray-300 p-2">Customer Id</th>
-            <th className="border border-gray-300 p-2">Restaurant Id</th>
-            <th className="border border-gray-300 p-2">Price</th>
-            <th className="border border-gray-300 p-2">Item</th>
-            <th className="border border-gray-300 p-2">Status</th>
-            <th className="border border-gray-300 p-2">Update</th>
+    <div className="flex flex-col flex-1 p-8 bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-semibold mb-6 text-center">Order Management</h2>
+      <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <thead className="bg-gray-100">
+          <tr className="text-left">
+            <th className="py-3 px-4 border-b">ID</th>
+            <th className="py-3 px-4 border-b">Customer Id</th>
+            <th className="py-3 px-4 border-b">Restaurant</th>
+            <th className="py-3 px-4 border-b">Cuisine</th>
+            <th className="py-3 px-4 border-b">Price</th>
+            <th className="py-3 px-4 border-b">Quantity</th>
+            <th className="py-3 px-4 border-b">Status</th>
+            <th className="py-3 px-4 border-b">Update</th>
           </tr>
         </thead>
         <tbody>
           {orders.map((order) => (
-            <tr key={order.id}>
-              <td className="border border-gray-300 p-2">{order.id}</td>
-              <td className="border border-gray-300 p-2">{order.customerId}</td>
-              <td className="border border-gray-300 p-2">{order.restaurantId}</td>
-              <td className="border border-gray-300 p-2">{order.price}</td>
-              <td className="border border-gray-300 p-2">{order.item}</td>
-              <td className={`border border-gray-300 p-2 ${getStatusColor(order.status)}`}>
-                {order.status}
+            <tr key={order.id} className="hover:bg-gray-50 cursor-pointer">
+              <td className="py-4 px-4 border-b">{order.id}</td>
+              <td className="py-4 px-4 border-b">{order.customerId}</td>
+              <td className="py-4 px-4 border-b">{order.restaurantName}</td>
+              <td className="py-4 px-4 border-b">{order.cuisineName}</td>
+              <td className="py-4 px-4 border-b">
+                ${(order.cuisinePrice * order.quantity).toFixed(2)} 
               </td>
-              <td className="border border-gray-300 p-2">
-                {order.status === 'Pending' && (
-                  <select
-                    value={order.status}
-                    onChange={(e) =>
-                      handleStatusUpdate(order.id, e.target.value, order.customerId, order.restaurantId)
-                    }
-                    className="border rounded p-1"
+              <td className="py-4 px-4 border-b">{order.quantity}</td>
+              <td className="py-4 px-4 border-b">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                  {order.status}
+                </span>
+              </td>
+              <td className="py-4 px-4 border-b">
+                {order.status === 'Pending' || order.status === 'Order Placed' ? (
+                  <button
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                    onClick={() => handleStatusChange(order)}
                   >
-                    <option value="Pending">Pending</option>
-                    <option value="Order Placed">Order Placed</option>
-                    <option value="Delivered">Delivered</option>
-                  </select>
+                    Update Status
+                  </button>
+                ) : (
+                  <span className="text-gray-500">N/A</span>
                 )}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+  
+      {/* Popup for status update */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <h3 className="text-xl font-semibold mb-4">Update Order Status</h3>
+            <div className="flex flex-col space-y-4">
+              {selectedOrder.status === 'Pending' && (
+                <>
+                  <button
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+                    onClick={() => handleStatusUpdate('Order Placed')}
+                  >
+                    Place Order
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                    onClick={() => handleStatusUpdate('Cancelled')}
+                  >
+                    Cancel Order
+                  </button>
+                </>
+              )}
+              {selectedOrder.status === 'Order Placed' && (
+                <button
+                  className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                  onClick={() => handleStatusUpdate('Delivered')}
+                >
+                  Delivered
+                </button>
+              )}
+              <button
+                className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+                onClick={() => setShowPopup(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
