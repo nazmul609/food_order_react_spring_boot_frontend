@@ -3,6 +3,11 @@ import { FaStar } from 'react-icons/fa';
 
 const OrdersHistory = () => {
   const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [orderToCancel, setOrderToCancel] = useState(null);
+  
   const customerId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 
@@ -31,39 +36,104 @@ const OrdersHistory = () => {
       console.error('Error fetching orders:', error);
     }
   };
-
-  const handleCancelOrder = async (orderId) => {
+  const handleCancelOrder = (orderId) => {
+    setOrderToCancel(orderId);
+    setShowCancelModal(true);
+  };
+  
+  const confirmCancelOrder = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/order/deleteOrder/${orderId}`, {
-        method: 'DELETE',
+      const response = await fetch(`http://localhost:8080/order/getOrderById/${orderToCancel}`, {
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
       });
-
+  
       if (response.ok) {
-        setOrders(orders.filter(order => order.id !== orderId));
-        console.log(`Order ${orderId} canceled`);
+        const order = await response.json();
+        order.status = 'Canceled';
+  
+        const updateResponse = await fetch(`http://localhost:8080/order/changeStatus/${orderToCancel}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify(order),
+        });
+  
+        if (updateResponse.ok) {
+          setOrders(orders.map(o => o.id === orderToCancel ? { ...o, status: 'Canceled' } : o));
+          console.log(`Order ${orderToCancel} canceled`);
+          setShowCancelModal(false); // Close the modal after cancellation
+        } else {
+          console.error('Failed to update order status');
+        }
       } else {
-        console.error('Failed to cancel order');
+        console.error('Failed to fetch order details');
       }
     } catch (error) {
       console.error('Error canceling order:', error);
     }
   };
+  
+  // const handleCancelOrder = async (orderId) => {
+  //   try {
+  //     const response = await fetch(`http://localhost:8080/order/getOrderById/${orderId}`, {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': `Bearer ${token}`,
+  //       },
+  //     });
+
+  //     if (response.ok) {
+  //       const order = await response.json();
+  //       order.status = 'Canceled';
+
+  //       const updateResponse = await fetch(`http://localhost:8080/order/changeStatus/${orderId}`, {
+  //         method: 'PUT',
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //           'Authorization': `Bearer ${token}`,
+  //         },
+  //         body: JSON.stringify(order),
+  //       });
+
+  //       if (updateResponse.ok) {
+  //         setOrders(orders.map(o => o.id === orderId ? { ...o, status: 'Canceled' } : o));
+  //         console.log(`Order ${orderId} canceled`);
+  //       } else {
+  //         console.error('Failed to update order status');
+  //       }
+  //     } else {
+  //       console.error('Failed to fetch order details');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error canceling order:', error);
+  //   }
+  // };
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'Pending':
-        return 'bg-yellow-100';
+        return 'bg-yellow-500 text-white';
       case 'Order Placed':
-        return 'bg-green-100 ';
+        return 'bg-green-500 text-white';
       case 'Canceled':
-        return 'bg-red-100';
+        return 'bg-red-500 text-white';
+      case 'Delivered':
+        return 'bg-blue-500 text-white';
       default:
-        return 'bg-white';
+        return 'bg-gray-500 text-white';
     }
+  };
+
+  const handleOrderClick = (order) => {
+    setSelectedOrder(order);
+    setShowModal(true);
   };
 
   return (
@@ -72,8 +142,8 @@ const OrdersHistory = () => {
       <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
         <thead className="bg-gray-100">
           <tr className="text-left">
-            <th className="py-3 px-4 border-b">Order ID</th>
-            <th className="py-3 px-4 border-b">Restaurant ID</th>
+            <th className="py-3 px-4 border-b">ID</th>
+            <th className="py-3 px-4 border-b">Cuisine</th>
             <th className="py-3 px-4 border-b">Status</th>
             <th className="py-3 px-4 border-b">Pickup Time</th>
             <th className="py-3 px-4 border-b">Actions</th>
@@ -83,15 +153,22 @@ const OrdersHistory = () => {
         </thead>
         <tbody>
           {orders.map((order, index) => (
-            <tr key={index} className={getStatusColor(order.status)}>
+            <tr key={index} className="hover:bg-gray-50 cursor-pointer" onClick={() => handleOrderClick(order)}>
               <td className="py-4 px-4 border-b">{order.id}</td>
-              <td className="py-4 px-4 border-b">{order.restaurantId}</td>
-              <td className={`py-4 px-4 border-b ${getStatusColor(order.status)}`}>{order.status}</td>
+              <td className="py-4 px-4 border-b">{order.cuisineName}</td>
+              <td className="py-4 px-4 border-b">
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                  {order.status}
+                </span>
+              </td>
               <td className="py-4 px-4 border-b">{order.pickupTime}</td>
               <td className="py-4 px-4 border-b">
                 {order.status === 'Pending' ? (
                   <button
-                    onClick={() => handleCancelOrder(order.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCancelOrder(order.id);
+                    }}
                     className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
                   >
                     Cancel
@@ -116,16 +193,15 @@ const OrdersHistory = () => {
                             type="radio"
                             name={`rating-${index}`}
                             value={ratingValue}
-                            onClick={() => console.log(`Rated order ${order.id} with ${ratingValue} stars`)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              console.log(`Rated order ${order.id} with ${ratingValue} stars`);
+                            }}
                             className="hidden"
                           />
                           <FaStar
                             size={24}
-                            className={`cursor-pointer ${
-                              ratingValue <= 3 
-                                ? 'text-yellow-500'
-                                : 'text-gray-300'
-                            }`}
+                            className={`cursor-pointer ${ratingValue <= 3 ? 'text-yellow-500' : 'text-gray-300'}`}
                           />
                         </label>
                       );
@@ -137,7 +213,10 @@ const OrdersHistory = () => {
                 {order.status === 'Delivered' && (
                   <textarea
                     value={'Dummy feedback'}
-                    onChange={() => console.log(`Feedback changed for order ${order.id}`)}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      console.log(`Feedback changed for order ${order.id}:`, e.target.value);
+                    }}
                     placeholder="Leave your feedback here..."
                     className="w-full p-2 border rounded-lg mt-1"
                   />
@@ -147,8 +226,101 @@ const OrdersHistory = () => {
           ))}
         </tbody>
       </table>
+  
+      {showModal && selectedOrder && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-2xl font-semibold text-gray-800">Order Details</h3>
+              <button
+                onClick={() => setShowModal(false)}
+                className="text-gray-400 hover:text-gray-600 transition"
+              >
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  ></path>
+                </svg>
+              </button>
+            </div>
+            <div className="mb-4 space-y-2">
+              <p className="text-gray-600">
+                <span className="font-semibold">Order ID:</span> {selectedOrder.id}
+              </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Restaurant:</span> {selectedOrder.restaurantName}
+              </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Cuisine:</span> {selectedOrder.cuisineName}
+              </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Price:</span> ${selectedOrder.cuisinePrice}
+              </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Quantity:</span> {selectedOrder.quantity}
+              </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Pickup Time:</span> {selectedOrder.pickupTime}
+              </p>
+              <p className="text-gray-600">
+                <span className="font-semibold">Status:</span> 
+                <span className={`inline-block px-2 py-1 text-sm font-semibold rounded ${
+                  selectedOrder.status === 'Pending'
+                    ? 'bg-yellow-200 text-yellow-800'
+                    : selectedOrder.status === 'Order Placed'
+                    ? 'bg-green-200 text-green-800'
+                    : 'bg-red-200 text-red-800'
+                }`}>
+                  {selectedOrder.status}
+                </span>
+              </p>
+            </div>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+  
+      {showCancelModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
+            <h3 className="text-2xl font-semibold text-gray-800 mb-4">Confirm Cancellation</h3>
+            <p className="text-gray-600 mb-6">Are you sure you want to cancel this order?</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowCancelModal(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+              >
+                No
+              </button>
+              <button
+                onClick={confirmCancelOrder}
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              >
+                Yes, Cancel Order
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
+  
 };
 
 export default OrdersHistory;
