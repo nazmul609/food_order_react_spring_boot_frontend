@@ -5,7 +5,6 @@ const CustomerDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState("https://cdn.pixabay.com/photo/2024/04/25/12/32/ai-generated-8719680_640.jpg");
   const [customer, setCustomer] = useState(null);
-  const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -23,30 +22,10 @@ const CustomerDetails = () => {
 
         if (response.data) {
           setCustomer(response.data);
-          // Fetch the addresses using the customer ID
-          fetchAddresses(response.data.id);
         }
       } catch (error) {
         console.error("Failed to fetch customer details", error);
-      }
-    };
-
-    // Fetch the addresses by customer ID
-    const fetchAddresses = async (customerId) => {
-      try {
-        const token = localStorage.getItem('token');
-
-        const response = await axios.get(`http://localhost:8080/addresses/${customerId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (response.data) {
-          setAddresses(response.data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch addresses", error);
+        setError("Failed to fetch customer details.");
       } finally {
         setLoading(false);
       }
@@ -138,12 +117,13 @@ const CustomerDetails = () => {
             </table>
           </div>
 
+          {/* Addresses section */}
           <div className="bg-white border rounded-lg shadow-md p-4">
           <h3 className="font-semibold text-gray-700 mb-4">Addresses</h3>
-          {addresses.length > 0 ? (
+          {customer.addresses && customer.addresses.length > 0 ? (
             <table className="w-full text-left">
               <tbody>
-                {addresses.map((address, index) => (
+                {customer.addresses.map((address, index) => (
                   <React.Fragment key={index}>
                     <tr>
                       <td className="font-semibold text-gray-700 py-2">Address Line 1:</td>
@@ -169,7 +149,7 @@ const CustomerDetails = () => {
                       <td className="font-semibold text-gray-700 py-2">Country:</td>
                       <td className="text-gray-800">{address.country}</td>
                     </tr>
-                    {index < addresses.length - 1 && <tr><td colSpan="2"><hr className="my-4" /></td></tr>}
+                    {index < customer.addresses.length - 1 && <tr><td colSpan="2"><hr className="my-4" /></td></tr>}
                   </React.Fragment>
                 ))}
               </tbody>
