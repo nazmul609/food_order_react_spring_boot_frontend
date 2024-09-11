@@ -175,7 +175,7 @@ const RestaurantDetails = () => {
               price={cuisine.price}
               availability={cuisine.availability}
               restaurantId={id}          // Pass restaurant ID
-              restaurantName={restaurant.name}  // Pass restaurant name
+              restaurantName={restaurant.name}  
             />
           ))}
         </div>

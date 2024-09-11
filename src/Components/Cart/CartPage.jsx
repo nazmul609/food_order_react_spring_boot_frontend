@@ -5,7 +5,6 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [orderData, setOrderData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -13,71 +12,64 @@ const CartPage = () => {
     setCartItems(savedCartItems);
   }, []);
 
-  const handleAddQuantity = (id) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) => (item.id === id ? { ...item, quantity: item.quantity + 1 } : item))
+  const handleAddQuantity = (cuisineId) => {
+    const updatedItems = cartItems.map((item) =>
+      item.cuisineId === cuisineId ? { ...item, quantity: item.quantity + 1 } : item
     );
-    updateLocalStorage(id, 1);
+    setCartItems(updatedItems);
+    updateLocalStorage(updatedItems);
   };
 
-  const handleRemoveQuantity = (id) => {
-    setCartItems((prevItems) => {
-      const updatedItems = prevItems
-        .map((item) =>
-          item.id === id && item.quantity > 1 ? { ...item, quantity: item.quantity - 1 } : item
-        )
-        .filter((item) => item.quantity > 0);
-
-      updateLocalStorage(id, -1, updatedItems);
-      return updatedItems;
-    });
-  };
-
-  const updateLocalStorage = (id, change, updatedItems) => {
-    const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    const updatedCartItems = savedCartItems
+  const handleRemoveQuantity = (cuisineId) => {
+    const updatedItems = cartItems
       .map((item) =>
-        item.id === id ? { ...item, quantity: item.quantity + change } : item
+        item.cuisineId === cuisineId ? { ...item, quantity: item.quantity - 1 } : item
       )
-      .filter((item) => item.quantity > 0);
+      .filter((item) => item.quantity > 0); // Remove items with quantity 0
 
-    if (updatedCartItems.length === 0) {
-      localStorage.removeItem('restaurantInfo');
+    setCartItems(updatedItems);
+    updateLocalStorage(updatedItems);
+  };
+
+  const updateLocalStorage = (updatedItems) => {
+    if (updatedItems.length === 0) {
       localStorage.removeItem('cartItems');
-      window.location.reload();
     } else {
-      localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
+      localStorage.setItem('cartItems', JSON.stringify(updatedItems));
     }
   };
 
-  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce((total, item) => total + item.cuisinePrice * item.quantity, 0);
   const deliveryFee = 5;
   const platformFee = 2;
   const restaurantFee = 3;
   const totalCost = totalPrice + deliveryFee + platformFee + restaurantFee;
 
   const handleOrderNow = () => {
-    setShowConfirmationModal(true); // Show confirmation modal
+    setShowConfirmationModal(true);
   };
 
   const confirmOrder = async () => {
-    const restaurantInfo = JSON.parse(localStorage.getItem('restaurantInfo'));
     const userId = JSON.parse(localStorage.getItem('userId'));
     const token = localStorage.getItem('token');
-
+  
     setIsLoading(true);
-
+  
     try {
       const requests = cartItems.map(async (item) => {
+        // Parsing the values to ensure correct data types
         const order = {
-          customerId: userId,
-          restaurantId: restaurantInfo.id,
+          customerId: parseInt(userId),
+          restaurantId: parseInt(item.restaurantId),
+          restaurantName: item.restaurantName, 
+          cuisineName: item.cuisineName,  
+          cuisineId: parseInt(item.cuisineId),  
+          cuisinePrice: item.cuisinePrice,  
+          quantity: parseInt(item.quantity),  
           pickupTime: '60 min',
           status: 'Pending',
-          item: item, // Send individual item
-          totalCost: item.price * item.quantity, // Individual item cost
         };
-
+  
         const response = await fetch('http://localhost:8080/order/createOrder', {
           method: 'POST',
           headers: {
@@ -86,24 +78,23 @@ const CartPage = () => {
           },
           body: JSON.stringify(order),
         });
-
+  
         if (!response.ok) {
-          throw new Error('Failed to create order for item ' + item.id);
+          throw new Error('Failed to create order for item ' + item.cuisineId);
         }
-
-        return response.json(); // Return response data 
+  
+        return response.json();
       });
-
-      const orderResults = await Promise.all(requests); // Wait for all requests to complete
-      setOrderData(orderResults); // 
-      setShowConfirmationModal(false); 
-      setShowSuccessModal(true); 
-
-      // Clear cart and localStorage after all orders are successful
+  
+      await Promise.all(requests);
+      setShowConfirmationModal(false);
+      setShowSuccessModal(true);
+      window.location.reload();
+  
+      // Clear cart info from local storage
       localStorage.removeItem('cartItems');
-      localStorage.removeItem('restaurantInfo');
       setCartItems([]);
-
+      
     } catch (error) {
       console.error('Error creating orders:', error);
       alert('Failed to create one or more orders. Please try again.');
@@ -111,6 +102,7 @@ const CartPage = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -128,10 +120,10 @@ const CartPage = () => {
             <div className="space-y-4">
               {cartItems.map((item) => (
                 <CartItem
-                  key={item.id}
+                  key={item.cuisineId}
                   item={item}
-                  onAdd={handleAddQuantity}
-                  onRemove={handleRemoveQuantity}
+                  onAdd={() => handleAddQuantity(item.cuisineId)}
+                  onRemove={() => handleRemoveQuantity(item.cuisineId)}
                 />
               ))}
             </div>

@@ -34,40 +34,38 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
 
   const handleAddToCart = () => {
     if (availability) {
-      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      // Retrieve the cart from localStorage or initialize an empty array
+      let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
       const newItem = {
-        id,
-        name: cuisineName,
-        price,
+        restaurantId,
+        restaurantName,
+        cuisineId: id,
+        cuisineName,
+        cuisinePrice: price,
         quantity: 1,
-        
       };
 
-      // Check if the item already exists in the cart
-      const existingItemIndex = cartItems.findIndex(item => item.id === id);
+      // Check if the same cuisine from the same restaurant is already in the cart
+      const existingItemIndex = cartItems.findIndex(
+        item => item.restaurantId === restaurantId && item.cuisineId === id
+      );
+
       if (existingItemIndex !== -1) {
-        cartItems[existingItemIndex].quantity += 1; // Increase quantity if it already exists
+        // If the item already exists, increase its quantity
+        cartItems[existingItemIndex].quantity += 1;
       } else {
-        cartItems.push(newItem); // Add new item to the cart
+        // Otherwise, add the new item to the cart
+        cartItems.push(newItem);
       }
 
-      // Store updated cart
+      // Store the updated cart in localStorage
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
 
-      // Check if restaurant ID and name are already stored
-      const storedRestaurant = JSON.parse(localStorage.getItem('restaurantInfo')) || {};
-      if (!storedRestaurant.id || storedRestaurant.id !== restaurantId) {
-        // Save restaurant ID and name to local storage if not already saved
-        localStorage.setItem('restaurantInfo', JSON.stringify({
-          id: restaurantId,
-          name: restaurantName,
-        }));
-        console.log('Restaurant info saved to local storage');
-      }
-
       console.log('Item added to cart');
-      // Optionally reload the page to reflect changes
-      window.location.reload();
+      
+     
+      window.location.reload(); // quick refresh to reflect cart changes
     } else {
       console.log('Out of stock');
     }
@@ -95,16 +93,12 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
               </span>
             </div>
             <div className='flex items-center space-x-3'>
-            <div className='text-gray-500'>{description || "Description goes here."}</div>
+              <div className='text-gray-500'>{description || "Description goes here."}</div>
               <span className='bg-blue-100 text-blue-800 text-md font-medium px-3 py-1 rounded-full'>
                 {category || "Category goes here"}
               </span>
             </div>
-            
-
           </div>
-
-
         </div>
       </AccordionSummary>
       <AccordionDetails className="bg-gray-50">
@@ -125,4 +119,3 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
 };
 
 export default MenuCard;
-

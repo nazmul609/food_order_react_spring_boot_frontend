@@ -164,25 +164,23 @@ const VendorOnboarding = () => {
             className="mt-2 p-3 block w-full border rounded"
           />
         </div>
-
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">City</label>
-          <input
-            type="text"
-            name="city"
-            value={vendorDetails.city}
-            onChange={handleChange}
-            className="mt-2 p-3 block w-full border rounded"
-            required
-          />
-        </div>
-
         <div className="mb-6">
           <label className="block text-lg font-medium text-gray-700">Postal Code</label>
           <input
             type="text"
             name="postalCode"
             value={vendorDetails.postalCode}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+            required
+          />
+        </div>
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">City</label>
+          <input
+            type="text"
+            name="city"
+            value={vendorDetails.city}
             onChange={handleChange}
             className="mt-2 p-3 block w-full border rounded"
             required
