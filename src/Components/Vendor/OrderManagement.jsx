@@ -145,7 +145,7 @@ const OrderManagement = () => {
         <thead className="bg-gray-100">
           <tr className="text-left">
             <th className="py-3 px-4 border-b">ID</th>
-            <th className="py-3 px-4 border-b">Customer Id</th>
+            <th className="py-3 px-4 border-b">Customer</th>
             <th className="py-3 px-4 border-b">Restaurant</th>
             <th className="py-3 px-4 border-b">Cuisine</th>
             <th className="py-3 px-4 border-b">Price</th>
@@ -166,17 +166,24 @@ const OrderManagement = () => {
               </td>
               <td className="py-4 px-4 border-b">{order.quantity}</td>
               <td className="py-4 px-4 border-b">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${getStatusColor(order.status)}`}
+                >
                   {order.status}
                 </span>
               </td>
+
               <td className="py-4 px-4 border-b">
                 {order.status === 'Pending' || order.status === 'Order Placed' ? (
                   <button
-                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+                    className="group relative inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[1px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
                     onClick={() => handleStatusChange(order)}
                   >
-                    Update Status
+                    <span
+                      className="block rounded-full bg-white px-6 py-2 text-xs font-medium text-gray-800 group-hover:bg-transparent group-hover:text-white transition-all duration-300"
+                    >
+                      Update Status
+                    </span>
                   </button>
                 ) : (
                   <span className="text-gray-500">N/A</span>

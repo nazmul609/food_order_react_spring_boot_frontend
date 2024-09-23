@@ -89,12 +89,12 @@ const CartPage = () => {
       await Promise.all(requests);
       setShowConfirmationModal(false);
       setShowSuccessModal(true);
-      window.location.reload();
+      
   
       // Clear cart info from local storage
       localStorage.removeItem('cartItems');
       setCartItems([]);
-      
+      window.location.reload();
     } catch (error) {
       console.error('Error creating orders:', error);
       alert('Failed to create one or more orders. Please try again.');

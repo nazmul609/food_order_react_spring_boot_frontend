@@ -79,7 +79,6 @@ const OrdersHistory = () => {
     }
   };
   
-  // const handleCancelOrder = async (orderId) => {
   //   try {
   //     const response = await fetch(`http://localhost:8080/order/getOrderById/${orderId}`, {
   //       method: 'GET',
@@ -138,14 +137,14 @@ const OrdersHistory = () => {
 
   return (
     <div className="flex flex-col flex-1 p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold mb-6">Orders and History</h2>
+      <h2 className="text-2xl font-semibold mb-6 text-center">Orders and History</h2>
       <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
         <thead className="bg-gray-100">
           <tr className="text-left">
             <th className="py-3 px-4 border-b">ID</th>
             <th className="py-3 px-4 border-b">Cuisine</th>
             <th className="py-3 px-4 border-b">Status</th>
-            <th className="py-3 px-4 border-b">Pickup Time</th>
+            {/* <th className="py-3 px-4 border-b">Pickup Time</th> */}
             <th className="py-3 px-4 border-b">Actions</th>
             <th className="py-3 px-4 border-b">Rating</th>
             <th className="py-3 px-4 border-b">Feedback</th>
@@ -157,11 +156,13 @@ const OrdersHistory = () => {
               <td className="py-4 px-4 border-b">{order.id}</td>
               <td className="py-4 px-4 border-b">{order.cuisineName}</td>
               <td className="py-4 px-4 border-b">
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${getStatusColor(order.status)}`}
+                >
                   {order.status}
                 </span>
               </td>
-              <td className="py-4 px-4 border-b">{order.pickupTime}</td>
+              {/* <td className="py-4 px-4 border-b">{order.pickupTime}</td> */}
               <td className="py-4 px-4 border-b">
                 {order.status === 'Pending' ? (
                   <button
@@ -227,6 +228,7 @@ const OrdersHistory = () => {
         </tbody>
       </table>
   
+      {/* pop up window */}
       {showModal && selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white w-full max-w-lg p-6 rounded-lg shadow-lg">
@@ -253,36 +255,47 @@ const OrdersHistory = () => {
               </button>
             </div>
             <div className="mb-4 space-y-2">
-              <p className="text-gray-600">
-                <span className="font-semibold">Order ID:</span> {selectedOrder.id}
-              </p>
-              <p className="text-gray-600">
-                <span className="font-semibold">Restaurant:</span> {selectedOrder.restaurantName}
-              </p>
-              <p className="text-gray-600">
-                <span className="font-semibold">Cuisine:</span> {selectedOrder.cuisineName}
-              </p>
-              <p className="text-gray-600">
-                <span className="font-semibold">Price:</span> ${selectedOrder.cuisinePrice}
-              </p>
-              <p className="text-gray-600">
-                <span className="font-semibold">Quantity:</span> {selectedOrder.quantity}
-              </p>
-              <p className="text-gray-600">
-                <span className="font-semibold">Pickup Time:</span> {selectedOrder.pickupTime}
-              </p>
-              <p className="text-gray-600">
-                <span className="font-semibold">Status:</span> 
-                <span className={`inline-block px-2 py-1 text-sm font-semibold rounded ${
-                  selectedOrder.status === 'Pending'
-                    ? 'bg-yellow-200 text-yellow-800'
-                    : selectedOrder.status === 'Order Placed'
-                    ? 'bg-green-200 text-green-800'
-                    : 'bg-red-200 text-red-800'
-                }`}>
+              {/** Each label-value pair is aligned in flex */}
+              <div className="flex justify-between text-gray-600">
+                <span className="font-semibold">Order ID:</span>
+                <span>{selectedOrder.id}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span className="font-semibold">Restaurant:</span>
+                <span>{selectedOrder.restaurantName}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span className="font-semibold">Cuisine:</span>
+                <span>{selectedOrder.cuisineName}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span className="font-semibold">Price:</span>
+                <span>${selectedOrder.cuisinePrice}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span className="font-semibold">Quantity:</span>
+                <span>{selectedOrder.quantity}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span className="font-semibold">Pickup Time:</span>
+                <span>{selectedOrder.pickupTime}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span className="font-semibold">Status:</span>
+                <span
+                  className={`inline-block px-2 py-1 text-sm font-semibold rounded ${
+                    selectedOrder.status === 'Pending'
+                      ? 'bg-yellow-200 text-yellow-800'
+                      : selectedOrder.status === 'Order Placed'
+                      ? 'bg-green-200 text-green-800'
+                      : selectedOrder.status === 'Delivered'
+                      ? 'bg-blue-200 text-blue-800'
+                      : 'bg-red-200 text-red-800'
+                  }`}
+                >
                   {selectedOrder.status}
                 </span>
-              </p>
+              </div>
             </div>
             <div className="flex justify-end">
               <button
@@ -295,6 +308,7 @@ const OrdersHistory = () => {
           </div>
         </div>
       )}
+
   
       {showCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
