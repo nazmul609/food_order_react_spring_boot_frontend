@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const MyProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
   const [profileDetails, setProfileDetails] = useState({
@@ -20,7 +22,7 @@ const MyProfile = () => {
 
     if (token && userId) {
       // Fetch Vendor Profile Details
-      fetch(`http://localhost:8080/vendor/getVendor/${userId}`, {
+      fetch(`${baseURL}/vendor/getVendor/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -52,7 +54,7 @@ const MyProfile = () => {
         });
 
       // Fetch Profile Picture
-      fetch(`http://localhost:8080/vendor/downloadImage/${userId}`, {
+      fetch(`${baseURL}/vendor/downloadImage/${userId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

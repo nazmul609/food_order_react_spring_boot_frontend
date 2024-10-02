@@ -3,11 +3,13 @@ import React, { useState, useEffect } from 'react';
 const CartItem = ({ item, onAdd, onRemove }) => {
   const [imageUrl, setImageUrl] = useState('');
 
+  const baseURL = process.env.RESTOURA_API_BASE_URL;
+
   useEffect(() => {
     const fetchCuisineImage = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch(`http://localhost:8080/cuisine/downloadImage/${item.cuisineId}`, {
+        const response = await fetch(`${baseURL}/cuisine/downloadImage/${item.cuisineId}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

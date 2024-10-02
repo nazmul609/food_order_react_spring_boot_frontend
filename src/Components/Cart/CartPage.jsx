@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import CartItem from './CartItem';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -70,7 +72,7 @@ const CartPage = () => {
           status: 'Pending',
         };
   
-        const response = await fetch('http://localhost:8080/order/createOrder', {
+        const response = await fetch(`${baseURL}/order/createOrder`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,

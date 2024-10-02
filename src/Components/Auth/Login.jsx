@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode'; 
 
+
+
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -9,6 +11,8 @@ const Login = () => {
     const [error, setError] = useState('');
     const [role, setRole] = useState('customer'); 
     const navigate = useNavigate();
+
+    const baseURL = process.env.RESTOURA_API_BASE_URL;
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -24,7 +28,7 @@ const Login = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/auth/signin', {
+            const response = await fetch(`${baseURL}/auth/signin`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

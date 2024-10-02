@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const CustomerOnboarding = () => {
   const navigate = useNavigate();
   const [customerDetails, setCustomerDetails] = useState({
@@ -52,7 +54,7 @@ const CustomerOnboarding = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/customers', {
+      const response = await fetch(`${baseURL}/customers`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

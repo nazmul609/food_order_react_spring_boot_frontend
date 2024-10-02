@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const OrderManagement = () => {
   const [orders, setOrders] = useState([]);
   const [restaurantIds, setRestaurantIds] = useState([]);
@@ -15,7 +17,7 @@ const OrderManagement = () => {
   // Fetch all restaurants and filter by ownerId
   const fetchRestaurants = async () => {
     try {
-      const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
+      const response = await fetch(`${baseURL}/restaurant/allRestaurants`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -41,7 +43,7 @@ const OrderManagement = () => {
   // Fetch all orders and filter by restaurantIds
   const fetchOrders = async (restaurantIds) => {
     try {
-      const response = await fetch('http://localhost:8080/order/getAllOrders', {
+      const response = await fetch(`${baseURL}/order/getAllOrders`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -82,7 +84,7 @@ const OrderManagement = () => {
     const pickupTime = generateRandomPickupTime();
 
     try {
-      const response = await fetch(`http://localhost:8080/order/changeStatus/${selectedOrder.id}`, {
+      const response = await fetch(`${baseURL}/order/changeStatus/${selectedOrder.id}`, {
         method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,

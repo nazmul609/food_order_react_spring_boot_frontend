@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const VendorOnboarding = () => {
   const navigate = useNavigate();
   const [vendorDetails, setVendorDetails] = useState({
@@ -43,7 +45,7 @@ const VendorOnboarding = () => {
 
     try {
       // Submit vendor details
-      const response = await fetch(`http://localhost:8080/vendor/addVendor/${userId}`, {
+      const response = await fetch(`${baseURL}/vendor/addVendor/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +62,7 @@ const VendorOnboarding = () => {
           const formData = new FormData();
           formData.append('image', image);
 
-          const imageUploadResponse = await fetch(`http://localhost:8080/vendor/uploadImage/${userId}`, {
+          const imageUploadResponse = await fetch(`${baseURL}/vendor/uploadImage/${userId}`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {jwtDecode} from 'jwt-decode';
 
+
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -9,6 +10,7 @@ const Register = () => {
     const [error, setError] = useState('');
     const [registrationSuccess, setRegistrationSuccess] = useState(false);
     const navigate = useNavigate();
+    const baseURL = process.env.RESTOURA_API_BASE_URL;
 
     const handleRegister = async (e) => {
         e.preventDefault();
@@ -25,7 +27,7 @@ const Register = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:8080/auth/signup', {
+            const response = await fetch(`${baseURL}/auth/signup`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

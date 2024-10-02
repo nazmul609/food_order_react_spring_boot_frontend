@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const CustomerDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [profilePicture, setProfilePicture] = useState("https://cdn.pixabay.com/photo/2024/04/25/12/32/ai-generated-8719680_640.jpg");
@@ -14,7 +16,7 @@ const CustomerDetails = () => {
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('token'); 
         
-        const response = await axios.get(`http://localhost:8080/customers/${email}`, {
+        const response = await axios.get(`${baseURL}/customers/${email}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

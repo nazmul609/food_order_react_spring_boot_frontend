@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaStar } from 'react-icons/fa';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const OrdersHistory = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -17,7 +19,7 @@ const OrdersHistory = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch('http://localhost:8080/order/getAllOrders', {
+      const response = await fetch(`${baseURL}/order/getAllOrders`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -43,7 +45,7 @@ const OrdersHistory = () => {
   
   const confirmCancelOrder = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/order/getOrderById/${orderToCancel}`, {
+      const response = await fetch(`${baseURL}/order/getOrderById/${orderToCancel}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +57,7 @@ const OrdersHistory = () => {
         const order = await response.json();
         order.status = 'Canceled';
   
-        const updateResponse = await fetch(`http://localhost:8080/order/changeStatus/${orderToCancel}`, {
+        const updateResponse = await fetch(`${baseURL}/order/changeStatus/${orderToCancel}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -79,41 +81,6 @@ const OrdersHistory = () => {
     }
   };
   
-  //   try {
-  //     const response = await fetch(`http://localhost:8080/order/getOrderById/${orderId}`, {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': `Bearer ${token}`,
-  //       },
-  //     });
-
-  //     if (response.ok) {
-  //       const order = await response.json();
-  //       order.status = 'Canceled';
-
-  //       const updateResponse = await fetch(`http://localhost:8080/order/changeStatus/${orderId}`, {
-  //         method: 'PUT',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': `Bearer ${token}`,
-  //         },
-  //         body: JSON.stringify(order),
-  //       });
-
-  //       if (updateResponse.ok) {
-  //         setOrders(orders.map(o => o.id === orderId ? { ...o, status: 'Canceled' } : o));
-  //         console.log(`Order ${orderId} canceled`);
-  //       } else {
-  //         console.error('Failed to update order status');
-  //       }
-  //     } else {
-  //       console.error('Failed to fetch order details');
-  //     }
-  //   } catch (error) {
-  //     console.error('Error canceling order:', error);
-  //   }
-  // };
 
   const getStatusColor = (status) => {
     switch (status) {

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import RestaurantCard from '../Home/RestaurantCard';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const RestaurantManagement = () => {
   const [restaurantData, setRestaurantData] = useState({
     name: '',
@@ -29,7 +31,7 @@ const RestaurantManagement = () => {
   // Fetch and display the restaurants along with their images
   const fetchRestaurants = async () => {
     try {
-      const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
+      const response = await fetch(`${baseURL}/restaurant/allRestaurants`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -48,7 +50,7 @@ const RestaurantManagement = () => {
           .filter((restaurant) => parseInt(restaurant.ownerId, 10) === parseInt(userId, 10))
           .map(async (restaurant) => {
             const imageResponse = await fetch(
-              `http://localhost:8080/restaurant/downloadImage/${restaurant.id}`,
+              `${baseURL}/restaurant/downloadImage/${restaurant.id}`,
               {
                 method: 'GET',
                 headers: {
@@ -94,7 +96,7 @@ const RestaurantManagement = () => {
       const formattedOperatingHours = `${restaurantData.operatingHours.open} to ${restaurantData.operatingHours.close}`;
       // Create the restaurant
       const response = await fetch(
-        `http://localhost:8080/restaurant/addRestaurant/${userId}`,
+        `${baseURL}/restaurant/addRestaurant/${userId}`,
         {
           method: 'POST',
           headers: {
@@ -153,7 +155,7 @@ const RestaurantManagement = () => {
     try {
       console.log(`Uploading image for restaurant ID: ${restaurantId}`);
       const response = await fetch(
-        `http://localhost:8080/restaurant/uploadImage/${restaurantId}`,
+        `${baseURL}/restaurant/uploadImage/${restaurantId}`,
         {
           method: 'POST',
           headers: {

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
+const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 const MenuManagement = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [selectedRestaurantId, setSelectedRestaurantId] = useState(null);
@@ -21,7 +23,7 @@ const MenuManagement = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await fetch('http://localhost:8080/restaurant/allRestaurants', {
+        const response = await fetch(`${baseURL}/restaurant/allRestaurants`, {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${bearerToken}`,
@@ -49,7 +51,7 @@ const MenuManagement = () => {
 
   const fetchMenuItems = async (restaurantId) => {
     try {
-      const response = await fetch(`http://localhost:8080/cuisine/allCuisines/${restaurantId}`, {
+      const response = await fetch(`${baseURL}/cuisine/allCuisines/${restaurantId}`, {
         headers: {
           Authorization: `Bearer ${bearerToken}`,
         },
@@ -61,7 +63,7 @@ const MenuManagement = () => {
       const cuisinesWithImages = await Promise.all(
         cuisines.map(async (cuisine) => {
           const imageResponse = await fetch(
-            `http://localhost:8080/cuisine/downloadImage/${cuisine.id}`,
+            `${baseURL}/cuisine/downloadImage/${cuisine.id}`,
             {
               headers: {
                 Authorization: `Bearer ${bearerToken}`,
@@ -106,7 +108,7 @@ const MenuManagement = () => {
 
     try {
       // Add new cuisine
-      const response = await fetch(`http://localhost:8080/cuisine/addCuisine/${selectedRestaurantId}`, {
+      const response = await fetch(`${baseURL}/cuisine/addCuisine/${selectedRestaurantId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +133,7 @@ const MenuManagement = () => {
         formData.append('image', imageFile);
 
         const imageUploadResponse = await fetch(
-          `http://localhost:8080/cuisine/uploadImage/${cuisineId}`,
+          `${baseURL}/cuisine/uploadImage/${cuisineId}`,
           {
             method: 'POST',
             headers: {
@@ -167,7 +169,7 @@ const MenuManagement = () => {
   // to be updated need api
   const handleDeleteMenu = async () => {
     try {
-      await fetch(`http://localhost:8080/cuisine/delete/${menuItemToDelete}`, {
+      await fetch(`${baseURL}/cuisine/delete/${menuItemToDelete}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${bearerToken}`,
