@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart, faClock, faUtensils } from '@fortawesome/free-solid-svg-icons';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 
 const RestaurantCard = ({ restaurant }) => {
   const { id, name, openOrClosed, operatingHours, cuisineType } = restaurant;
@@ -14,7 +15,7 @@ const RestaurantCard = ({ restaurant }) => {
     const fetchImage = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch(`${baseURL}/restaurant/downloadImage/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/restaurant/downloadImage/${id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

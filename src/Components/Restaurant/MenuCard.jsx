@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 
 const MenuCard = ({ id, cuisineName, category, description, price, availability, restaurantId, restaurantName }) => {
   const [imageUrl, setImageUrl] = useState("");
@@ -11,7 +12,7 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
     const fetchCuisineImage = async () => {
       const token = localStorage.getItem('token');
       try {
-        const response = await fetch(`${baseURL}/cuisine/downloadImage/${id}`, {
+        const response = await fetch(`${API_BASE_URL}/cuisine/downloadImage/${id}`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+// const baseURL = process.env.RESTOURA_API_BASE_URL;
 
 const CustomerDetails = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -16,7 +17,7 @@ const CustomerDetails = () => {
         const email = localStorage.getItem('email');
         const token = localStorage.getItem('token'); 
         
-        const response = await axios.get(`${baseURL}/customers/${email}`, {
+        const response = await axios.get(`${API_BASE_URL}/customers/${email}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

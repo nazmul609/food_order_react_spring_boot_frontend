@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import RestaurantCard from '../Home/RestaurantCard';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 
 const AllRestaurantsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,7 +21,7 @@ const AllRestaurantsPage = () => {
       const token = localStorage.getItem('token'); 
   
       try {
-        const response = await fetch(`${baseURL}/restaurant/allRestaurants`, {
+        const response = await fetch(`${API_BASE_URL}/restaurant/allRestaurants`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, 

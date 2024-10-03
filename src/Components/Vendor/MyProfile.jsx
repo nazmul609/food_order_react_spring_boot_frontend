@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 
 const MyProfile = () => {
   const [profilePicture, setProfilePicture] = useState(null);
@@ -22,7 +23,7 @@ const MyProfile = () => {
 
     if (token && userId) {
       // Fetch Vendor Profile Details
-      fetch(`${baseURL}/vendor/getVendor/${userId}`, {
+      fetch(`${API_BASE_URL}/vendor/getVendor/${userId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -54,7 +55,7 @@ const MyProfile = () => {
         });
 
       // Fetch Profile Picture
-      fetch(`${baseURL}/vendor/downloadImage/${userId}`, {
+      fetch(`${API_BASE_URL}/vendor/downloadImage/${userId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,

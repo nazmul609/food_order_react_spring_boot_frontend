@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { FaStar } from 'react-icons/fa';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 
 const OrdersHistory = () => {
   const [orders, setOrders] = useState([]);
@@ -19,7 +20,7 @@ const OrdersHistory = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch(`${baseURL}/order/getAllOrders`, {
+      const response = await fetch(`${API_BASE_URL}/order/getAllOrders`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -45,7 +46,7 @@ const OrdersHistory = () => {
   
   const confirmCancelOrder = async () => {
     try {
-      const response = await fetch(`${baseURL}/order/getOrderById/${orderToCancel}`, {
+      const response = await fetch(`${API_BASE_URL}/order/getOrderById/${orderToCancel}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +58,7 @@ const OrdersHistory = () => {
         const order = await response.json();
         order.status = 'Canceled';
   
-        const updateResponse = await fetch(`${baseURL}/order/changeStatus/${orderToCancel}`, {
+        const updateResponse = await fetch(`${API_BASE_URL}/order/changeStatus/${orderToCancel}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

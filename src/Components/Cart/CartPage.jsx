@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import CartItem from './CartItem';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -72,7 +73,7 @@ const CartPage = () => {
           status: 'Pending',
         };
   
-        const response = await fetch(`${baseURL}/order/createOrder`, {
+        const response = await fetch(`${API_BASE_URL}/order/createOrder`, {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${token}`,

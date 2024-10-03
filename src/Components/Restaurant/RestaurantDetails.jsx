@@ -6,8 +6,9 @@ import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
 import InfoIcon from '@mui/icons-material/Info';
 import MenuCard from './MenuCard';
 import { useParams } from 'react-router-dom';
+import API_BASE_URL from '../../apiConfig';
 
-const baseURL = process.env.RESTOURA_API_BASE_URL;
+
 
 const RestaurantDetails = () => {
   const [restaurant, setRestaurant] = useState({});
@@ -23,7 +24,7 @@ const RestaurantDetails = () => {
       const token = localStorage.getItem('token');
       
       try {
-        const response = await fetch(`${baseURL}/restaurant/allRestaurants`, {
+        const response = await fetch(`${API_BASE_URL}/restaurant/allRestaurants`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`, 
@@ -38,7 +39,7 @@ const RestaurantDetails = () => {
           if (restaurantDetails) {
             setRestaurant(restaurantDetails);
             // Fetch the image after getting restaurant details
-            const imageResponse = await fetch(`${baseURL}/restaurant/downloadImage/${id}`, {
+            const imageResponse = await fetch(`${API_BASE_URL}/restaurant/downloadImage/${id}`, {
               method: 'GET',
               headers: {
                 'Authorization': `Bearer ${token}`,
@@ -53,7 +54,7 @@ const RestaurantDetails = () => {
             }
 
             // Fetch the cuisines for the restaurant
-            const cuisinesResponse = await fetch(`${baseURL}/cuisine/allCuisines/${id}`, {
+            const cuisinesResponse = await fetch(`${API_BASE_URL}/cuisine/allCuisines/${id}`, {
               method: 'GET',
               headers: {
                 'Authorization': `Bearer ${token}`,
