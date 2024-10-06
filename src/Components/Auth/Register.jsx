@@ -11,6 +11,7 @@ const Register = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [role, setRole] = useState('');
     const [error, setError] = useState('');
+    const [passwordMatchError, setPasswordMatchError] = useState('');
     const [registrationSuccess, setRegistrationSuccess] = useState(false);
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
@@ -19,13 +20,17 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        if (email === '' || password === '' || confirmPassword === '') {
+        // Reset errors before validation
+        setError('');
+        setPasswordMatchError('');
+
+        if (email === '' || password === '' || confirmPassword === '' || role === '') {
             setError('Please fill in all fields.');
             return;
         }
 
         if (password !== confirmPassword) {
-            setError('Passwords do not match.');
+            setPasswordMatchError('Passwords do not match.');
             return;
         }
 
@@ -54,7 +59,6 @@ const Register = () => {
             const id = decodedToken.userId;
             const userEmail = decodedToken.sub;
 
-            // Store the necessary data in localStorage
             localStorage.setItem('token', responseData.refreshToken);
             localStorage.setItem('email', userEmail);
             localStorage.setItem('userId', id);
@@ -71,7 +75,6 @@ const Register = () => {
         const id = localStorage.getItem('userId');
         const userRole = localStorage.getItem('role');
 
-        // Redirect based on role to the onboarding page
         if (userRole === 'customer') {
             navigate(`/customer-onboarding/${id}`);
         } else if (userRole === 'vendor') {
@@ -116,7 +119,6 @@ const Register = () => {
                             />
                         </div>
 
-                        {/* Password Input with FontAwesome Icon */}
                         <div className="space-y-1">
                             <label className="block text-sm font-medium text-gray-700">Password</label>
                             <div className="relative">
@@ -137,7 +139,6 @@ const Register = () => {
                             </div>
                         </div>
 
-                        {/* Confirm Password Input with FontAwesome Icon */}
                         <div className="space-y-1">
                             <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
                             <div className="relative">
@@ -155,24 +156,25 @@ const Register = () => {
                                     <FontAwesomeIcon icon={confirmPasswordVisible ? faEye : faEyeSlash} />
                                 </span>
                             </div>
+                            {passwordMatchError && (
+                                <p className="text-red-500 text-sm">{passwordMatchError}</p>
+                            )}
                         </div>
 
-                        {/* Role selection */}
                         <div className="space-y-1">
                             <label className="block text-sm font-medium text-gray-700">Role</label>
                             <select
                                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
-                                required 
+                                required
                             >
-                                <option value="" disabled>Select Role</option> 
+                                <option value="" disabled>Select Role</option>
                                 <option value="customer">Customer</option>
                                 <option value="vendor">Vendor</option>
                             </select>
                         </div>
 
-                        {/* Register button */}
                         <button
                             type="submit"
                             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-300"

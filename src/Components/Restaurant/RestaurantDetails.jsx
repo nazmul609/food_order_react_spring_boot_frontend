@@ -14,8 +14,8 @@ const RestaurantDetails = () => {
   const [cuisines, setCuisines] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [priceRange, setPriceRange] = useState([0, 1000]);
-  const [maxPrice, setMaxPrice] = useState(1000);  // Add state for max price
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+  const [maxPrice, setMaxPrice] = useState();  // Add state for max price
   const { id } = useParams();
 
   useEffect(() => {
@@ -97,35 +97,36 @@ const RestaurantDetails = () => {
   );
 
   return (
-    <div className='px-4 lg:px-20 bg-green-50 min-h-screen pb-20'>
-      <section className='mt-4 flex flex-col lg:flex-row items-start'>
+    <div className="px-4 lg:px-16 bg-green-50 min-h-screen pb-20">
+      {/* Restaurant Information Section */}
+      <section className="mt-4 flex flex-col lg:flex-row items-center lg:items-start">
         {/* Restaurant Image */}
-        <div className="lg:w-1/2 flex justify-center lg:justify-start lg:pr-8">
+        <div className="w-full lg:w-1/2 flex justify-center lg:justify-start lg:pr-6">
           <div className="w-full max-w-md lg:max-w-full lg:h-[400px]">
             <img
-              className='w-full h-[300px] lg:h-[400px] object-cover rounded-xl shadow-lg'
+              className="w-full h-[250px] sm:h-[300px] lg:h-[400px] object-cover rounded-xl shadow-lg"
               src={imageUrl}
               alt="Restaurant"
             />
           </div>
         </div>
   
-        {/* Restaurant Information */}
-        <div className='lg:w-1/2 mt-6 lg:mt-0'>
-          <h1 className='text-gray-800 font-extrabold text-4xl drop-shadow-md mb-4'>
+        {/* Restaurant Details */}
+        <div className="w-full lg:w-1/2 mt-6 lg:mt-0 text-center lg:text-left">
+          <h1 className="text-gray-800 font-extrabold text-2xl sm:text-3xl lg:text-4xl drop-shadow-md mb-4">
             {restaurant.name || "Restaurant Name"}
           </h1>
-          <div className='space-y-4'>
-            <p className='text-gray-600 flex items-center gap-3'>
+          <div className="space-y-4">
+            <p className="text-gray-600 flex items-center justify-center lg:justify-start gap-3">
               <MailOutlineIcon /> <span>{restaurant.email || "email@example.com"}</span>
             </p>
-            <p className='text-gray-600 flex items-center gap-3'>
+            <p className="text-gray-600 flex items-center justify-center lg:justify-start gap-3">
               <RestaurantMenuIcon /> <span>{restaurant.cuisineType || "Cuisine Type"}</span>
             </p>
-            <p className='text-gray-600 flex items-center gap-3'>
+            <p className="text-gray-600 flex items-center justify-center lg:justify-start gap-3">
               <CalendarTodayIcon /> <span>{restaurant.operatingHours || "Operating Hours"}</span>
             </p>
-            <p className='text-gray-600 flex items-center gap-3'>
+            <p className="text-gray-600 flex items-center justify-center lg:justify-start gap-3">
               <InfoIcon /> <span>{restaurant.description || "Restaurant description goes here."}</span>
             </p>
           </div>
@@ -134,11 +135,11 @@ const RestaurantDetails = () => {
   
       <Divider className="my-8" />
   
-      {/* Filters and Menu */}
-      <section className='pt-8 lg:flex'>
+      {/* Filter and Menu Section */}
+      <section className="pt-8 flex flex-col lg:flex-row">
         {/* Filter Section */}
-        <div className='space-y-8 lg:w-1/4 lg:sticky lg:top-28'>
-          <div className='bg-white shadow-xl rounded-lg p-6'>
+        <div className="w-full lg:w-1/4 lg:sticky lg:top-28 mb-8 lg:mb-0 space-y-6">
+          <div className="bg-white shadow-lg rounded-lg p-4 md:p-6">
             <Typography variant="h5" className="pb-4 font-semibold text-gray-800">
               Price Range
             </Typography>
@@ -147,13 +148,12 @@ const RestaurantDetails = () => {
               onChange={handlePriceChange}
               valueLabelDisplay="auto"
               min={0}
-              max={maxPrice} // Dynamically set max price
+              max={maxPrice}
               step={1}
               aria-labelledby="price-range-slider"
             />
           </div>
-          <Divider />
-          <div className='bg-white shadow-xl rounded-lg p-6'>
+          <div className="bg-white shadow-lg rounded-lg p-4 md:p-6">
             <Typography variant="h5" className="pb-4 font-semibold text-gray-800">
               Category
             </Typography>
@@ -174,7 +174,7 @@ const RestaurantDetails = () => {
         </div>
   
         {/* Menu Items Section */}
-        <div className='lg:w-3/4 lg:pl-10 grid grid-cols-1 md:grid-cols-2 gap-6'>
+        <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 lg:pl-8">
           {filteredCuisines.map((cuisine) => (
             <MenuCard
               key={cuisine.id}
@@ -192,6 +192,8 @@ const RestaurantDetails = () => {
       </section>
     </div>
   );
+  
+  
 };
 
 export default RestaurantDetails;

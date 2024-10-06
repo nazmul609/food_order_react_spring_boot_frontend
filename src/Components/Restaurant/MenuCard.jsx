@@ -5,8 +5,14 @@ import API_BASE_URL from '../../apiConfig';
 
 const MenuCard = ({ id, cuisineName, category, description, price, availability, restaurantId, restaurantName }) => {
   const [imageUrl, setImageUrl] = useState("");
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
+    const fetchUserRole = () => {
+      const role = localStorage.getItem('role');
+      setUserRole(role);
+    };
+    
     const fetchCuisineImage = async () => {
       const token = localStorage.getItem('token');
       try {
@@ -30,6 +36,7 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
       }
     };
 
+    fetchUserRole();
     fetchCuisineImage();
   }, [id]);
 
@@ -86,7 +93,6 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
               </div>
               <div className="flex items-center space-x-3 mt-1">
                 <p className="text-gray-600">{description || "Description goes here."}</p>
-
               </div>
             </div>
             <img
@@ -99,7 +105,13 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
         <AccordionDetails className="bg-gray-50 p-4">
           <div className="flex justify-start">
             {availability ? (
-              <Button variant="contained" color="primary" onClick={handleAddToCart} className="text-white">
+              <Button 
+                variant="contained" 
+                color="primary" 
+                onClick={handleAddToCart} 
+                className="text-white"
+                disabled={userRole !== 'customer'} // Disable if role is not 'customer'
+              >
                 Add to Cart
               </Button>
             ) : (
@@ -112,8 +124,6 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
       </Accordion>
     </div>
   );
-  
-  
 };
 
 export default MenuCard;

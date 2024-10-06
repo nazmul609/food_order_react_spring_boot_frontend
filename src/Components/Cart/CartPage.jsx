@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import CartItem from './CartItem';
 import API_BASE_URL from '../../apiConfig';
-
+import { useNavigate } from 'react-router-dom';
 
 
 const CartPage = () => {
@@ -9,6 +9,9 @@ const CartPage = () => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showRedirectModal, setShowRedirectModal] = useState(false);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -92,6 +95,7 @@ const CartPage = () => {
       await Promise.all(requests);
       setShowConfirmationModal(false);
       setShowSuccessModal(true);
+      setShowRedirectModal(true);
       
   
       // Clear cart info from local storage
@@ -106,6 +110,10 @@ const CartPage = () => {
     }
   };
   
+  const handleViewOrders = () => {
+    const userId = JSON.parse(localStorage.getItem('userId'));
+    navigate(`/customer-profile/orders-history/${userId}`);
+  };
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -204,6 +212,33 @@ const CartPage = () => {
           </div>
         </div>
       )}
+       {showRedirectModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3 text-center">
+              <h3 className="text-lg leading-6 font-medium text-gray-900">Order Placed Successfully!</h3>
+              <div className="mt-2 px-7 py-3">
+                <p className="text-sm text-gray-500">Your order has been placed. Would you like to view your order history?</p>
+              </div>
+              <div className="flex justify-around items-center px-4 py-3">
+                <button
+                  className="px-4 py-2 mt-3 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                  onClick={() => setShowRedirectModal(false)}
+                >
+                  Close
+                </button>
+                <button
+                  className="px-4 py-2 mt-3 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 ml-4"
+                  onClick={handleViewOrders}
+                >
+                  View Orders
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+           
     </div>
   );
 };

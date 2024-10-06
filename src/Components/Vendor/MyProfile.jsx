@@ -96,16 +96,20 @@ const MyProfile = () => {
 
   return (
     <div className="flex flex-col space-y-6 p-6 bg-gray-100 rounded-lg shadow-lg max-w-4xl mx-auto mt-10">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col md:flex-row justify-between items-center">
         <div className="flex flex-col space-y-2">
           <h2 className="text-2xl font-semibold text-gray-800">Vendor Profile</h2>
           <p className="text-gray-600">Manage your profile information</p>
         </div>
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center mt-4 md:mt-0">
           {profilePicture ? (
-            <img src={profilePicture} alt="Profile" className="w-40 h-40 object-cover rounded-lg shadow-md mb-2" />
+            <img
+              src={profilePicture}
+              alt="Profile"
+              className="w-32 h-32 object-cover rounded-lg shadow-md mb-2"
+            />
           ) : (
-            <div className="w-40 h-40 bg-gray-300 rounded-lg shadow-md mb-2 flex items-center justify-center">
+            <div className="w-32 h-32 bg-gray-300 rounded-lg shadow-md mb-2 flex items-center justify-center">
               <span className="text-gray-500">No Image</span>
             </div>
           )}
@@ -177,11 +181,15 @@ const MyProfile = () => {
         </div>
       </div>
   
-      <button onClick={handleEdit} className="self-center py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+      <button
+        onClick={handleEdit}
+        className="self-center py-2 px-6 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+      >
         Edit Profile
       </button>
     </div>
   );
+  
   
 };
 

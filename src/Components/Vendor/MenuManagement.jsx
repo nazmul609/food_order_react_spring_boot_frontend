@@ -241,12 +241,20 @@ const MenuManagement = () => {
           onChange={(e) => handleNewMenuInputChange('description', e.target.value)}
           className="w-full p-1 border rounded mb-2"
         />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUploadChange}
-          className="w-full p-1 border rounded mb-2"
-        />
+        <div className="w-full">
+          <label htmlFor="image-upload" className="block font-semibold text-gray-700">
+            Upload Image <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUploadChange}
+            className="w-full p-1 border rounded mb-2"
+            id="image-upload"
+            required
+          />
+        </div>
+
 
         <button
           onClick={handleAddNewMenu}
