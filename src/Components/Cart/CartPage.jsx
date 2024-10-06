@@ -3,7 +3,6 @@ import CartItem from './CartItem';
 import API_BASE_URL from '../../apiConfig';
 import { useNavigate } from 'react-router-dom';
 
-
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
@@ -11,7 +10,6 @@ const CartPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showRedirectModal, setShowRedirectModal] = useState(false);
   const navigate = useNavigate();
-
 
   useEffect(() => {
     const savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
@@ -58,12 +56,11 @@ const CartPage = () => {
   const confirmOrder = async () => {
     const userId = JSON.parse(localStorage.getItem('userId'));
     const token = localStorage.getItem('token');
-  
+
     setIsLoading(true);
-  
+
     try {
       const requests = cartItems.map(async (item) => {
-        // Parsing the values to ensure correct data types
         const order = {
           customerId: parseInt(userId),
           restaurantId: parseInt(item.restaurantId),
@@ -75,7 +72,7 @@ const CartPage = () => {
           pickupTime: '60 min',
           status: 'Pending',
         };
-  
+
         const response = await fetch(`${API_BASE_URL}/order/createOrder`, {
           method: 'POST',
           headers: {
@@ -84,24 +81,21 @@ const CartPage = () => {
           },
           body: JSON.stringify(order),
         });
-  
+
         if (!response.ok) {
           throw new Error('Failed to create order for item ' + item.cuisineId);
         }
-  
+
         return response.json();
       });
-  
+
       await Promise.all(requests);
       setShowConfirmationModal(false);
       setShowSuccessModal(true);
       setShowRedirectModal(true);
       
-  
-      // Clear cart info from local storage
       localStorage.removeItem('cartItems');
       setCartItems([]);
-      window.location.reload();
     } catch (error) {
       console.error('Error creating orders:', error);
       alert('Failed to create one or more orders. Please try again.');
@@ -109,7 +103,7 @@ const CartPage = () => {
       setIsLoading(false);
     }
   };
-  
+
   const handleViewOrders = () => {
     const userId = JSON.parse(localStorage.getItem('userId'));
     navigate(`/customer-profile/orders-history/${userId}`);
@@ -192,27 +186,7 @@ const CartPage = () => {
         </div>
       )}
 
-      {showSuccessModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div className="mt-3 text-center">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Order Successful!</h3>
-              <div className="mt-2 px-7 py-3">
-                <p className="text-sm text-gray-500">Your orders have been made.</p>
-              </div>
-              <div className="items-center px-4 py-3">
-                <button
-                  className="px-4 py-2 mt-3 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                  onClick={() => setShowSuccessModal(false)}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-       {showRedirectModal && (
+      {showRedirectModal && (
         <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full">
           <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
             <div className="mt-3 text-center">
@@ -231,14 +205,13 @@ const CartPage = () => {
                   className="px-4 py-2 mt-3 bg-indigo-600 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 ml-4"
                   onClick={handleViewOrders}
                 >
-                  View Orders
+                  See Orders
                 </button>
               </div>
             </div>
           </div>
         </div>
       )}
-           
     </div>
   );
 };
