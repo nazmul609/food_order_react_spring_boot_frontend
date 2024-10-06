@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showRedirectModal, setShowRedirectModal] = useState(false);
   const navigate = useNavigate();
@@ -91,7 +90,7 @@ const CartPage = () => {
 
       await Promise.all(requests);
       setShowConfirmationModal(false);
-      setShowSuccessModal(true);
+      
       setShowRedirectModal(true);
       
       localStorage.removeItem('cartItems');
