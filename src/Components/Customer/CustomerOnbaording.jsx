@@ -89,9 +89,10 @@ const CustomerOnboarding = () => {
         <h2 className="text-3xl font-bold text-white mb-6 text-center">Customer Onboarding</h2>
       </div>
       <div className="mt-8"></div>
-
-      {/* Basic Information Form */}
+  
+      
       <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Basic Information Form */}
         <div className="mb-4">
           <label className="block mb-1">
             <span className="text-red-500">*</span>Name:
@@ -105,7 +106,7 @@ const CustomerOnboarding = () => {
             required
           />
         </div>
-
+  
         <div className="mb-4">
           <label className="block mb-1">
             <span className="text-red-500">*</span>Email:
@@ -119,7 +120,7 @@ const CustomerOnboarding = () => {
             required
           />
         </div>
-
+  
         <div className="mb-4">
           <label className="block mb-1">
             <span className="text-red-500">*</span>Age:
@@ -133,7 +134,7 @@ const CustomerOnboarding = () => {
             required
           />
         </div>
-
+  
         <div className="mb-4">
           <label className="block mb-1">
             <span className="text-red-500">*</span>Gender:
@@ -151,7 +152,7 @@ const CustomerOnboarding = () => {
             <option value="Other">Other</option>
           </select>
         </div>
-
+  
         <div className="mb-4">
           <label className="block mb-1">
             <span className="text-red-500">*</span>Contact Number:
@@ -165,7 +166,7 @@ const CustomerOnboarding = () => {
             required
           />
         </div>
-
+  
         <div className="mb-4">
           <label className="block mb-1">
             Occupation <span className="text-gray-500">(Optional)</span>:
@@ -178,17 +179,15 @@ const CustomerOnboarding = () => {
             className="w-full p-2 border border-gray-300 rounded-md"
           />
         </div>
-      </form>
-
-      {/* Separator */}
-      <div className="my-8 text-center">
-        <hr className="border-gray-300" />
-        <p className="text-lg font-semibold text-gray-700 my-4">Address Information</p>
-        <hr className="border-gray-300" />
-      </div>
-
-      {/* Address Information Form */}
-      <form className="mt-10 space-y-6" onSubmit={handleSubmit}>
+  
+        {/* Separator */}
+        <div className="my-8 text-center">
+          <hr className="border-gray-300" />
+          <p className="text-lg font-semibold text-gray-700 my-4">Address Information</p>
+          <hr className="border-gray-300" />
+        </div>
+  
+        {/* Address Information Form */}
         {customerDetails.addresses.map((address, index) => (
           <div key={index} className="mb-6 bg-white p-6 shadow-md rounded-md space-y-4">
             <div>
@@ -204,7 +203,7 @@ const CustomerOnboarding = () => {
                 required
               />
             </div>
-
+  
             <div>
               <label className="block mb-1">
                 Address Line 2 <span className="text-gray-500">(Optional)</span>:
@@ -217,7 +216,7 @@ const CustomerOnboarding = () => {
                 className="w-full p-2 border border-gray-300 rounded-md"
               />
             </div>
-
+  
             <div>
               <label className="block mb-1">
                 <span className="text-red-500">*</span>Country:
@@ -231,7 +230,7 @@ const CustomerOnboarding = () => {
                 required
               />
             </div>
-
+  
             <div>
               <label className="block mb-1">
                 <span className="text-red-500">*</span>City:
@@ -245,7 +244,7 @@ const CustomerOnboarding = () => {
                 required
               />
             </div>
-
+  
             <div>
               <label className="block mb-1">
                 <span className="text-red-500">*</span>State:
@@ -259,7 +258,7 @@ const CustomerOnboarding = () => {
                 required
               />
             </div>
-
+  
             <div>
               <label className="block mb-1">
                 Postal Code <span className="text-gray-500">(Optional)</span>:
@@ -274,7 +273,7 @@ const CustomerOnboarding = () => {
             </div>
           </div>
         ))}
-
+  
         <button
           type="submit"
           className="w-full py-3 px-4 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -284,6 +283,7 @@ const CustomerOnboarding = () => {
       </form>
     </div>
   );
+  
 };
 
 export default CustomerOnboarding;
