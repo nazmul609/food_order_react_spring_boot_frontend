@@ -3,8 +3,6 @@ import { Accordion, AccordionDetails, AccordionSummary, Button } from '@mui/mate
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import API_BASE_URL from '../../apiConfig';
 
-
-
 const MenuCard = ({ id, cuisineName, category, description, price, availability, restaurantId, restaurantName }) => {
   const [imageUrl, setImageUrl] = useState("");
 
@@ -37,7 +35,6 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
 
   const handleAddToCart = () => {
     if (availability) {
-      // Retrieve the cart from localStorage or initialize an empty array
       let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 
       const newItem = {
@@ -49,25 +46,19 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
         quantity: 1,
       };
 
-      // Check if the same cuisine from the same restaurant is already in the cart
       const existingItemIndex = cartItems.findIndex(
         item => item.restaurantId === restaurantId && item.cuisineId === id
       );
 
       if (existingItemIndex !== -1) {
-        // If the item already exists, increase its quantity
         cartItems[existingItemIndex].quantity += 1;
       } else {
-        // Otherwise, add the new item to the cart
         cartItems.push(newItem);
       }
 
-      // Store the updated cart in localStorage
       localStorage.setItem('cartItems', JSON.stringify(cartItems));
-
-      console.log('Item added to cart');
       
-     
+      console.log('Item added to cart');
       window.location.reload(); // quick refresh to reflect cart changes
     } else {
       console.log('Out of stock');
@@ -75,50 +66,54 @@ const MenuCard = ({ id, cuisineName, category, description, price, availability,
   };
 
   return (
-    <Accordion className="shadow-lg mb-4 rounded-lg overflow-hidden">
-      <AccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls='panel1-content'
-        id='panel1-header'
-        className="bg-gray-100 hover:bg-gray-200"
-      >
-        <div className='flex items-center w-full space-x-4'>
-          <img
-            className='w-24 h-24 object-cover rounded-lg shadow-md'
-            src={imageUrl}
-            alt="item pic"
-          />
-          <div className='flex-1 space-y-2'>
-            <div className='text-lg font-semibold text-gray-800'>{cuisineName || "Cuisine Name goes here"}</div>
-            <div className='flex items-center space-x-3'>
-              <span className='bg-yellow-300 text-black text-md font-medium px-3 py-1 rounded-full'>
-                ${price || "Price goes here"}
-              </span>
+    <div className="max-w-md mx-auto w-full">
+      <Accordion className="shadow-lg mb-6 rounded-lg overflow-hidden transition-transform transform hover:scale-105 duration-300 ease-in-out">
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1-content"
+          id="panel1-header"
+          className="bg-gray-100 hover:bg-gray-200 p-4"
+        >
+          <div className="flex items-center justify-between w-full">
+            <div className="flex-1 space-y-3 text-left pr-4">
+              <div className="text-xl font-semibold text-gray-800">
+                {cuisineName || "Cuisine Name goes here"}
+              </div>
+              <div className="flex items-center space-x-2">
+                <span className="bg-yellow-300 text-black text-lg font-medium px-4 py-1 rounded-full">
+                  ${price || "Price goes here"}
+                </span>
+              </div>
+              <div className="flex items-center space-x-3 mt-1">
+                <p className="text-gray-600">{description || "Description goes here."}</p>
+
+              </div>
             </div>
-            <div className='flex items-center space-x-3'>
-              <div className='text-gray-500'>{description || "Description goes here."}</div>
-              <span className='bg-blue-100 text-blue-800 text-md font-medium px-3 py-1 rounded-full'>
-                {category || "Category goes here"}
-              </span>
-            </div>
+            <img
+              className="w-24 h-24 object-cover rounded-lg shadow-md"
+              src={imageUrl}
+              alt="item pic"
+            />
           </div>
-        </div>
-      </AccordionSummary>
-      <AccordionDetails className="bg-gray-50">
-        <div className='flex justify-start p-4'>
-          {availability ? (
-            <Button variant='contained' color='primary' onClick={handleAddToCart} className="text-white">
-              Add to Cart
-            </Button>
-          ) : (
-            <Button variant='outlined' color='secondary' disabled>
-              Out of Stock
-            </Button>
-          )}
-        </div>
-      </AccordionDetails>
-    </Accordion>
+        </AccordionSummary>
+        <AccordionDetails className="bg-gray-50 p-4">
+          <div className="flex justify-start">
+            {availability ? (
+              <Button variant="contained" color="primary" onClick={handleAddToCart} className="text-white">
+                Add to Cart
+              </Button>
+            ) : (
+              <Button variant="outlined" color="secondary" disabled>
+                Out of Stock
+              </Button>
+            )}
+          </div>
+        </AccordionDetails>
+      </Accordion>
+    </div>
   );
+  
+  
 };
 
 export default MenuCard;

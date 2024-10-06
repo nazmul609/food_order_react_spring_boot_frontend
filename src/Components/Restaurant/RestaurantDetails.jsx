@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { FormControlLabel, Typography, RadioGroup, Divider, FormControl, Radio, Slider } from '@mui/material'; 
+import React, { useState, useEffect } from 'react';
+import { FormControlLabel, Typography, RadioGroup, Divider, FormControl, Radio, Slider } from '@mui/material';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
@@ -8,8 +8,6 @@ import MenuCard from './MenuCard';
 import { useParams } from 'react-router-dom';
 import API_BASE_URL from '../../apiConfig';
 
-
-
 const RestaurantDetails = () => {
   const [restaurant, setRestaurant] = useState({});
   const [imageUrl, setImageUrl] = useState("");
@@ -17,12 +15,13 @@ const RestaurantDetails = () => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [priceRange, setPriceRange] = useState([0, 1000]);
-  const { id } = useParams(); // Extracting id from the URL
+  const [maxPrice, setMaxPrice] = useState(1000);  // Add state for max price
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchRestaurantDetails = async () => {
       const token = localStorage.getItem('token');
-      
+
       try {
         const response = await fetch(`${API_BASE_URL}/restaurant/allRestaurants`, {
           method: 'GET',
@@ -35,10 +34,10 @@ const RestaurantDetails = () => {
         if (response.ok) {
           const data = await response.json();
           const restaurantDetails = data.find((item) => item.id === parseInt(id));
-          
+
           if (restaurantDetails) {
             setRestaurant(restaurantDetails);
-            // Fetch the image after getting restaurant details
+
             const imageResponse = await fetch(`${API_BASE_URL}/restaurant/downloadImage/${id}`, {
               method: 'GET',
               headers: {
@@ -53,7 +52,6 @@ const RestaurantDetails = () => {
               setImageUrl(imageObjectURL);
             }
 
-            // Fetch the cuisines for the restaurant
             const cuisinesResponse = await fetch(`${API_BASE_URL}/cuisine/allCuisines/${id}`, {
               method: 'GET',
               headers: {
@@ -65,12 +63,13 @@ const RestaurantDetails = () => {
             if (cuisinesResponse.ok) {
               const cuisinesData = await cuisinesResponse.json();
               setCuisines(cuisinesData);
-              
-              // Extract unique categories
+
               const uniqueCategories = [...new Set(cuisinesData.map(cuisine => cuisine.category))];
               setCategories(uniqueCategories);
-              
-              console.log('Cuisines:', cuisinesData); // debug the data
+
+              // Calculate the maximum price and update maxPrice state
+              const maxPriceValue = Math.max(...cuisinesData.map(cuisine => cuisine.price));
+              setMaxPrice(maxPriceValue);
             }
           }
         } else {
@@ -92,29 +91,31 @@ const RestaurantDetails = () => {
     setPriceRange(newValue);
   };
 
-  const filteredCuisines = cuisines.filter(cuisine => 
+  const filteredCuisines = cuisines.filter(cuisine =>
     (selectedCategory === '' || cuisine.category === selectedCategory) &&
     cuisine.price >= priceRange[0] && cuisine.price <= priceRange[1]
   );
 
   return (
     <div className='px-4 lg:px-20 bg-green-50 min-h-screen pb-20'>
-      <section className='mt-4'>
-      <div className='flex justify-center'>
-            <div className="w-full max-w-full max-h-[400px]">
-              <img
-                className='w-full max-h-[400px] object-cover rounded-xl shadow-lg'
-                src={imageUrl}
-                alt="Restaurant"
-              />
-            </div>
-      </div>
-
-        <div className='pt-6 pb-8'>
-          <h1 className='text-gray-800 font-extrabold text-4xl drop-shadow-md'>
+      <section className='mt-4 flex flex-col lg:flex-row items-start'>
+        {/* Restaurant Image */}
+        <div className="lg:w-1/2 flex justify-center lg:justify-start lg:pr-8">
+          <div className="w-full max-w-md lg:max-w-full lg:h-[400px]">
+            <img
+              className='w-full h-[300px] lg:h-[400px] object-cover rounded-xl shadow-lg'
+              src={imageUrl}
+              alt="Restaurant"
+            />
+          </div>
+        </div>
+  
+        {/* Restaurant Information */}
+        <div className='lg:w-1/2 mt-6 lg:mt-0'>
+          <h1 className='text-gray-800 font-extrabold text-4xl drop-shadow-md mb-4'>
             {restaurant.name || "Restaurant Name"}
           </h1>
-          <div className='space-y-4 mt-4'>
+          <div className='space-y-4'>
             <p className='text-gray-600 flex items-center gap-3'>
               <MailOutlineIcon /> <span>{restaurant.email || "email@example.com"}</span>
             </p>
@@ -130,8 +131,12 @@ const RestaurantDetails = () => {
           </div>
         </div>
       </section>
+  
       <Divider className="my-8" />
+  
+      {/* Filters and Menu */}
       <section className='pt-8 lg:flex'>
+        {/* Filter Section */}
         <div className='space-y-8 lg:w-1/4 lg:sticky lg:top-28'>
           <div className='bg-white shadow-xl rounded-lg p-6'>
             <Typography variant="h5" className="pb-4 font-semibold text-gray-800">
@@ -142,7 +147,7 @@ const RestaurantDetails = () => {
               onChange={handlePriceChange}
               valueLabelDisplay="auto"
               min={0}
-              max={1000}
+              max={maxPrice} // Dynamically set max price
               step={1}
               aria-labelledby="price-range-slider"
             />
@@ -167,7 +172,9 @@ const RestaurantDetails = () => {
             </FormControl>
           </div>
         </div>
-        <div className='space-y-6 lg:w-3/4 lg:pl-10'>
+  
+        {/* Menu Items Section */}
+        <div className='lg:w-3/4 lg:pl-10 grid grid-cols-1 md:grid-cols-2 gap-6'>
           {filteredCuisines.map((cuisine) => (
             <MenuCard
               key={cuisine.id}
@@ -177,17 +184,14 @@ const RestaurantDetails = () => {
               description={cuisine.description}
               price={cuisine.price}
               availability={cuisine.availability}
-              restaurantId={id}          // Pass restaurant ID
-              restaurantName={restaurant.name}  
+              restaurantId={id}
+              restaurantName={restaurant.name}
             />
           ))}
         </div>
       </section>
     </div>
-
   );
-  
-  
 };
 
 export default RestaurantDetails;
