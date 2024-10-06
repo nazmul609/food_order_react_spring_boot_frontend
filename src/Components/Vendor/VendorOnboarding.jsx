@@ -95,10 +95,52 @@ const VendorOnboarding = () => {
 
   return (
     <div className="bg-white mt-4 p-8 rounded-lg shadow-md max-w-3xl mx-auto">
-      <h2 className="text-3xl font-bold mb-6">Vendor Onboarding</h2>
+      <div className="bg-gray-600 py-4">
+        <h2 className="text-3xl font-bold text-white mb-6 text-center">Vendor Onboarding</h2>
+      </div>
+      <div className="mt-8"></div> 
+
+
+      {/* First Form - Profile Information */}
       <form onSubmit={handleSubmit}>
+        
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">First Name</label>
+          <label className="block text-lg font-medium text-gray-700">
+            Profile Image <span className="text-gray-500">(Optional)</span>
+          </label>
+          <div className="mt-2 flex items-center">
+            <span className="inline-block h-16 w-16 rounded-full overflow-hidden bg-gray-100">
+              {vendorDetails.image ? (
+                <img
+                  src={URL.createObjectURL(vendorDetails.image)}
+                  alt="Profile Preview"
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <svg
+                  className="h-full w-full text-gray-300"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M24 0v24H0V0h24z" fill="none" />
+                  <path d="M12 12c2.7 0 4.9-2.2 4.9-4.9C16.9 4.4 14.7 2.2 12 2.2S7.1 4.4 7.1 7.1C7.1 9.8 9.3 12 12 12zm0 2.9c-3.2 0-9.6 1.6-9.6 4.9v1.6h19.2v-1.6c0-3.3-6.4-4.9-9.6-4.9z" />
+                </svg>
+              )}
+            </span>
+            <input
+              type="file"
+              name="image"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="ml-5 bg-gray-100 p-2 rounded-lg border border-gray-300 text-sm text-gray-700"
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">
+            <span className="text-red-500">*</span> First Name
+          </label>
           <input
             type="text"
             name="firstName"
@@ -110,7 +152,9 @@ const VendorOnboarding = () => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Last Name</label>
+          <label className="block text-lg font-medium text-gray-700">
+            <span className="text-red-500">*</span> Last Name
+          </label>
           <input
             type="text"
             name="lastName"
@@ -134,7 +178,9 @@ const VendorOnboarding = () => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Contact No</label>
+          <label className="block text-lg font-medium text-gray-700">
+            <span className="text-red-500">*</span> Contact No
+          </label>
           <input
             type="tel"
             name="contactNo"
@@ -145,65 +191,21 @@ const VendorOnboarding = () => {
           />
         </div>
 
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Street No</label>
-          <input
-            type="text"
-            name="streetNo"
-            value={vendorDetails.streetNo}
-            onChange={handleChange}
-            className="mt-2 p-3 block w-full border rounded"
-            required
-          />
-        </div>
+      </form>
 
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Street No 2</label>
-          <input
-            type="text"
-            name="streetNo2"
-            value={vendorDetails.streetNo2}
-            onChange={handleChange}
-            className="mt-2 p-3 block w-full border rounded"
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Postal Code</label>
-          <input
-            type="text"
-            name="postalCode"
-            value={vendorDetails.postalCode}
-            onChange={handleChange}
-            className="mt-2 p-3 block w-full border rounded"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">City</label>
-          <input
-            type="text"
-            name="city"
-            value={vendorDetails.city}
-            onChange={handleChange}
-            className="mt-2 p-3 block w-full border rounded"
-            required
-          />
-        </div>
+      {/* Separator */}
+      <div className="my-8 text-center">
+        <hr className="border-gray-300" />
+        <p className="text-lg font-semibold text-gray-700 my-4">Address Information</p>
+        <hr className="border-gray-300" />
+      </div>
 
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Province</label>
-          <input
-            type="text"
-            name="province"
-            value={vendorDetails.province}
-            onChange={handleChange}
-            className="mt-2 p-3 block w-full border rounded"
-            required
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Country</label>
+      {/* Second Form - Address Information */}
+      <form onSubmit={handleSubmit} className="mt-10">
+      <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">
+            <span className="text-red-500">*</span> Country
+          </label>
           <input
             type="text"
             name="country"
@@ -215,12 +217,68 @@ const VendorOnboarding = () => {
         </div>
 
         <div className="mb-6">
-          <label className="block text-lg font-medium text-gray-700">Profile Image</label>
+          <label className="block text-lg font-medium text-gray-700">
+            <span className="text-red-500">*</span> City
+          </label>
           <input
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleImageChange}
+            type="text"
+            name="city"
+            value={vendorDetails.city}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+            required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">
+            <span className="text-red-500">*</span> Street No 1
+          </label>
+          <input
+            type="text"
+            name="streetNo"
+            value={vendorDetails.streetNo}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+            required
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">Street No 2
+            <span className="text-gray-500">(Optional)</span>
+          </label>
+          <input
+            type="text"
+            name="streetNo2"
+            value={vendorDetails.streetNo2}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">Postal Code
+            <span className="text-gray-500">(Optional)</span>
+          </label>
+          <input
+            type="text"
+            name="postalCode"
+            value={vendorDetails.postalCode}
+            onChange={handleChange}
+            className="mt-2 p-3 block w-full border rounded"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="block text-lg font-medium text-gray-700">
+            Province <span className="text-gray-500">(Optional)</span>
+          </label>
+          <input
+            type="text"
+            name="province"
+            value={vendorDetails.province}
+            onChange={handleChange}
             className="mt-2 p-3 block w-full border rounded"
           />
         </div>
@@ -233,6 +291,7 @@ const VendorOnboarding = () => {
         </button>
       </form>
     </div>
+
   );
 };
 

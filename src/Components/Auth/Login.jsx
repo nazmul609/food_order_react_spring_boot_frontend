@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode'; 
 import API_BASE_URL from '../../apiConfig';
-
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
-    const [role, setRole] = useState('customer'); 
+    const [role, setRole] = useState(''); 
     const navigate = useNavigate();
-
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -70,6 +69,10 @@ const Login = () => {
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
+
     return (
         <div className="flex items-center justify-center bg-gray-100 py-10">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -86,32 +89,36 @@ const Login = () => {
                             required
                         />
                     </div>
+                        {/* Password Input with FontAwesome Icon */}
                     <div className="space-y-1">
                         <label className="block text-sm font-medium text-gray-700">Password</label>
                         <div className="relative">
                             <input
-                                type={showPassword ? "text" : "password"}
+                                id="password"
+                                type={showPassword ? 'text' : 'password'}
                                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
                             />
-                            <button
-                                type="button"
-                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-                                onClick={() => setShowPassword(!showPassword)}
+                            <span
+                                className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
+                                onClick={togglePasswordVisibility}
                             >
-                                {showPassword ? 'Hide' : 'Show'}
-                            </button>
+                                <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
+                            </span>
                         </div>
                     </div>
+
                     <div className="space-y-1">
                         <label className="block text-sm font-medium text-gray-700">Role</label>
                         <select
                             value={role}
                             onChange={(e) => setRole(e.target.value)}
                             className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                            required 
                         >
+                            <option value="" disabled>Select Role</option> 
                             <option value="customer">Customer</option>
                             <option value="vendor">Vendor</option>
                             <option value="admin">Admin</option>

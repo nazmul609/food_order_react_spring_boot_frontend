@@ -1,23 +1,31 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import API_BASE_URL from '../../apiConfig';
-
 
 const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [role, setRole] = useState('customer');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [role, setRole] = useState('');
     const [error, setError] = useState('');
     const [registrationSuccess, setRegistrationSuccess] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
+    const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
     const navigate = useNavigate();
-   
 
     const handleRegister = async (e) => {
         e.preventDefault();
 
-        if (email === '' || password === '') {
+        if (email === '' || password === '' || confirmPassword === '') {
             setError('Please fill in all fields.');
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            setError('Passwords do not match.');
             return;
         }
 
@@ -50,7 +58,7 @@ const Register = () => {
             localStorage.setItem('token', responseData.refreshToken);
             localStorage.setItem('email', userEmail);
             localStorage.setItem('userId', id);
-            localStorage.setItem('role', role); 
+            localStorage.setItem('role', role);
 
             setRegistrationSuccess(true);
         } catch (error) {
@@ -71,6 +79,14 @@ const Register = () => {
         }
     };
 
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+    };
+
+    const toggleConfirmPasswordVisibility = () => {
+        setConfirmPasswordVisible(!confirmPasswordVisible);
+    };
+
     return (
         <div className="flex items-center justify-center bg-gray-100 py-10">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -83,7 +99,7 @@ const Register = () => {
                             onClick={handleOnboardingNavigation}
                             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-300 mt-4"
                         >
-                            Go to Onboarding
+                            Continue to Onboarding
                         </button>
                     </div>
                 ) : (
@@ -91,43 +107,86 @@ const Register = () => {
                         {error && <p className="text-red-500">{error}</p>}
                         <div className="space-y-1">
                             <label className="block text-sm font-medium text-gray-700">Email</label>
-                            <input 
-                                type="email" 
+                            <input
+                                type="email"
                                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-                                value={email} 
-                                onChange={(e) => setEmail(e.target.value)} 
-                                required 
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
                             />
                         </div>
+
+                        {/* Password Input with FontAwesome Icon */}
                         <div className="space-y-1">
                             <label className="block text-sm font-medium text-gray-700">Password</label>
-                            <input 
-                                type="password" 
-                                className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                required 
-                            />
+                            <div className="relative">
+                                <input
+                                    id="password"
+                                    type={passwordVisible ? 'text' : 'password'}
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                />
+                                <span
+                                    className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
+                                    onClick={togglePasswordVisibility}
+                                >
+                                    <FontAwesomeIcon icon={passwordVisible ? faEye : faEyeSlash} />
+                                </span>
+                            </div>
                         </div>
+
+                        {/* Confirm Password Input with FontAwesome Icon */}
+                        <div className="space-y-1">
+                            <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                            <div className="relative">
+                                <input
+                                    type={confirmPasswordVisible ? 'text' : 'password'}
+                                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                                    value={confirmPassword}
+                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                    required
+                                />
+                                <span
+                                    className="absolute inset-y-0 right-0 flex items-center pr-2 cursor-pointer"
+                                    onClick={toggleConfirmPasswordVisibility}
+                                >
+                                    <FontAwesomeIcon icon={confirmPasswordVisible ? faEye : faEyeSlash} />
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Role selection */}
                         <div className="space-y-1">
                             <label className="block text-sm font-medium text-gray-700">Role</label>
-                            <select 
+                            <select
                                 className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-                                value={role} 
+                                value={role}
                                 onChange={(e) => setRole(e.target.value)}
+                                required 
                             >
+                                <option value="" disabled>Select Role</option> 
                                 <option value="customer">Customer</option>
                                 <option value="vendor">Vendor</option>
                             </select>
                         </div>
-                        <button 
-                            type="submit" 
+
+                        {/* Register button */}
+                        <button
+                            type="submit"
                             className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition duration-300"
                         >
                             Register
                         </button>
+
                         <div className="text-center mt-4">
-                            <p>Already have an account? <a href="/login" className="text-indigo-600 hover:underline">Login</a></p>
+                            <p>
+                                Already have an account?{' '}
+                                <a href="/login" className="text-indigo-600 hover:underline">
+                                    Login
+                                </a>
+                            </p>
                         </div>
                     </form>
                 )}
