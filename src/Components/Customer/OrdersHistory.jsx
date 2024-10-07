@@ -2,15 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { FaStar } from 'react-icons/fa';
 import API_BASE_URL from '../../apiConfig';
 
-
-
 const OrdersHistory = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
   const [orderToCancel, setOrderToCancel] = useState(null);
-  
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState('');
+
   const customerId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
 
@@ -39,26 +40,22 @@ const OrdersHistory = () => {
       console.error('Error fetching orders:', error);
     }
   };
-  const handleCancelOrder = (orderId) => {
-    setOrderToCancel(orderId);
-    setShowCancelModal(true);
-  };
-  
-  const confirmCancelOrder = async () => {
+
+  const handleCancelOrder = async (orderId) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/order/getOrderById/${orderToCancel}`, {
+      const response = await fetch(`${API_BASE_URL}/order/getOrderById/${orderId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
       });
-  
+
       if (response.ok) {
         const order = await response.json();
-        order.status = 'Canceled';
-  
-        const updateResponse = await fetch(`${API_BASE_URL}/order/changeStatus/${orderToCancel}`, {
+        order.status = 'Canceled:Customer';
+
+        const updateResponse = await fetch(`${API_BASE_URL}/order/changeStatus/${orderId}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -66,11 +63,10 @@ const OrdersHistory = () => {
           },
           body: JSON.stringify(order),
         });
-  
+
         if (updateResponse.ok) {
-          setOrders(orders.map(o => o.id === orderToCancel ? { ...o, status: 'Canceled' } : o));
-          console.log(`Order ${orderToCancel} canceled`);
-          setShowCancelModal(false); // Close the modal after cancellation
+          setOrders(orders.map(o => o.id === orderId ? { ...o, status: 'Canceled:Customer' } : o));
+          setShowCancelModal(false);
         } else {
           console.error('Failed to update order status');
         }
@@ -81,7 +77,16 @@ const OrdersHistory = () => {
       console.error('Error canceling order:', error);
     }
   };
-  
+
+  const handleReviewClick = (order) => {
+    setSelectedOrder(order);
+    setShowReviewModal(true);
+  };
+
+  const submitReview = () => {
+    console.log(`Rated order ${selectedOrder.id} with ${rating} stars and feedback: ${feedback}`);
+    setShowReviewModal(false);
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -89,7 +94,7 @@ const OrdersHistory = () => {
         return 'bg-yellow-500 text-white';
       case 'Order Placed':
         return 'bg-green-500 text-white';
-      case 'Canceled':
+      case 'Canceled:Customer':
         return 'bg-red-500 text-white';
       case 'Delivered':
         return 'bg-blue-500 text-white';
@@ -105,17 +110,26 @@ const OrdersHistory = () => {
 
   return (
     <div className="flex flex-col flex-1 p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Orders and History</h2>
+      <div className="bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 py-6 shadow-lg rounded-t-lg">
+        <h2 className="text-3xl font-bold text-white tracking-wide mb-2 text-center">
+          Orders & History
+        </h2>
+        <p className="text-gray-300 text-center text-sm">
+          Track your past and current orders with ease
+        </p>
+      </div>
+
+      <div className="mt-8"></div> 
+
       <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
         <thead className="bg-gray-100">
           <tr className="text-left">
             <th className="py-3 px-4 border-b">ID</th>
             <th className="py-3 px-4 border-b">Cuisine</th>
             <th className="py-3 px-4 border-b">Status</th>
-            {/* <th className="py-3 px-4 border-b">Pickup Time</th> */}
+            <th className="py-3 px-4 border-b">Pickup Time</th>
             <th className="py-3 px-4 border-b">Actions</th>
-            <th className="py-3 px-4 border-b">Rating</th>
-            <th className="py-3 px-4 border-b">Feedback</th>
+            <th className="py-3 px-4 border-b">Review</th>
           </tr>
         </thead>
         <tbody>
@@ -130,13 +144,14 @@ const OrdersHistory = () => {
                   {order.status}
                 </span>
               </td>
-              {/* <td className="py-4 px-4 border-b">{order.pickupTime}</td> */}
+              <td className="py-4 px-4 border-b">{order.pickupTime}</td>
               <td className="py-4 px-4 border-b">
                 {order.status === 'Pending' ? (
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleCancelOrder(order.id);
+                      setOrderToCancel(order.id);
+                      setShowCancelModal(true);
                     }}
                     className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
                   >
@@ -152,50 +167,25 @@ const OrdersHistory = () => {
                 )}
               </td>
               <td className="py-4 px-4 border-b">
-                {order.status === 'Delivered' && (
-                  <div className="flex items-center">
-                    {[...Array(5)].map((star, i) => {
-                      const ratingValue = i + 1;
-                      return (
-                        <label key={i}>
-                          <input
-                            type="radio"
-                            name={`rating-${index}`}
-                            value={ratingValue}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log(`Rated order ${order.id} with ${ratingValue} stars`);
-                            }}
-                            className="hidden"
-                          />
-                          <FaStar
-                            size={24}
-                            className={`cursor-pointer ${ratingValue <= 3 ? 'text-yellow-500' : 'text-gray-300'}`}
-                          />
-                        </label>
-                      );
-                    })}
-                  </div>
-                )}
-              </td>
-              <td className="py-4 px-4 border-b">
-                {order.status === 'Delivered' && (
-                  <textarea
-                    value={'Dummy feedback'}
-                    onChange={(e) => {
-                      e.stopPropagation();
-                      console.log(`Feedback changed for order ${order.id}:`, e.target.value);
-                    }}
-                    placeholder="Leave your feedback here..."
-                    className="w-full p-2 border rounded-lg mt-1"
-                  />
-                )}
+                <button
+                  disabled={order.status !== 'Delivered'}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleReviewClick(order);
+                  }}
+                  className={`px-4 py-2 rounded-lg ${
+                    order.status === 'Delivered' ? 'bg-blue-500 text-white hover:bg-blue-600' : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  } transition`}
+                >
+                  Submit Review
+                </button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-  
+
+      {/* Order Details Modal */}
       {/* pop up window */}
       {showModal && selectedOrder && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
@@ -277,12 +267,12 @@ const OrdersHistory = () => {
         </div>
       )}
 
-  
+      {/* Cancel Order Modal */}
       {showCancelModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">Confirm Cancellation</h3>
-            <p className="text-gray-600 mb-6">Are you sure you want to cancel this order?</p>
+            <p className="text-gray-600 mb-4">Are you sure you want to cancel this order?</p>
             <div className="flex justify-end space-x-4">
               <button
                 onClick={() => setShowCancelModal(false)}
@@ -291,7 +281,7 @@ const OrdersHistory = () => {
                 No
               </button>
               <button
-                onClick={confirmCancelOrder}
+                onClick={() => handleCancelOrder(orderToCancel)}
                 className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               >
                 Yes, Cancel Order
@@ -300,9 +290,70 @@ const OrdersHistory = () => {
           </div>
         </div>
       )}
+
+      {/* Review Modal */}
+      {showReviewModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg">
+            {/* Centered Title */}
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
+              Give Review
+            </h3>
+
+            {/* Star Rating with Text Feedback */}
+            <div className="flex items-center justify-center space-x-2 mb-4">
+              {[...Array(5)].map((_, index) => (
+                <FaStar
+                  key={index}
+                  className={`cursor-pointer ${rating >= index + 1 ? 'text-yellow-500' : 'text-gray-300'}`}
+                  onClick={() => setRating(index + 1)}
+                />
+              ))}
+              <span className="text-gray-700 text-sm font-medium">
+                {rating === 1
+                  ? 'Poor'
+                  : rating === 2
+                  ? 'Fair'
+                  : rating === 3
+                  ? 'Good'
+                  : rating === 4
+                  ? 'Very Good'
+                  : rating === 5
+                  ? 'Excellent'
+                  : ''}
+              </span>
+            </div>
+
+            {/* Feedback Label and Textarea */}
+            <label className="block text-gray-700 font-medium mb-1">Feedback</label>
+            <textarea
+              placeholder="We Value Your Opinion – Share Your Experience!"
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              className="w-full p-3 border border-gray-300 rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+
+            {/* Buttons */}
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={() => setShowReviewModal(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={submitReview}
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              >
+                Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
-  
 };
 
 export default OrdersHistory;
