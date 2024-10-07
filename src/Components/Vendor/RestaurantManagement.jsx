@@ -115,7 +115,7 @@ const RestaurantManagement = () => {
   };
   
   const handleViewMyRestaurants = () => {
-    navigate('/my-restaurants');
+    navigate(`/my-restaurants/${userId}`);
   };
 
   return (
