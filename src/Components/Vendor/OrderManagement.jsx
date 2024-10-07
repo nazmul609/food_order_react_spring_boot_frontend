@@ -180,13 +180,14 @@ const OrderManagement = () => {
                 <td className="py-4 px-4 border-b">
                   {['Pending', 'Order Placed'].includes(order.status) ? (
                     <button
-                      className="group relative inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[1px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
+                      className="group relative inline-block rounded-full bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 p-[1px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
                       onClick={() => handleStatusChange(order)}
                     >
                       <span className="block rounded-full bg-white px-6 py-2 text-xs font-semibold text-gray-800 group-hover:bg-transparent group-hover:text-white transition-all duration-300">
                         Update Status
                       </span>
                     </button>
+
                   ) : (
                     <span className="text-gray-500">N/A</span>
                   )}
