@@ -68,74 +68,72 @@ const AllRestaurantsPage = () => {
   });
 
   return (
-    <div className="w-full min-h-screen bg-green-50 overflow-x-hidden">
+    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
       <div className="max-w-screen-xl mx-auto px-4 py-12">
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col md:flex-row gap-8">
           {/* Filters Section */}
-          <div className="w-full md:w-1/4 lg:w-1/5 md:pr-8 mb-6 md:mb-0 relative -ml-6 md:-ml-8">
-            <div className="bg-white p-6 rounded-xl shadow-md">
-              <h2 className="text-xl font-semibold mb-4 text-gray-800">Filters</h2>
-              <div className="flex flex-col gap-4">
-                <select
-                  name="sortBy"
-                  value={filter.sortBy}
-                  onChange={handleFilterChange}
-                  className="block w-full rounded bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 shadow-inner focus:outline-none focus:ring-2 focus:ring-green-400"
-                >
-                  <option value="">Sort by</option>
-                  <option value="distance">Distance</option>
-                  <option value="relevance">Relevance</option>
-                </select>
-                <select
-                  name="price"
-                  value={filter.price}
-                  onChange={handleFilterChange}
-                  className="block w-full rounded bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 shadow-inner focus:outline-none focus:ring-2 focus:ring-green-400"
-                >
-                  <option value="">Price</option>
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-                <select
-                  name="cuisine"
-                  value={filter.cuisine}
-                  onChange={handleFilterChange}
-                  className="block w-full rounded bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-400"
-                >
-                  <option value="">Cuisine</option>
-                  {/* Add cuisine options here */}
-                </select>
-                <label className="flex items-center rounded bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-400">
-                  <input
-                    type="checkbox"
-                    name="offers"
-                    checked={filter.offers}
-                    onChange={() => setFilter({ ...filter, offers: !filter.offers })}
-                  />
-                  <span className="ml-2">Offers</span>
-                </label>
-              </div>
+          <div className="w-full md:w-1/4 lg:w-1/5 bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold mb-4 text-gray-800">Filters</h2>
+            <div className="flex flex-col gap-4">
+              <select
+                name="sortBy"
+                value={filter.sortBy}
+                onChange={handleFilterChange}
+                className="w-full rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                <option value="">Sort by</option>
+                <option value="distance">Distance</option>
+                <option value="relevance">Relevance</option>
+              </select>
+              <select
+                name="price"
+                value={filter.price}
+                onChange={handleFilterChange}
+                className="w-full rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-green-400"
+              >
+                <option value="">Price</option>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+              <select
+                name="cuisine"
+                value={filter.cuisine}
+                onChange={handleFilterChange}
+                className="w-full rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
+              >
+                <option value="">Cuisine</option>
+                {/* Add cuisine options here */}
+              </select>
+              <label className="flex items-center rounded-lg bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700">
+                <input
+                  type="checkbox"
+                  name="offers"
+                  checked={filter.offers}
+                  onChange={() => setFilter({ ...filter, offers: !filter.offers })}
+                />
+                <span className="ml-2">Offers</span>
+              </label>
             </div>
           </div>
-  
+
           {/* Restaurants Section */}
-          <div className="w-full md:w-3/4 lg:w-4/5 md:pl-8">
+          <div className="w-full md:w-3/4 lg:w-4/5">
             <div className="mb-6">
               <input
                 type="text"
                 placeholder="Search for restaurants, dishes, cuisines"
-                className="w-full rounded-xl bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 shadow-inner focus:outline-none focus:ring-2 focus:ring-purple-400"
+                className="w-full rounded-xl bg-gray-100 px-4 py-3 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-400"
                 value={searchTerm}
                 onChange={handleSearchChange}
               />
             </div>
             <h2 className="text-2xl font-semibold mb-4 text-gray-800">All Restaurants</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {filteredRestaurants.map((restaurant, index) => (
                 <div
                   key={index}
-                  className={`rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform transform hover:scale-105 ${
+                  className={`rounded-lg overflow-hidden shadow-lg cursor-pointer transform transition-transform duration-300 hover:scale-105 ${
                     restaurant.openOrClosed !== true ? 'pointer-events-none opacity-50' : ''
                   }`}
                   onClick={() => handleRestaurantClick(restaurant)}
@@ -156,6 +154,7 @@ const AllRestaurantsPage = () => {
         </div>
       </div>
     </div>
+
   );
   
   
