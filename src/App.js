@@ -12,8 +12,7 @@ import VendorProfile from './Components/Vendor/VendorProfile';
 import AdminProfile from './Components/Admin/AdminProfile';
 import Login from './Components/Auth/Login';
 import Register from './Components/Auth/Register';
-
-
+import MyRestoura from './Components/Customer/MyRestoura';
 
 
 function App() {
@@ -29,6 +28,8 @@ function App() {
           
           <Route path="/customer-onboarding/:id" element={<CustomerOnboarding/>} />
           <Route path="/customer-profile/*" element={<Profile />} />
+          <Route path="/my-restoura/*" element={<MyRestoura />} />
+          
 
           <Route path="/vendor-onboarding/:id" element={<VendorOnboarding/>} />
           <Route path="/vendor-profile/*" element={<VendorProfile />} />

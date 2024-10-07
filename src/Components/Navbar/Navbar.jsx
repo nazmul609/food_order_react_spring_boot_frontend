@@ -13,7 +13,7 @@ function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [cartItemCount, setCartItemCount] = useState(0); // State for cart item count
+  const [cartItemCount, setCartItemCount] = useState(0); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -109,7 +109,7 @@ function Navbar() {
         )}
         {userRole === 'customer' && (
           <Link
-            to="/my-restoura"
+            to={`/my-restoura/orders-history/${userId}`}
             className="text-gray-800 hover:bg-gradient-to-r from-[#C5A3FF] to-[#9F7FFF] text-opacity-90 px-3 py-1 rounded-md transition-colors duration-300"
           >
             My Restoura
@@ -265,7 +265,7 @@ function Navbar() {
               </ListItem>
             )}
             {userRole === 'customer' && (
-              <ListItem button component={Link} to="/my-restoura" onClick={toggleDrawer(false)}>
+              <ListItem button component={Link} to="/my-restoura/*" onClick={toggleDrawer(false)}>
                 <ListItemText primary="My Restoura" />
               </ListItem>
             )}

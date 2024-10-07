@@ -1,18 +1,10 @@
+// Navigation.js (Dynamic Navigation)
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faShoppingBag, faHeart, faBell } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@mui/material';
 
-const userId = localStorage.getItem('userId'); 
-const menu = [
-  { title: "Customer Details", icon: faUser, path: `/customer-profile/my-profile/${userId}`},
-  { title: "Orders and History", icon: faShoppingBag, path: `/customer-profile/orders-history/${userId}`},
-  { title: "Favorite Restaurants", icon: faHeart, path: `/customer-profile/favorites/${userId}` },
-  { title: "Notifications", icon: faBell, path: `/customer-profile/notifications/${userId}` }
-];
-
-const CustomerProfileNavigation = () => {
+const Navigation = ({ menu }) => {
   const navigate = useNavigate();
 
   return (
@@ -35,4 +27,4 @@ const CustomerProfileNavigation = () => {
   );
 };
 
-export default CustomerProfileNavigation;
+export default Navigation;

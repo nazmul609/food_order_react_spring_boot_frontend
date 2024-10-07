@@ -1,23 +1,23 @@
 import React from 'react';
-import ProfileNavigation from './ProfileNavigation';
+import Navigation from './Navigation';
 import { Route, Routes } from 'react-router-dom';
 import CustomerDetails from './CustomerDetails';
-import OrdersHistory from './OrdersHistory';
-import FavoriteRestaurants from './FavoriteRestaurants';
-import Notifications from './Notifications';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
+
+const userId = localStorage.getItem('userId');
+
+// Menu with only Customer Details
+const customerDetailsMenu = [
+  { title: "Customer Details", icon: faUser, path: `/customer-profile/my-profile/${userId}` }
+];
 
 function Profile() {
   return (
     <div className="flex">
-      
-        <ProfileNavigation />
-      
+      <Navigation menu={customerDetailsMenu} />
       <div className="flex-1 p-8">
         <Routes>
           <Route path="my-profile/:id" element={<CustomerDetails />} />
-          <Route path="orders-history/:id" element={<OrdersHistory />} />
-          <Route path="favorites/:id" element={<FavoriteRestaurants />} />
-          <Route path="notifications/:id" element={<Notifications />} />
         </Routes>
       </div>
     </div>
