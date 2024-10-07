@@ -101,7 +101,7 @@ function Navbar() {
         )}
         {userRole === 'vendor' && (
           <Link
-            to="/my-restaurants"
+            to={`/my-restaurants/${userId}`}
             className="text-gray-800 hover:bg-gradient-to-r from-[#8FCBFF] to-[#70B9FF] text-opacity-90 px-3 py-1 rounded-md transition-colors duration-300"
           >
             My Restaurants
@@ -260,12 +260,12 @@ function Navbar() {
               </ListItem>
             )}
             {userRole === 'vendor' && (
-              <ListItem button component={Link} to="/my-restaurants" onClick={toggleDrawer(false)}>
+              <ListItem button component={Link} to={`/my-restaurants/${userId}`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="My Restaurants" />
               </ListItem>
             )}
             {userRole === 'customer' && (
-              <ListItem button component={Link} to="/my-restoura/*" onClick={toggleDrawer(false)}>
+              <ListItem button component={Link} to={`/my-restoura/orders-history/${userId}`} onClick={toggleDrawer(false)}>
                 <ListItemText primary="My Restoura" />
               </ListItem>
             )}

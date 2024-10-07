@@ -13,6 +13,8 @@ import AdminProfile from './Components/Admin/AdminProfile';
 import Login from './Components/Auth/Login';
 import Register from './Components/Auth/Register';
 import MyRestoura from './Components/Customer/MyRestoura';
+import VendorRestaurantsPage from './Components/Restaurant/VendorRestaurantsPage';
+
 
 
 function App() {
@@ -33,6 +35,7 @@ function App() {
 
           <Route path="/vendor-onboarding/:id" element={<VendorOnboarding/>} />
           <Route path="/vendor-profile/*" element={<VendorProfile />} />
+          <Route path="/my-restaurants/:id" element={<VendorRestaurantsPage />} />
 
           <Route path="/admin-profile/*" element={<AdminProfile />} />
 
