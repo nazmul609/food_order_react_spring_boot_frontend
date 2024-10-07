@@ -194,13 +194,24 @@ const MenuManagement = () => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <h2 className="text-2xl font-bold mb-4">Menu Management</h2>
-
-      <label className="block mb-2">
-        Select Restaurant:
-        <select onChange={handleRestaurantSelect} className="border rounded p-2 ml-2">
-          <option value="">-- Select a Restaurant --</option>
+    <div className="overflow-x-auto p-6 bg-gray-100 min-h-screen">
+      {/* Header Section */}
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-800 py-8 shadow-lg rounded-t-lg">
+        <h2 className="text-4xl font-bold text-white tracking-wide text-center">
+          Menu Management
+        </h2>
+      </div>
+  
+      <div className="mt-10"></div> 
+  
+      {/* Restaurant Selector */}
+      <label className="block mb-4 text-lg font-semibold text-gray-700">
+        Select Your Restaurant:
+        <select
+          onChange={handleRestaurantSelect}
+          className="border rounded p-3 ml-2 text-gray-800 bg-white focus:ring focus:ring-blue-300 transition duration-200"
+        >
+          <option value=""></option>
           {restaurants.map((restaurant) => (
             <option key={restaurant.id} value={restaurant.id}>
               {restaurant.name}
@@ -208,14 +219,15 @@ const MenuManagement = () => {
           ))}
         </select>
       </label>
-
-      <div className="mb-4">
+  
+      {/* Menu Item Inputs */}
+      <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
         <input
           type="text"
           placeholder="Cuisine Name*"
           value={newMenuItem.cuisineName}
           onChange={(e) => handleNewMenuInputChange('cuisineName', e.target.value)}
-          className="w-full p-1 border rounded mb-2"
+          className="w-full p-3 border rounded-lg mb-4 focus:ring focus:ring-blue-300 transition duration-200"
           required
         />
         <input
@@ -223,7 +235,7 @@ const MenuManagement = () => {
           placeholder="Category*"
           value={newMenuItem.category}
           onChange={(e) => handleNewMenuInputChange('category', e.target.value)}
-          className="w-full p-1 border rounded mb-2"
+          className="w-full p-3 border rounded-lg mb-4 focus:ring focus:ring-blue-300 transition duration-200"
           required
         />
         <input
@@ -231,7 +243,7 @@ const MenuManagement = () => {
           placeholder="Price*"
           value={newMenuItem.price}
           onChange={(e) => handleNewMenuInputChange('price', e.target.value)}
-          className="w-full p-1 border rounded mb-2"
+          className="w-full p-3 border rounded-lg mb-4 focus:ring focus:ring-blue-300 transition duration-200"
           required
         />
         <input
@@ -239,75 +251,85 @@ const MenuManagement = () => {
           placeholder="Description"
           value={newMenuItem.description}
           onChange={(e) => handleNewMenuInputChange('description', e.target.value)}
-          className="w-full p-1 border rounded mb-2"
+          className="w-full p-3 border rounded-lg mb-4 focus:ring focus:ring-blue-300 transition duration-200"
         />
         <div className="w-full">
-          <label htmlFor="image-upload" className="block font-semibold text-gray-700">
+          <label htmlFor="image-upload" className="block font-semibold text-gray-700 mb-2">
             Upload Image <span className="text-red-500">*</span>
           </label>
           <input
             type="file"
             accept="image/*"
             onChange={handleImageUploadChange}
-            className="w-full p-1 border rounded mb-2"
+            className="w-full p-2 border rounded-lg focus:ring focus:ring-blue-300 transition duration-200"
             id="image-upload"
             required
           />
         </div>
-
-
+  
+        {/* Add Menu Button */}
         <button
           onClick={handleAddNewMenu}
-          className="mb-4 py-2 px-4 bg-blue-600 text-white rounded"
+          className="w-full mt-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg shadow-md hover:shadow-lg focus:ring focus:ring-blue-300 transition duration-200"
           disabled={!newMenuItem.cuisineName || !newMenuItem.category || !newMenuItem.price}
         >
           Add New Menu
         </button>
       </div>
-
+  
+      {/* Delete Confirmation Popup */}
       {showDeletePopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded shadow-md">
-            <p>Are you sure you want to delete this menu item?</p>
-            <button onClick={handleDeleteMenu} className="mr-2 py-2 px-4 bg-red-500 text-white rounded">
-              Yes
-            </button>
-            <button onClick={closeDeletePopup} className="py-2 px-4 bg-gray-300 text-black rounded">
-              No
-            </button>
+          <div className="bg-white p-8 rounded-lg shadow-lg transition-transform transform scale-105">
+            <p className="text-lg font-semibold mb-6">Are you sure you want to delete this menu item?</p>
+            <div className="flex justify-between">
+              <button
+                onClick={handleDeleteMenu}
+                className="py-2 px-6 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition duration-200"
+              >
+                Yes
+              </button>
+              <button
+                onClick={closeDeletePopup}
+                className="py-2 px-6 bg-gray-300 text-black rounded-lg shadow hover:bg-gray-400 transition duration-200"
+              >
+                No
+              </button>
+            </div>
           </div>
         </div>
       )}
-
-      <table className="min-w-full bg-white border border-gray-300">
-        <thead>
+  
+      {/* Menu Table */}
+      <table className="min-w-full mt-8 bg-white border border-gray-300 shadow-lg rounded-lg">
+        <thead className="bg-gray-200">
           <tr>
-            <th className="py-2 px-4 border-b">ID</th>
-            <th className="py-2 px-4 border-b">Name</th>
-            <th className="py-2 px-4 border-b">Category</th>
-            <th className="py-2 px-4 border-b">Description</th>
-            <th className="py-2 px-4 border-b">Price</th>
-            <th className="py-2 px-4 border-b">Availability</th>
-            <th className="py-2 px-4 border-b">Image</th>
-            <th className="py-2 px-4 border-b">Actions</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">ID</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">Name</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">Category</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">Description</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">Price</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">Availability</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">Image</th>
+            <th className="py-4 px-6 border-b text-left font-semibold">Actions</th>
           </tr>
         </thead>
         <tbody>
           {menuItems.map((item) => (
             <tr key={item.id}>
-              <td className="py-2 px-4 border-b">{item.id}</td>
-              <td className="py-2 px-4 border-b">{item.cuisineName}</td>
-              <td className="py-2 px-4 border-b">{item.category}</td>
-              <td className="py-2 px-4 border-b">{item.description}</td>
-              <td className="py-2 px-4 border-b">${item.price}</td>
-              <td className="py-2 px-4 border-b">{item.availability}</td>
-              <td className="py-2 px-4 border-b">
-                {item.imageUrl && <img src={item.imageUrl} alt={item.cuisineName} className="w-16 h-16" />}
+              <td className="py-4 px-6 border-b">{item.id}</td>
+              <td className="py-4 px-6 border-b">{item.cuisineName}</td>
+              <td className="py-4 px-6 border-b">{item.category}</td>
+              <td className="py-4 px-6 border-b">{item.description}</td>
+              <td className="py-4 px-6 border-b">${item.price}</td>
+              <td className="py-4 px-6 border-b">{item.availability}</td>
+              <td className="py-4 px-6 border-b">
+                {item.imageUrl && <img src={item.imageUrl} alt={item.cuisineName} className="w-16 h-16 object-cover rounded-lg" />}
               </td>
-              <td className="py-2 px-4 border-b">
+              <td className="py-4 px-6 border-b">
                 <button
                   onClick={() => openDeletePopup(item.id)}
-                  className="py-1 px-3 bg-red-500 text-white rounded"
+                  className="py-2 px-4 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-200"
                 >
                   Delete
                 </button>
@@ -318,6 +340,7 @@ const MenuManagement = () => {
       </table>
     </div>
   );
+  
 };
 
 export default MenuManagement;

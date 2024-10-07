@@ -142,66 +142,63 @@ const OrderManagement = () => {
   };
 
   return (
-    <div className="flex flex-col flex-1 p-8 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold mb-6 text-center">Order Management</h2>
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <thead className="bg-gray-100">
-          <tr className="text-left">
-            <th className="py-3 px-4 border-b">ID</th>
-            <th className="py-3 px-4 border-b">Customer</th>
-            <th className="py-3 px-4 border-b">Restaurant</th>
-            <th className="py-3 px-4 border-b">Cuisine</th>
-            <th className="py-3 px-4 border-b">Price</th>
-            <th className="py-3 px-4 border-b">Quantity</th>
-            <th className="py-3 px-4 border-b">Status</th>
-            <th className="py-3 px-4 border-b">Update</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order.id} className="hover:bg-gray-50 cursor-pointer">
-              <td className="py-4 px-4 border-b">{order.id}</td>
-              <td className="py-4 px-4 border-b">{order.customerId}</td>
-              <td className="py-4 px-4 border-b">{order.restaurantName}</td>
-              <td className="py-4 px-4 border-b">{order.cuisineName}</td>
-              <td className="py-4 px-4 border-b">
-                ${(order.cuisinePrice * order.quantity).toFixed(2)} 
-              </td>
-              <td className="py-4 px-4 border-b">{order.quantity}</td>
-              <td className="py-4 px-4 border-b">
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap ${getStatusColor(order.status)}`}
-                >
-                  {order.status}
-                </span>
-              </td>
-
-              <td className="py-4 px-4 border-b">
-                {order.status === 'Pending' || order.status === 'Order Placed' ? (
-                  <button
-                    className="group relative inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[1px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
-                    onClick={() => handleStatusChange(order)}
-                  >
-                    <span
-                      className="block rounded-full bg-white px-6 py-2 text-xs font-medium text-gray-800 group-hover:bg-transparent group-hover:text-white transition-all duration-300"
-                    >
-                      Update Status
-                    </span>
-                  </button>
-                ) : (
-                  <span className="text-gray-500">N/A</span>
-                )}
-              </td>
+    <div className="flex flex-col flex-1 p-8 bg-gray-100 min-h-screen">
+      <h2 className="text-3xl font-semibold mb-8 text-center text-gray-800 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 py-4 shadow rounded-md">
+        Order Management
+      </h2>
+  
+      <div className="overflow-x-auto bg-white shadow-md rounded-lg">
+        <table className="min-w-full bg-white border border-gray-300 rounded-lg">
+          <thead className="bg-gray-200 text-gray-700">
+            <tr>
+              {['ID', 'Customer', 'Restaurant', 'Cuisine', 'Price', 'Quantity', 'Status', 'Update'].map((header) => (
+                <th key={header} className="py-3 px-4 text-left font-semibold border-b">{header}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order.id} className="hover:bg-gray-50 transition duration-150">
+                <td className="py-4 px-4 border-b">{order.id}</td>
+                <td className="py-4 px-4 border-b">{order.customerId}</td>
+                <td className="py-4 px-4 border-b">{order.restaurantName}</td>
+                <td className="py-4 px-4 border-b">{order.cuisineName}</td>
+                <td className="py-4 px-4 border-b">
+                  ${(order.cuisinePrice * order.quantity).toFixed(2)}
+                </td>
+                <td className="py-4 px-4 border-b">{order.quantity}</td>
+                <td className="py-4 px-4 border-b">
+                  <span
+                    className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.status)}`}
+                  >
+                    {order.status}
+                  </span>
+                </td>
+                <td className="py-4 px-4 border-b">
+                  {['Pending', 'Order Placed'].includes(order.status) ? (
+                    <button
+                      className="group relative inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[1px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
+                      onClick={() => handleStatusChange(order)}
+                    >
+                      <span className="block rounded-full bg-white px-6 py-2 text-xs font-semibold text-gray-800 group-hover:bg-transparent group-hover:text-white transition-all duration-300">
+                        Update Status
+                      </span>
+                    </button>
+                  ) : (
+                    <span className="text-gray-500">N/A</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
   
       {/* Popup for status update */}
       {showPopup && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg">
-            <h3 className="text-xl font-semibold mb-4">Update Order Status</h3>
+          <div className="bg-white p-8 rounded-lg shadow-lg w-1/3">
+            <h3 className="text-xl font-semibold mb-4 text-center">Update Order Status</h3>
             <div className="flex flex-col space-y-4">
               {selectedOrder.status === 'Pending' && (
                 <>
@@ -239,6 +236,7 @@ const OrderManagement = () => {
       )}
     </div>
   );
+  
 };
 
 export default OrderManagement;

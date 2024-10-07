@@ -178,15 +178,19 @@ const RestaurantManagement = () => {
   
 
 
-return (
+  return (
     <>
-      <div className="max-w-6xl mx-auto mt-10 p-6 bg-gray-100 shadow-md rounded-lg">
+      <div className="max-w-6xl mx-auto  p-6 bg-gray-50 shadow-lg rounded-lg">
         {/* Restaurant Creation Section */}
-        <div className="mb-8 bg-white p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Create Restaurant</h2>
+        <div className="mb-10 bg-white p-8 rounded-lg shadow-md">
+          <h2 className="text-3xl font-semibold mb-8 text-center text-gray-800 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 py-4 shadow rounded-md">
+            Create Your Restaurant
+          </h2>
+  
+          <div className="mt-10"></div> 
           <form onSubmit={handleSubmit}>
             {/* Image Upload Section */}
-            <div className="mb-4">
+            <div className="mb-6">
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 Restaurant Image <span className="text-red-500">*</span>
               </label>
@@ -194,13 +198,13 @@ return (
                 type="file"
                 accept="image/*"
                 onChange={(e) => setImageFile(e.target.files[0])}
-                className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="block w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
             </div>
-
+  
             {/* Basic Information Section */}
-            <div className="mb-4">
+            <div className="mb-6">
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 Restaurant Name <span className="text-red-500">*</span>
               </label>
@@ -209,12 +213,12 @@ return (
                 name="name"
                 value={restaurantData.name}
                 onChange={handleChange}
-                className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="block w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
             </div>
   
-            <div className="mb-4">
+            <div className="mb-6">
               <label className="block text-gray-700 text-sm font-medium mb-2">
                 Cuisine Type <span className="text-red-500">*</span>
               </label>
@@ -223,111 +227,101 @@ return (
                 name="cuisineType"
                 value={restaurantData.cuisineType}
                 onChange={handleChange}
-                className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="block w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                 required
               />
             </div>
   
-          
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Description
-            </label>
-            <textarea
-              name="description"
-              value={restaurantData.description}
-              onChange={handleChange}
-              className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows="3"
-            />
-          </div>
-
-          
-          <div className="mb-4">
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Operating Hours <span className="text-red-500">*</span>
-            </label>
-            <div className="flex space-x-4">
-              <input
-                type="time"
-                name="open"
-                value={restaurantData.operatingHours.open}
-                onChange={(e) =>
-                  setRestaurantData({
-                    ...restaurantData,
-                    operatingHours: {
-                      ...restaurantData.operatingHours,
-                      open: e.target.value,
-                    },
-                  })
-                }
-                className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-              <span className="text-gray-700 self-center">-</span>
-              <input
-                type="time"
-                name="close"
-                value={restaurantData.operatingHours.close}
-                onChange={(e) =>
-                  setRestaurantData({
-                    ...restaurantData,
-                    operatingHours: {
-                      ...restaurantData.operatingHours,
-                      close: e.target.value,
-                    },
-                  })
-                }
-                className="shadow-sm border border-gray-300 rounded-md w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-medium mb-2">Description</label>
+              <textarea
+                name="description"
+                value={restaurantData.description}
+                onChange={handleChange}
+                className="block w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                rows="3"
               />
             </div>
-          </div>
-
   
-            <div className="mb-4 flex items-center">
-              <input
-                type="checkbox"
-                name="partyOrderAvailable"
-                checked={restaurantData.partyOrderAvailable}
-                onChange={handleChange}
-                className="mr-2 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label className="text-gray-700 text-sm font-medium">
-                Party Order 
+            <div className="mb-6">
+              <label className="block text-gray-700 text-sm font-medium mb-2">
+                Operating Hours <span className="text-red-500">*</span>
               </label>
+              <div className="flex space-x-4">
+                <input
+                  type="time"
+                  name="open"
+                  value={restaurantData.operatingHours.open}
+                  onChange={(e) =>
+                    setRestaurantData({
+                      ...restaurantData,
+                      operatingHours: {
+                        ...restaurantData.operatingHours,
+                        open: e.target.value,
+                      },
+                    })
+                  }
+                  className="block w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+                <span className="text-gray-700 self-center">-</span>
+                <input
+                  type="time"
+                  name="close"
+                  value={restaurantData.operatingHours.close}
+                  onChange={(e) =>
+                    setRestaurantData({
+                      ...restaurantData,
+                      operatingHours: {
+                        ...restaurantData.operatingHours,
+                        close: e.target.value,
+                      },
+                    })
+                  }
+                  className="block w-full p-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  required
+                />
+              </div>
             </div>
   
-            <div className="mb-4 flex items-center">
-              <input
-                type="checkbox"
-                name="offHourDeliveryAvailable"
-                checked={restaurantData.offHourDeliveryAvailable}
-                onChange={handleChange}
-                className="mr-2 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label className="text-gray-700 text-sm font-medium">
-                Off-Hour Delivery 
-              </label>
-            </div>
-  
-            <div className="mb-4 flex items-center">
-              <input
-                type="checkbox"
-                name="openOrClosed"
-                checked={restaurantData.openOrClosed}
-                onChange={handleChange}
-                className="mr-2 w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              />
-              <label className="text-gray-700 text-sm font-medium">
-                Open 
-              </label>
+            {/* Checkbox Options */}
+            <div className="mb-6 space-y-4">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="partyOrderAvailable"
+                  checked={restaurantData.partyOrderAvailable}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
+                />
+                <label className="ml-2 text-gray-700 text-sm font-medium">Party Order</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="offHourDeliveryAvailable"
+                  checked={restaurantData.offHourDeliveryAvailable}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
+                />
+                <label className="ml-2 text-gray-700 text-sm font-medium">Off-Hour Delivery</label>
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="openOrClosed"
+                  checked={restaurantData.openOrClosed}
+                  onChange={handleChange}
+                  className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
+                />
+                <label className="ml-2 text-gray-700 text-sm font-medium">Open</label>
+              </div>
             </div>
   
             <button
               type="submit"
               disabled={!isFormValid}
-              className={`bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              className={`w-full py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-bold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-blue-400 hover:from-blue-600 hover:to-indigo-700 transition ${
                 !isFormValid ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
@@ -337,15 +331,15 @@ return (
         </div>
       </div>
   
-      <div className="max-w-6xl mx-auto mt-10 p-6 bg-gray-100 shadow-md rounded-lg">
-        {/* Restaurant Display Section */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center">My Restaurants</h3>
-
+      {/* Restaurant Display Section */}
+      <div className="max-w-6xl mx-auto mt-10 p-6 bg-gray-50 shadow-lg rounded-lg">
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          <h3 className="text-2xl font-semibold text-gray-900 mb-6 text-center">My Restaurants</h3>
+  
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {restaurantList.length > 0 ? (
               restaurantList.map((restaurant) => (
-                <RestaurantCard 
+                <RestaurantCard
                   key={restaurant.id}
                   restaurant={{
                     id: restaurant.id,
@@ -353,18 +347,19 @@ return (
                     openOrClosed: restaurant.openOrClosed,
                     operatingHours: restaurant.operatingHours,
                     cuisineType: restaurant.cuisineType,
-                  }} 
+                  }}
                 />
               ))
             ) : (
-              <p className="text-gray-500">No restaurants available.</p>
+              <p className="text-gray-500 text-center w-full">No restaurants available.</p>
             )}
           </div>
         </div>
       </div>
     </>
-    
   );
+  
+  
   
 };
 
