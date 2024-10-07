@@ -72,7 +72,7 @@ const AllRestaurantsPage = () => {
       <div className="max-w-screen-xl mx-auto px-4 py-12">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Filters Section */}
-          <div className="w-full md:w-1/4 lg:w-1/5 bg-white p-6 rounded-xl shadow-md">
+          <div className="w-full md:w-1/4 lg:w-1/5 bg-white p-6 rounded-xl shadow-md max-h-[calc(100vh-4rem)] overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4 text-gray-800">Filters</h2>
             <div className="flex flex-col gap-4">
               <select
@@ -116,6 +116,7 @@ const AllRestaurantsPage = () => {
               </label>
             </div>
           </div>
+
 
           {/* Restaurants Section */}
           <div className="w-full md:w-3/4 lg:w-4/5">

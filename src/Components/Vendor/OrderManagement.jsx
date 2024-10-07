@@ -127,7 +127,7 @@ const OrderManagement = () => {
         return 'bg-yellow-500 text-white';
       case 'Order Placed':
         return 'bg-green-500 text-white';
-      case 'Canceled':
+      case 'Canceled:Vendor':
         return 'bg-red-500 text-white';
       case 'Delivered':
         return 'bg-blue-500 text-white';
@@ -143,9 +143,12 @@ const OrderManagement = () => {
 
   return (
     <div className="flex flex-col flex-1 p-8 bg-gray-100 min-h-screen">
-      <h2 className="text-3xl font-semibold mb-8 text-center text-gray-800 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 py-4 shadow rounded-md">
-        Order Management
-      </h2>
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-800 py-8 shadow-lg rounded-t-lg">
+          <h2 className="text-4xl font-bold text-white tracking-wide text-center">
+            order Management
+          </h2>
+        </div>
+        <div className="mt-10"></div> 
   
       <div className="overflow-x-auto bg-white shadow-md rounded-lg">
         <table className="min-w-full bg-white border border-gray-300 rounded-lg">
@@ -210,7 +213,7 @@ const OrderManagement = () => {
                   </button>
                   <button
                     className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-                    onClick={() => handleStatusUpdate('Cancelled')}
+                    onClick={() => handleStatusUpdate('Canceled:Vendor')}
                   >
                     Cancel Order
                   </button>

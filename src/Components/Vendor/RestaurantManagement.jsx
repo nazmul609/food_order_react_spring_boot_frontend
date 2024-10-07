@@ -15,6 +15,7 @@ const RestaurantManagement = () => {
   
   const [isFormValid, setIsFormValid] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
 
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
@@ -68,6 +69,9 @@ const RestaurantManagement = () => {
 
       await handleImageUpload(restaurantId);
 
+      // Show success modal after restaurant creation
+      setIsSuccessModalOpen(true);
+
       // Reset form
       setRestaurantData({
         name: '',
@@ -118,172 +122,203 @@ const RestaurantManagement = () => {
     navigate(`/my-restaurants/${userId}`);
   };
 
+  const handleNavigateToMenuManagement = () => {
+    navigate(`/vendor-profile/menu-management/${userId}`);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto p-8 bg-gray-50 shadow-lg rounded-lg">
-      <div className="mb-8 bg-white p-10 rounded-lg shadow-md ">
-        <h2 className="text-3xl text-center font-semibold mb-8 text-gray-800 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400 py-4 shadow rounded-md">
-          Create Your Restaurant
+    <div className="flex flex-col flex-1 p-8 bg-gray-100 min-h-screen">
+      <div className="bg-gradient-to-r from-blue-600 to-indigo-800 py-8 shadow-lg rounded-t-lg">
+        <h2 className="text-4xl font-bold text-white tracking-wide text-center">
+          Manage Your Restaurant
         </h2>
+      </div>
+      <div className="mt-10"></div> 
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Image Upload Section */}
-          <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Restaurant Image <span className="text-red-500">*</span>
-            </label>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Image Upload Section */}
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Restaurant Image <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImageFile(e.target.files[0])}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        {/* Basic Information Section */}
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Restaurant Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="name"
+            value={restaurantData.name}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Cuisine Type <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="cuisineType"
+            value={restaurantData.cuisineType}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Description
+          </label>
+          <textarea
+            name="description"
+            value={restaurantData.description}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            rows="3"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Operating Hours <span className="text-red-500">*</span>
+          </label>
+          <div className="flex space-x-4">
             <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => setImageFile(e.target.files[0])}
+              type="time"
+              name="open"
+              value={restaurantData.operatingHours.open}
+              onChange={(e) =>
+                setRestaurantData({
+                  ...restaurantData,
+                  operatingHours: {
+                    ...restaurantData.operatingHours,
+                    open: e.target.value,
+                  },
+                })
+              }
+              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+            <input
+              type="time"
+              name="close"
+              value={restaurantData.operatingHours.close}
+              onChange={(e) =>
+                setRestaurantData({
+                  ...restaurantData,
+                  operatingHours: {
+                    ...restaurantData.operatingHours,
+                    close: e.target.value,
+                  },
+                })
+              }
               className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
               required
             />
           </div>
+        </div>
 
-          {/* Basic Information Section */}
-          <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Restaurant Name <span className="text-red-500">*</span>
-            </label>
+        {/* Checkbox Options */}
+        <div className="space-y-4">
+          <div className="flex items-center">
             <input
-              type="text"
-              name="name"
-              value={restaurantData.name}
+              type="checkbox"
+              name="partyOrderAvailable"
+              checked={restaurantData.partyOrderAvailable}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
             />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Cuisine Type <span className="text-red-500">*</span>
+            <label className="ml-2 text-gray-700 text-sm font-medium">
+              Party Order
             </label>
+          </div>
+          <div className="flex items-center">
             <input
-              type="text"
-              name="cuisineType"
-              value={restaurantData.cuisineType}
+              type="checkbox"
+              name="offHourDeliveryAvailable"
+              checked={restaurantData.offHourDeliveryAvailable}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
             />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Description
+            <label className="ml-2 text-gray-700 text-sm font-medium">
+              Off-Hour Delivery
             </label>
-            <textarea
-              name="description"
-              value={restaurantData.description}
+          </div>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              name="openOrClosed"
+              checked={restaurantData.openOrClosed}
               onChange={handleChange}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-              rows="3"
+              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
             />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 text-sm font-medium mb-2">
-              Operating Hours <span className="text-red-500">*</span>
+            <label className="ml-2 text-gray-700 text-sm font-medium">
+              Is Open
             </label>
-            <div className="flex space-x-4">
-              <input
-                type="time"
-                name="open"
-                value={restaurantData.operatingHours.open}
-                onChange={(e) =>
-                  setRestaurantData({
-                    ...restaurantData,
-                    operatingHours: {
-                      ...restaurantData.operatingHours,
-                      open: e.target.value,
-                    },
-                  })
-                }
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                required
-              />
-              <input
-                type="time"
-                name="close"
-                value={restaurantData.operatingHours.close}
-                onChange={(e) =>
-                  setRestaurantData({
-                    ...restaurantData,
-                    operatingHours: {
-                      ...restaurantData.operatingHours,
-                      close: e.target.value,
-                    },
-                  })
-                }
-                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                required
-              />
-            </div>
           </div>
+        </div>
 
-          {/* Checkbox Options */}
-          <div className="space-y-4">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="partyOrderAvailable"
-                checked={restaurantData.partyOrderAvailable}
-                onChange={handleChange}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
-              />
-              <label className="ml-2 text-gray-700 text-sm font-medium">
-                Party Order
-              </label>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="offHourDeliveryAvailable"
-                checked={restaurantData.offHourDeliveryAvailable}
-                onChange={handleChange}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
-              />
-              <label className="ml-2 text-gray-700 text-sm font-medium">
-                Off-Hour Delivery
-              </label>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="openOrClosed"
-                checked={restaurantData.openOrClosed}
-                onChange={handleChange}
-                className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
-              />
-              <label className="ml-2 text-gray-700 text-sm font-medium">Open</label>
-            </div>
-          </div>
-
+        {/* Submit and View Restaurants Buttons */}
+        <div className="space-y-4">
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`w-full py-3 mt-4 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition ${
-              !isFormValid && 'opacity-50 cursor-not-allowed'
+            className={`w-full py-2 px-4 text-white font-bold rounded-md shadow-md focus:outline-none focus:ring-2 ${
+              isFormValid
+                ? 'bg-blue-500 hover:bg-blue-600 focus:ring-blue-400'
+                : 'bg-gray-400 cursor-not-allowed'
             }`}
           >
             Create Restaurant
           </button>
-        </form>
-      </div>
+          <div className="mt-8 flex items-center justify-between">
+            <p className="text-gray-700 font-medium">Want to view your restaurants?</p>
+            <button
+              onClick={handleViewMyRestaurants}
+              className="py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
+            >
+              View Restaurants
+            </button>
+          </div>
 
-      {/* View My Restaurants Button */}
-      <div className="mt-8 flex items-center justify-between">
-        <p className="text-gray-700 font-medium">Want to view your restaurants?</p>
-        <button
-          onClick={handleViewMyRestaurants}
-          className="py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-        >
-          View Restaurants
-        </button>
-      </div>
+        </div>
+      </form>
 
-
+      {/* Success Modal */}
+      {isSuccessModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center space-y-4">
+            <h3 className="text-xl font-bold text-gray-800">
+              Restaurant Created Successfully!
+            </h3>
+            <p className="text-gray-600">
+              Your restaurant has been created. Please add your Menu
+            </p>
+            <div className="space-y-2">
+              <button
+                onClick={handleNavigateToMenuManagement}
+                className="w-full py-2 px-4 bg-blue-500 text-white font-bold rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              >
+                Go to Menu Management
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
