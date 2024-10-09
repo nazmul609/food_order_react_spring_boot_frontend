@@ -1,20 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faShoppingBag, faUtensils, faBowlFood, faEnvelopeOpen, faMagnifyingGlassDollar } from '@fortawesome/free-solid-svg-icons';
 import { Divider } from '@mui/material';
 
-const userId = localStorage.getItem('userId'); 
-const menu = [
-  { title: "My Profile", icon: faUser, path: `/vendor-profile/my-profile/${userId}` },
-  { title: "Restaurant Management", icon: faUtensils, path: `/vendor-profile/restaurant-management/${userId}` },
-  { title: "Order Management", icon: faBowlFood, path: `/vendor-profile/order-management/${userId}` },
-  { title: "Menu Management", icon: faShoppingBag, path: `/vendor-profile/menu-management/${userId}` },
-  { title: "Offers/Promo", icon: faEnvelopeOpen, path: `/vendor-profile/offers-promo/${userId}` },
-  { title: "Report & Analytics", icon: faMagnifyingGlassDollar, path: `/vendor-profile/report-analytics/${userId}` },
-];
 
-const ProfileNavigation = () => {
+
+const ProfileNavigation = ({ menu }) => {
   const navigate = useNavigate();
 
   return (

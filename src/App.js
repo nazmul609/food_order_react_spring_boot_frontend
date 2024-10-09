@@ -13,9 +13,10 @@ import AdminProfile from './Components/Admin/AdminProfile';
 import Login from './Components/Auth/Login';
 import Register from './Components/Auth/Register';
 import MyRestoura from './Components/Customer/MyRestoura';
-import VendorRestaurantsPage from './Components/Restaurant/VendorRestaurantsPage';
-
 import AboutUs from './Components/Home/AboutUs';
+import VendorRestoura from './Components/Vendor/VendorRestoura';
+
+
 
 function App() {
   return (
@@ -36,7 +37,7 @@ function App() {
 
           <Route path="/vendor-onboarding/:id" element={<VendorOnboarding/>} />
           <Route path="/vendor-profile/*" element={<VendorProfile />} />
-          <Route path="/my-restaurants/:id" element={<VendorRestaurantsPage />} />
+          <Route path="/vendor-restoura/*" element={<VendorRestoura/>} />
 
           <Route path="/admin-profile/*" element={<AdminProfile />} />
 

@@ -80,7 +80,7 @@ const VendorRestaurantsPage = () => {
             onChange={handleSearchChange}
           />
         </div>
-        <h2 className="text-2xl font-semibold mb-4 text-gray-800">Your Restaurants</h2>
+        <div className="text-2xl font-semibold mb-4 text-gray-800"></div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {filteredVendorRestaurants.map((restaurant) => (
             <div

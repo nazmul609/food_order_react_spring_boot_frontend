@@ -118,12 +118,9 @@ const RestaurantManagement = () => {
     }
   };
   
-  const handleViewMyRestaurants = () => {
-    navigate(`/my-restaurants/${userId}`);
-  };
 
   const handleNavigateToMenuManagement = () => {
-    navigate(`/vendor-profile/menu-management/${userId}`);
+    navigate(`/vendor-restoura/menu-management/${userId}`);
   };
 
   return (
@@ -285,15 +282,6 @@ const RestaurantManagement = () => {
           >
             Create Restaurant
           </button>
-          <div className="mt-8 flex items-center justify-between">
-            <p className="text-gray-700 font-medium">Want to view your restaurants?</p>
-            <button
-              onClick={handleViewMyRestaurants}
-              className="py-3 px-6 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-emerald-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition"
-            >
-              View Restaurants
-            </button>
-          </div>
 
         </div>
       </form>

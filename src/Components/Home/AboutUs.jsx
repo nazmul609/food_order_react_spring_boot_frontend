@@ -4,7 +4,7 @@ const AboutUs = () => {
   return (
     <div className="bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-white">
+      <section className="bg-gradient-to-b from-white to-gray-100">
         <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl font-bold text-gray-900 sm:text-5xl">About Restoura</h2>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
@@ -105,7 +105,7 @@ const AboutUs = () => {
               specialization: "Asian Fusion"
             },
           ].map((chef, index) => (
-            <a key={index} href="#" className="group relative block overflow-hidden rounded-lg shadow-lg">
+            <a key={index} href="/null" className="group relative block overflow-hidden rounded-lg shadow-lg">
               <img src={chef.imgSrc} alt={chef.name} className="object-cover w-full h-64 transition duration-500 group-hover:opacity-90" />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 to-transparent flex items-end p-4">
                 <div className="text-white">
@@ -124,7 +124,7 @@ const AboutUs = () => {
         <p className="mt-4 text-lg text-white max-w-xl mx-auto">
           Whether you’re a chef eager to share your talents or a customer looking for the authentic taste of home, Restoura is here for you.
         </p>
-        <a href="#" className="mt-8 inline-block bg-white text-blue-600 px-12 py-3 rounded-lg shadow-lg font-medium transition hover:bg-transparent hover:text-white border border-transparent hover:border-white">
+        <a href="/null" className="mt-8 inline-block bg-white text-blue-600 px-12 py-3 rounded-lg shadow-lg font-medium transition hover:bg-transparent hover:text-white border border-transparent hover:border-white">
           Get Started
         </a>
       </section>

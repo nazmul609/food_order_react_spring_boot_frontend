@@ -89,7 +89,7 @@ function Navbar() {
           to="/about-us"
           className="text-gray-800 hover:bg-gradient-to-r from-[#D4C1FF] to-[#C3B6FF] text-opacity-90 px-3 py-1 rounded-md transition-colors duration-300"
         >
-          About Us
+          About
         </Link>
         {userRole !== 'vendor' && (
           <Link
@@ -101,10 +101,10 @@ function Navbar() {
         )}
         {userRole === 'vendor' && (
           <Link
-            to={`/my-restaurants/${userId}`}
+            to={`/vendor-restoura/my-restaurants/${userId}`}
             className="text-gray-800 hover:bg-gradient-to-r from-[#8FCBFF] to-[#70B9FF] text-opacity-90 px-3 py-1 rounded-md transition-colors duration-300"
           >
-            My Restaurants
+            My Restoura
           </Link>
         )}
         {userRole === 'customer' && (
@@ -251,7 +251,7 @@ function Navbar() {
               </>
             )}
   
-            <ListItem button component={Link} to="/about" onClick={toggleDrawer(false)}>
+            <ListItem button component={Link} to="/about-us" onClick={toggleDrawer(false)}>
               <ListItemText primary="About" />
             </ListItem>
             {userRole !== 'vendor' && (
@@ -260,8 +260,8 @@ function Navbar() {
               </ListItem>
             )}
             {userRole === 'vendor' && (
-              <ListItem button component={Link} to={`/my-restaurants/${userId}`} onClick={toggleDrawer(false)}>
-                <ListItemText primary="My Restaurants" />
+              <ListItem button component={Link} to={`/vendor-restoura/my-restaurants/${userId}`} onClick={toggleDrawer(false)}>
+                <ListItemText primary="My Restoura" />
               </ListItem>
             )}
             {userRole === 'customer' && (
