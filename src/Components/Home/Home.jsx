@@ -7,9 +7,8 @@ import Footer from './Footer';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  // Dummy data for cuisines (to be replaced with API later)
   const cuisines = [
     { title: 'Bengali', image: 'https://cdn.pixabay.com/photo/2022/02/12/15/00/biryani-7009110_640.jpg' },
     { title: 'Pakistani', image: 'https://cdn.pixabay.com/photo/2022/06/10/05/32/biryani-platter-7253751_1280.jpg' },
@@ -18,7 +17,6 @@ const Home = () => {
     { title: 'Mexican', image: 'https://cdn.pixabay.com/photo/2024/06/06/11/53/ai-generated-8812572_640.jpg' },
   ];
 
-  // Dummy data for restaurants (to be replaced with API later)
   const restaurants = [
     { name: 'The Food Place', image: 'https://cdn.pixabay.com/photo/2017/07/15/13/45/french-restaurant-2506490_640.jpg', ratings: 4.9, location: '123 Main St', isOpen: true },
     { name: 'Cuisine Corner', image: 'https://cdn.pixabay.com/photo/2022/11/14/10/37/chinese-lanterns-7591296_640.jpg', ratings: 4.8, location: '456 Elm St', isOpen: false },
@@ -34,86 +32,79 @@ const Home = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 5,
+    slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000,
+    autoplaySpeed: 2500,
     responsive: [
       {
         breakpoint: 1024,
         settings: {
-          slidesToShow: 3,
+          slidesToShow: 2,
           slidesToScroll: 1,
-          infinite: true,
-          dots: false
-        }
+          dots: false,
+        },
       },
       {
         breakpoint: 768,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          initialSlide: 1,
-          dots: false
-        }
-      }
-    ]
+          dots: false,
+        },
+      },
+    ],
   };
-
-  // const handleViewAllRestaurants = () => {
-  //   navigate.push('/all-restaurants');
-  // };
 
   const handleRestaurantClick = (restaurant) => {
     if (restaurant.isOpen) {
       navigate(`/restaurant/${restaurant.name}`);
     }
   };
-  
 
   return (
-    <div className="w-full min-h-screen bg-green-50 overflow-x-hidden">
-      
-      {/* Banner Section */}
-      <section
-        className="relative bg-[url(https://media.istockphoto.com/id/914940152/photo/empty-wooden-table-top-with-blur-coffee-shop-or-restaurant-interior-background-panoramic-banner.jpg?s=612x612&w=0&k=20&c=mpoF5abC7ys4sTIYUuCemxp3MYFgvuRFVPGzNF8IKTI=)] bg-cover bg-center bg-no-repeat h-96 flex items-center justify-center"
+    <div className="w-full min-h-screen bg-gray-50 overflow-x-hidden">
+
+<section
+  className="relative bg-[url('https://media.istockphoto.com/id/914940152/photo/empty-wooden-table-top-with-blur-coffee-shop-or-restaurant-interior-background-panoramic-banner.jpg?s=612x612&w=0&k=20&c=mpoF5abC7ys4sTIYUuCemxp3MYFgvuRFVPGzNF8IKTI=')] 
+    bg-cover bg-center bg-no-repeat h-screen flex items-center justify-center pt-2" 
+>
+  <div className="absolute inset-0 bg-black opacity-50"></div> {/* Dark overlay */}
+  <div className="relative max-w-screen-xl px-4 py-10 sm:px-6 lg:px-16 text-white text-center -mt-20">
+    <h1 className="text-4xl font-extrabold text-[#FFD700] sm:text-5xl lg:text-6xl leading-tight lg:leading-snug">
+      Order Your<br />
+      <strong className="font-extrabold text-[#FF6347]">Favorite Homemade Food</strong>
+    </h1>
+    <p className="mt-4 max-w-lg mx-auto text-lg sm:text-xl text-yellow-50">
+      At Restoura, we bring you the best homemade food from local chefs right to your doorstep.
+    </p>
+    <div className="mt-8 flex flex-col sm:flex-row gap-4 items-center justify-center">
+      <input
+        type="text"
+        placeholder="Find your location"
+        className="w-full sm:w-auto rounded bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow focus:outline-none"
+      />
+      <button
+        className="w-full sm:w-auto rounded bg-rose-600 px-8 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 transition-transform transform hover:scale-105"
       >
-        <div className="absolute inset-0 bg-black opacity-50"></div> {/* Dark overlay */}
-        <div className="relative max-w-screen-xl px-4 py-24 sm:px-6 lg:flex lg:h-auto lg:px-16 text-white">
-          <div className="max-w-xl text-left lg:ml-0 animate-fade-in"> {/* Fade-in animation */}
-            <h1 className="text-4xl font-extrabold text-[#FFD700] sm:text-5xl lg:text-6xl">
-              Order Your
-              <strong className="block font-extrabold text-[#FF6347] drop-shadow-md"> Favorite Homemade Food </strong>
-            </h1>
-            <p className="mt-4 max-w-lg sm:text-xl text-yellow-50 drop-shadow-md">
-              At Restoura, we bring you the best homemade food from local chefs right to your doorstep. Taste the love and tradition in every bite.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-4 items-center">
-              <input
-                type="text"
-                placeholder="Find your location"
-                className="block w-full rounded bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow focus:outline-none focus:ring sm:w-auto"
-              />
-              <button
-                className="block w-full rounded bg-rose-600 px-12 py-3 text-sm font-medium text-white shadow hover:bg-rose-700 focus:outline-none focus:ring active:bg-rose-500 sm:w-auto transition-transform transform hover:scale-105"
-              >
-                Search
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+        Search
+      </button>
+    </div>
+  </div>
+</section>
+
+
 
       {/* Top Cuisines Section */}
       <section className="px-10 py-10 bg-gray-100">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Top Cuisines</h2>
+        <h2 className="text-4xl font-bold text-center text-gray-800 mb-10">Top Cuisines</h2>
         <Slider {...settings}>
           {cuisines.map((cuisine, index) => (
-            <div key={index} className="px-2">
-              <div className="relative">
+            <div key={index} className="px-4">
+              <div className="relative group cursor-pointer transition duration-300 transform hover:scale-105">
                 <img src={cuisine.image} alt={cuisine.title} className="rounded-lg shadow-lg h-64 w-full object-cover" />
-                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center rounded-lg">
-                  <h3 className="text-white text-xl font-bold">{cuisine.title}</h3>
+                <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center rounded-lg group-hover:bg-opacity-50">
+                  <h3 className="text-white text-2xl font-semibold">{cuisine.title}</h3>
                 </div>
               </div>
             </div>
@@ -122,22 +113,25 @@ const Home = () => {
       </section>
 
       {/* Top Rated Handpicked Restaurants Section */}
-      <section className="py-12 px-4">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">Top Rated Handpicked Restaurants</h2>
+      <section className="py-16 px-4 bg-white">
+        <div className="flex justify-between items-center mb-10">
+          <h2 className="text-3xl font-bold text-gray-800">Top Rated Handpicked Restaurants</h2>
           <button
             onClick={() => navigate('/restaurants')}
-            className="group inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
+            className="rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75 transition duration-300 transform hover:scale-105"
           >
             <span className="block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent">
               Explore Restaurants
             </span>
-        </button>
-
+          </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
           {topRestaurants.map((restaurant, index) => (
-            <div key={index} onClick={() => handleRestaurantClick(restaurant)} className={`cursor-pointer ${!restaurant.isOpen ? 'pointer-events-none' : ''}`}>
+            <div
+              key={index}
+              onClick={() => handleRestaurantClick(restaurant)}
+              className={`cursor-pointer ${!restaurant.isOpen ? 'pointer-events-none opacity-60' : ''} transition duration-300 transform hover:scale-105`}
+            >
               <RestaurantCard restaurant={restaurant} />
             </div>
           ))}
