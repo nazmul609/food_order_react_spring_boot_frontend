@@ -1,31 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import API_BASE_URL from '../../apiConfig';
-import { useNavigate } from 'react-router-dom';
+
 
 const RestaurantManagement = () => {
   const [restaurantData, setRestaurantData] = useState({
     name: '',
     cuisineType: '',
-    operatingHours: { open: '', close: '' }, 
+    operatingHours: { open: '', close: '' },
     partyOrderAvailable: false,
     offHourDeliveryAvailable: false,
     openOrClosed: false,
-    description: '', 
+    description: '',
+    email: '',
+    contactNo: '',
+    addressLine1: '',
+    addressLine2: '',
+    city: '',
+    state: '',
+    postalCode: '',
+    country: '',
   });
-  
+
   const [isFormValid, setIsFormValid] = useState(false);
   const [imageFile, setImageFile] = useState(null);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
   const userId = localStorage.getItem('userId');
   const token = localStorage.getItem('token');
   const email = localStorage.getItem('email');
-  const navigate = useNavigate();
+  
 
   // Validate form whenever restaurantData or imageFile changes
   useEffect(() => {
-    const { name, cuisineType, operatingHours } = restaurantData;
-    setIsFormValid(name && cuisineType && operatingHours && imageFile);
+    const { name, cuisineType, operatingHours, email, contactNo, addressLine1, city, state, postalCode, country } = restaurantData;
+    setIsFormValid(
+      name &&
+      cuisineType &&
+      operatingHours.open &&
+      operatingHours.close &&
+      email &&
+      contactNo &&
+      addressLine1 &&
+      city &&
+      state &&
+      postalCode &&
+      country &&
+      imageFile
+    );
   }, [restaurantData, imageFile]);
 
   const handleChange = (e) => {
@@ -65,11 +87,12 @@ const RestaurantManagement = () => {
       }
 
       const restaurantId = await response.text();
-      console.log('Restaurant created successfully with ID:', restaurantId);
+      console.log('Restaurant creation request sent successfully with ID:', restaurantId);
 
       await handleImageUpload(restaurantId);
 
-      // Show success modal after restaurant creation
+      // Show success modal with admin approval message
+      setSuccessMessage("Your restaurant creation request has been sent to the admin for approval. Please wait for the admin's approval.");
       setIsSuccessModalOpen(true);
 
       // Reset form
@@ -80,6 +103,15 @@ const RestaurantManagement = () => {
         partyOrderAvailable: false,
         offHourDeliveryAvailable: false,
         openOrClosed: false,
+        description: '',
+        email: '',
+        contactNo: '',
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        postalCode: '',
+        country: '',
       });
       setImageFile(null);
     } catch (error) {
@@ -117,11 +149,7 @@ const RestaurantManagement = () => {
       console.error('Failed to upload image:', error);
     }
   };
-  
 
-  const handleNavigateToMenuManagement = () => {
-    navigate(`/vendor-restoura/menu-management/${userId}`);
-  };
 
   return (
     <div className="flex flex-col flex-1 p-8 bg-gray-100 min-h-screen">
@@ -130,7 +158,7 @@ const RestaurantManagement = () => {
           Manage Your Restaurant
         </h2>
       </div>
-      <div className="mt-10"></div> 
+      <div className="mt-10"></div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Image Upload Section */}
@@ -228,82 +256,151 @@ const RestaurantManagement = () => {
             />
           </div>
         </div>
-
-        {/* Checkbox Options */}
-        <div className="space-y-4">
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="partyOrderAvailable"
-              checked={restaurantData.partyOrderAvailable}
-              onChange={handleChange}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
-            />
-            <label className="ml-2 text-gray-700 text-sm font-medium">
-              Party Order
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="offHourDeliveryAvailable"
-              checked={restaurantData.offHourDeliveryAvailable}
-              onChange={handleChange}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
-            />
-            <label className="ml-2 text-gray-700 text-sm font-medium">
-              Off-Hour Delivery
-            </label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="openOrClosed"
-              checked={restaurantData.openOrClosed}
-              onChange={handleChange}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-400"
-            />
-            <label className="ml-2 text-gray-700 text-sm font-medium">
-              Is Open
-            </label>
-          </div>
+        <div className="text-center text-xl font-semibold mb-4">Address Information</div>
+        {/* Address Fields */}
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Address Line 1 <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="addressLine1"
+            value={restaurantData.addressLine1}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
         </div>
 
-        {/* Submit and View Restaurants Buttons */}
-        <div className="space-y-4">
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Address Line 2
+          </label>
+          <input
+            type="text"
+            name="addressLine2"
+            value={restaurantData.addressLine2}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            City <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="city"
+            value={restaurantData.city}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            State <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="state"
+            value={restaurantData.state}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Postal Code <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="postalCode"
+            value={restaurantData.postalCode}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        <div>
+          <label className="block text-gray-700 text-sm font-medium mb-2">
+            Country <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            name="country"
+            value={restaurantData.country}
+            onChange={handleChange}
+            className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+            required
+          />
+        </div>
+
+        {/* Additional Options */}
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name="partyOrderAvailable"
+            checked={restaurantData.partyOrderAvailable}
+            onChange={handleChange}
+            className="mr-2"
+          />
+          <label className="text-gray-700 text-sm">Party Orders Available</label>
+        </div>
+
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name="offHourDeliveryAvailable"
+            checked={restaurantData.offHourDeliveryAvailable}
+            onChange={handleChange}
+            className="mr-2"
+          />
+          <label className="text-gray-700 text-sm">Off-Hour Delivery Available</label>
+        </div>
+
+        <div className="flex items-center">
+          <input
+            type="checkbox"
+            name="openOrClosed"
+            checked={restaurantData.openOrClosed}
+            onChange={handleChange}
+            className="mr-2"
+          />
+          <label className="text-gray-700 text-sm">Open or Closed</label>
+        </div>
+
+        {/* Submit Button */}
+        <div>
           <button
             type="submit"
             disabled={!isFormValid}
-            className={`w-full py-2 px-4 text-white font-bold rounded-md shadow-md focus:outline-none focus:ring-2 ${
-              isFormValid
-                ? 'bg-blue-500 hover:bg-blue-600 focus:ring-blue-400'
-                : 'bg-gray-400 cursor-not-allowed'
+            className={`w-full p-2 text-white font-semibold rounded-md ${
+              isFormValid ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-300 cursor-not-allowed'
             }`}
           >
             Create Restaurant
           </button>
-
         </div>
       </form>
 
       {/* Success Modal */}
       {isSuccessModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center space-y-4">
-            <h3 className="text-xl font-bold text-gray-800">
-              Restaurant Created Successfully!
-            </h3>
-            <p className="text-gray-600">
-              Your restaurant has been created. Please add your Menu
-            </p>
-            <div className="space-y-2">
-              <button
-                onClick={handleNavigateToMenuManagement}
-                className="w-full py-2 px-4 bg-blue-500 text-white font-bold rounded-md shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                Go to Menu Management
-              </button>
-            </div>
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-md shadow-md">
+            <h2 className="text-lg font-semibold">Success</h2>
+            <p>{successMessage}</p>
+            <button
+              onClick={() => setIsSuccessModalOpen(false)}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md"
+            >
+              Close
+            </button>
           </div>
         </div>
       )}
