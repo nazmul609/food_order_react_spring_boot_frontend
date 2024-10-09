@@ -1,20 +1,21 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProfileNavigation from './ProfileNavigation';
-import RestaurantManagement from './RestaurantManagement';
+import RestaurantManagement from './NewRestaurantCreate';
 import OrderManagement from './OrderManagement';
 import MenuManagement from './MenuManagement';
 import ReportsAndAnalytics from './ReportsAndAnalytics';
 import OffersAndPromo from './OffersAndPromo';
-import VendorRestaurantsPage from '../Restaurant/VendorRestaurantsPage';
+import VendorRestaurantsPage from './VendorRestaurantsPage';
+
 
 import { faShoppingBag, faUtensils, faBowlFood, faEnvelopeOpen, faMagnifyingGlassDollar, faStore } from '@fortawesome/free-solid-svg-icons';
 
 const userId = localStorage.getItem('userId'); 
 
 const vendor_menu = [ 
-    { title: "My Restaurants", icon: faStore, path: `/vendor-restoura/my-restaurants/${userId}` },
-  { title: "Restaurant Management", icon: faUtensils, path: `/vendor-restoura/restaurant-management/${userId}` },
+    { title: "Restaurant Management", icon: faStore, path: `/vendor-restoura/my-restaurants/${userId}` },
+  { title: "Create Restaurant", icon: faUtensils, path: `/vendor-restoura/restaurant-management/${userId}` },
   { title: "Order Management", icon: faBowlFood, path: `/vendor-restoura/order-management/${userId}` },
   { title: "Menu Management", icon: faShoppingBag, path: `/vendor-restoura/menu-management/${userId}` },
   { title: "Offers/Promo", icon: faEnvelopeOpen, path: `/vendor-restoura/offers-promo/${userId}` },

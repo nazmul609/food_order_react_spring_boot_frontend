@@ -15,6 +15,7 @@ import Register from './Components/Auth/Register';
 import MyRestoura from './Components/Customer/MyRestoura';
 import AboutUs from './Components/Home/AboutUs';
 import VendorRestoura from './Components/Vendor/VendorRestoura';
+import RestaurantEdit from './Components/Vendor/RestaurantEdit';
 
 
 
@@ -38,6 +39,7 @@ function App() {
           <Route path="/vendor-onboarding/:id" element={<VendorOnboarding/>} />
           <Route path="/vendor-profile/*" element={<VendorProfile />} />
           <Route path="/vendor-restoura/*" element={<VendorRestoura/>} />
+          <Route path="/restaurant_edit_info/:restaurantName/:restaurantId" element={<RestaurantEdit />} />
 
           <Route path="/admin-profile/*" element={<AdminProfile />} />
 

@@ -7,8 +7,8 @@ const VendorRestaurantsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [vendorRestaurants, setVendorRestaurants] = useState([]);
   const navigate = useNavigate();
-  const userId = localStorage.getItem('userId'); // Assume userId is stored in local storage
-  const token = localStorage.getItem('token'); // Access token
+  const userId = localStorage.getItem('userId'); 
+  const token = localStorage.getItem('token'); 
 
   useEffect(() => {
     const fetchVendorRestaurants = async () => {
@@ -64,6 +64,11 @@ const VendorRestaurantsPage = () => {
     }
   };
 
+  const handleEditClick = (restaurant) => {
+    // Ensure correct URL path with restaurant name and ID
+    navigate(`/restaurant_edit_info/${restaurant.name}/${restaurant.id}`);
+  };
+
   const filteredVendorRestaurants = vendorRestaurants.filter((restaurant) =>
     restaurant.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -83,23 +88,33 @@ const VendorRestaurantsPage = () => {
         <div className="text-2xl font-semibold mb-4 text-gray-800"></div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {filteredVendorRestaurants.map((restaurant) => (
-            <div
-              key={restaurant.id}
-              className={`rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform transform hover:scale-105 ${
-                restaurant.openOrClosed !== true ? 'pointer-events-none opacity-50' : ''
-              }`}
-              onClick={() => handleRestaurantClick(restaurant)}
-            >
-              <RestaurantCard 
-                restaurant={{
-                  id: restaurant.id,
-                  name: restaurant.name,
-                  openOrClosed: restaurant.openOrClosed,
-                  operatingHours: restaurant.operatingHours,
-                  cuisineType: restaurant.cuisineType,
-                  imageUrl: restaurant.imageUrl,
-                }}
-              />
+            <div key={restaurant.id}>
+              <div
+                className={`rounded-lg overflow-hidden shadow-md cursor-pointer transition-transform transform hover:scale-105 ${
+                  restaurant.openOrClosed !== true ? 'pointer-events-none opacity-50' : ''
+                }`}
+                onClick={() => handleRestaurantClick(restaurant)}
+              >
+                <RestaurantCard 
+                  restaurant={{
+                    id: restaurant.id,
+                    name: restaurant.name,
+                    openOrClosed: restaurant.openOrClosed,
+                    operatingHours: restaurant.operatingHours,
+                    cuisineType: restaurant.cuisineType,
+                    imageUrl: restaurant.imageUrl,
+                  }}
+                />
+              </div>
+              {/* Edit Button with full width matching the card */}
+              <div className="mt-4">
+                <button
+                  className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                  onClick={() => handleEditClick(restaurant)} // Pass the entire restaurant object
+                >
+                  Edit Restaurant
+                </button>
+              </div>
             </div>
           ))}
         </div>
