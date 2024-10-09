@@ -86,7 +86,7 @@ function Navbar() {
       {/* Desktop Menu */}
       <div className="hidden md:flex items-center space-x-6 lg:space-x-12">
         <Link
-          to="/about"
+          to="/about-us"
           className="text-gray-800 hover:bg-gradient-to-r from-[#D4C1FF] to-[#C3B6FF] text-opacity-90 px-3 py-1 rounded-md transition-colors duration-300"
         >
           About Us

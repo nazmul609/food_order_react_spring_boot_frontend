@@ -15,7 +15,7 @@ import Register from './Components/Auth/Register';
 import MyRestoura from './Components/Customer/MyRestoura';
 import VendorRestaurantsPage from './Components/Restaurant/VendorRestaurantsPage';
 
-
+import AboutUs from './Components/Home/AboutUs';
 
 function App() {
   return (
@@ -24,6 +24,7 @@ function App() {
         
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/about-us" element={<AboutUs />} />
           <Route path="/restaurants" element={<AllRestaurantsPage />} />
           <Route path="/restaurant/:name/:id" element={<RestaurantDetails />} />
           <Route path="/cart/:id" element={<CartPage/>} />

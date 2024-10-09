@@ -14,8 +14,9 @@ const RestaurantDetails = () => {
   const [cuisines, setCuisines] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [priceRange, setPriceRange] = useState([0, 10000]);
-  const [maxPrice, setMaxPrice] = useState();  // Add state for max price
+  const [maxPrice, setMaxPrice] = useState();
   const { id } = useParams();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const RestaurantDetails = () => {
         const response = await fetch(`${API_BASE_URL}/restaurant/allRestaurants`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`, 
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
@@ -67,7 +68,6 @@ const RestaurantDetails = () => {
               const uniqueCategories = [...new Set(cuisinesData.map(cuisine => cuisine.category))];
               setCategories(uniqueCategories);
 
-              // Calculate the maximum price and update maxPrice state
               const maxPriceValue = Math.max(...cuisinesData.map(cuisine => cuisine.price));
               setMaxPrice(maxPriceValue);
             }
@@ -91,16 +91,18 @@ const RestaurantDetails = () => {
     setPriceRange(newValue);
   };
 
+
   const filteredCuisines = cuisines.filter(cuisine =>
     (selectedCategory === '' || cuisine.category === selectedCategory) &&
-    cuisine.price >= priceRange[0] && cuisine.price <= priceRange[1]
+    cuisine.price >= priceRange[0] && cuisine.price <= priceRange[1] &&
+    cuisine.cuisineName.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
 
   return (
     <div className="px-4 lg:px-16 bg-green-50 min-h-screen pb-20">
       {/* Restaurant Information Section */}
       <section className="mt-4 flex flex-col lg:flex-row items-center lg:items-start">
-        {/* Restaurant Image */}
         <div className="w-full lg:w-1/2 flex justify-center lg:justify-start lg:pr-6">
           <div className="w-full max-w-md lg:max-w-full lg:h-[400px]">
             <img
@@ -110,8 +112,6 @@ const RestaurantDetails = () => {
             />
           </div>
         </div>
-  
-        {/* Restaurant Details */}
         <div className="w-full lg:w-1/2 mt-6 lg:mt-0 text-center lg:text-left">
           <h1 className="text-gray-800 font-extrabold text-2xl sm:text-3xl lg:text-4xl drop-shadow-md mb-4">
             {restaurant.name || "Restaurant Name"}
@@ -132,12 +132,49 @@ const RestaurantDetails = () => {
           </div>
         </div>
       </section>
-  
+
       <Divider className="my-8" />
-  
+
+      {/* Search and Cuisine Types Section */}
+
+      <div className="flex flex-col gap-4 mt-8">
+        <div className="flex items-center gap-4">
+        {/* Search Menu */}
+        <input
+          type="text"
+          placeholder="Search menu items..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-40 rounded-full px-3 py-2 bg-white/50 backdrop-blur-md border border-gray-300 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-gray-500"
+        />
+
+        {/* Cuisine Types */}
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`w-40 px-3 py-2 rounded-full text-sm font-semibold 
+                ${selectedCategory === category ? 'bg-black text-white' : 'bg-gray-300 text-gray-700'} 
+                hover:bg-gray-500 hover:text-white transition-all`}
+            >
+              {category} ({cuisines.filter(cuisine => cuisine.category === category).length})
+            </button>
+          ))}
+        </div>
+      </div>
+
+     {/* Display Filtered Cuisine Count */}
+      <div className="text-gray-600 text-sm mt-2">
+        Showing {filteredCuisines.length} items for "{selectedCategory || 'All Categories'}"
+      </div>
+    </div>
+
+
+
+
       {/* Filter and Menu Section */}
       <section className="pt-8 flex flex-col lg:flex-row">
-        {/* Filter Section */}
         <div className="w-full lg:w-1/4 lg:sticky lg:top-28 mb-8 lg:mb-0 space-y-6">
           <div className="bg-white shadow-lg rounded-lg p-4 md:p-6">
             <Typography variant="h5" className="pb-4 font-semibold text-gray-800">
@@ -172,7 +209,7 @@ const RestaurantDetails = () => {
             </FormControl>
           </div>
         </div>
-  
+
         {/* Menu Items Section */}
         <div className="w-full lg:w-3/4 grid grid-cols-1 sm:grid-cols-2 gap-6 lg:gap-8 lg:pl-8">
           {filteredCuisines.map((cuisine) => (
@@ -192,8 +229,6 @@ const RestaurantDetails = () => {
       </section>
     </div>
   );
-  
-  
 };
 
 export default RestaurantDetails;
