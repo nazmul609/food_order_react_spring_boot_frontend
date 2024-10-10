@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import RestaurantCard from '../Home/RestaurantCard';
 import API_BASE_URL from '../../apiConfig';
 
-
-
 const AllRestaurantsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filter, setFilter] = useState({
@@ -13,25 +11,27 @@ const AllRestaurantsPage = () => {
     price: '',
     cuisine: '',
   });
-  const [restaurants, setRestaurants] = useState([]); 
+  const [restaurants, setRestaurants] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRestaurants = async () => {
-      const token = localStorage.getItem('token'); 
-  
+      const token = localStorage.getItem('token');
+
       try {
         const response = await fetch(`${API_BASE_URL}/restaurant/allRestaurants`, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`, 
+            'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
         });
-  
+
         if (response.ok) {
           const data = await response.json();
-          setRestaurants(data);
+          // Only set restaurants with "Approved" status
+          const approvedRestaurants = data.filter(restaurant => restaurant.status === 'Approved');
+          setRestaurants(approvedRestaurants);
         } else {
           console.error('Failed to fetch restaurants');
         }
@@ -39,10 +39,9 @@ const AllRestaurantsPage = () => {
         console.error('Error:', error);
       }
     };
-  
+
     fetchRestaurants();
   }, []);
-  
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -53,17 +52,18 @@ const AllRestaurantsPage = () => {
     setFilter({ ...filter, [name]: value });
   };
 
-  //click a particular restaurant
+  // Navigate to restaurant page on click
   const handleRestaurantClick = (restaurant) => {
     if (restaurant.openOrClosed === true) {
       navigate(`/restaurant/${restaurant.name}/${restaurant.id}`);
     }
   };
 
+  // Filter based on search term and location
   const filteredRestaurants = restaurants.filter((restaurant) => {
     return (
       restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      restaurant.location?.toLowerCase().includes(searchTerm.toLowerCase()) 
+      restaurant.location?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
@@ -117,7 +117,6 @@ const AllRestaurantsPage = () => {
             </div>
           </div>
 
-
           {/* Restaurants Section */}
           <div className="w-full md:w-3/4 lg:w-4/5">
             <div className="mb-6">
@@ -129,7 +128,7 @@ const AllRestaurantsPage = () => {
                 onChange={handleSearchChange}
               />
             </div>
-            <h2 className="text-2xl font-semibold mb-4 text-gray-800">All Restaurants</h2>
+            <h2 className="text-2xl font-semibold mb-4 text-gray-800">All Approved Restaurants</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {filteredRestaurants.map((restaurant, index) => (
                 <div
@@ -139,14 +138,14 @@ const AllRestaurantsPage = () => {
                   }`}
                   onClick={() => handleRestaurantClick(restaurant)}
                 >
-                  <RestaurantCard 
+                  <RestaurantCard
                     restaurant={{
                       id: restaurant.id,
                       name: restaurant.name,
                       openOrClosed: restaurant.openOrClosed,
                       operatingHours: restaurant.operatingHours,
-                      cuisineType: restaurant.cuisineType
-                    }} 
+                      cuisineType: restaurant.cuisineType,
+                    }}
                   />
                 </div>
               ))}
@@ -155,10 +154,7 @@ const AllRestaurantsPage = () => {
         </div>
       </div>
     </div>
-
   );
-  
-  
 };
 
 export default AllRestaurantsPage;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import ProfileNavigation from './ProfileNavigation';
-import RestaurantManagement from './NewRestaurantCreate';
+import RestaurantManagement from './AddNewRestaurant';
 import OrderManagement from './OrderManagement';
 import MenuManagement from './MenuManagement';
 import ReportsAndAnalytics from './ReportsAndAnalytics';

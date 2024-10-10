@@ -65,8 +65,11 @@ const VendorRestaurantsPage = () => {
   };
 
   const handleEditClick = (restaurant) => {
-    // Ensure correct URL path with restaurant name and ID
     navigate(`/restaurant_edit_info/${restaurant.name}/${restaurant.id}`);
+  };
+
+  const handleAddMenuClick = (restaurant) => {
+    navigate(`/vendor-restoura/menu-management/${restaurant.id}`);
   };
 
   const filteredVendorRestaurants = vendorRestaurants.filter((restaurant) =>
@@ -105,14 +108,29 @@ const VendorRestaurantsPage = () => {
                     imageUrl: restaurant.imageUrl,
                   }}
                 />
+                {/* Status Flag */}
+                <div className="p-2 text-center bg-gray-200 text-sm font-semibold rounded-b-lg">
+                  Status: <span className={`font-bold ${restaurant.status === "Approved" ? 'text-green-600' : 'text-red-600'}`}>
+                    {restaurant.status}
+                  </span>
+                </div>
               </div>
-              {/* Edit Button with full width matching the card */}
-              <div className="mt-4">
+              {/* Edit and Add Menu Buttons */}
+              <div className="mt-4 flex space-x-2">
                 <button
-                  className="w-full bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
-                  onClick={() => handleEditClick(restaurant)} // Pass the entire restaurant object
+                  className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                  onClick={() => handleEditClick(restaurant)}
                 >
-                  Edit Restaurant
+                  Edit Info
+                </button>
+                <button
+                  className={`flex-1 px-4 py-2 rounded-lg ${
+                    restaurant.status === "Approved" ? 'bg-green-500 hover:bg-green-600 text-white' : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                  }`}
+                  onClick={() => handleAddMenuClick(restaurant)}
+                  disabled={restaurant.status !== "Approved"}
+                >
+                  Add Menu
                 </button>
               </div>
             </div>

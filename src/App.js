@@ -15,7 +15,7 @@ import Register from './Components/Auth/Register';
 import MyRestoura from './Components/Customer/MyRestoura';
 import AboutUs from './Components/Home/AboutUs';
 import VendorRestoura from './Components/Vendor/VendorRestoura';
-import RestaurantEdit from './Components/Vendor/RestaurantEdit';
+import RestaurantEdit from './Components/Vendor/EditRestaurantInfo';
 
 
 

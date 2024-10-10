@@ -206,19 +206,22 @@ const MenuManagement = () => {
   
       {/* Restaurant Selector */}
       <label className="block mb-4 text-lg font-semibold text-gray-700">
-        Select Your Restaurant:
-        <select
-          onChange={handleRestaurantSelect}
-          className="border rounded p-3 ml-2 text-gray-800 bg-white focus:ring focus:ring-blue-300 transition duration-200"
-        >
-          <option value=""></option>
-          {restaurants.map((restaurant) => (
-            <option key={restaurant.id} value={restaurant.id}>
-              {restaurant.name}
-            </option>
-          ))}
-        </select>
-      </label>
+          Select Your Restaurant:
+          <select
+            onChange={handleRestaurantSelect}
+            className="border rounded p-3 ml-2 text-gray-800 bg-white focus:ring focus:ring-blue-300 transition duration-200"
+          >
+            <option value=""></option>
+            {restaurants
+              .filter((restaurant) => restaurant.status === "Approved") // Only include approved restaurants
+              .map((restaurant) => (
+                <option key={restaurant.id} value={restaurant.id}>
+                  {restaurant.name}
+                </option>
+              ))}
+          </select>
+        </label>
+
   
       {/* Menu Item Inputs */}
       <div className="mb-6 bg-white p-6 rounded-lg shadow-md">
